@@ -18,8 +18,11 @@ env/
 .DS_Store
 Thumbs.db
 
-# --- AMT.engine working files (step S6) ---
-.amt-cache/
+# --- AMT.engine output (step S6) ---
+# Reproduced by `python py/main.py amt`, not archived. The engine loads its
+# axioms out of a set, so the order of its amt:provenance lists follows string
+# hashing; PYTHONHASHSEED=0 pins that per machine but not across Python
+# versions. See PRIMER D-18 -- once the engine sorts, this line can go.
 output/*/amt/
 
 # --- Note ---

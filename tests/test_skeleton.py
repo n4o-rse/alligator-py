@@ -1,15 +1,24 @@
-"""Smoke tests for the pipeline scaffolding.
+"""Smoke tests for the pipeline as a whole.
 
-These check that the repository is wired up, not that anything computes. Real
-tests arrive with step S1 of the work plan.
+These check that the repository is wired up and that each phase runs from the
+command line, not that anything computes -- the per-module tests do that. The
+`amt` phase is the one that needs an optional dependency, so its tests skip
+rather than fail when the engine is absent.
 """
 
+import importlib.util
 import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parent.parent
 MAIN = ROOT / "py" / "main.py"
+
+#: The `amt` phase needs an optional dependency; the rest of the pipeline does
+#: not. See PRIMER.md, part C, step S6.
+ENGINE_INSTALLED = importlib.util.find_spec("amt") is not None
 
 
 def run_main(*argv: str) -> subprocess.CompletedProcess:
@@ -32,22 +41,44 @@ def test_bare_call_lists_phases():
     assert run_main().returncode == 0
 
 
-def test_the_alligator_phase_writes_its_s2_outputs():
-    """S2 is implemented; the RDF formats are still S3 and only warn."""
-    result = run_main("alligator", "--dataset", "romanempire")
+def test_the_alligator_phase_writes_every_format(tmp_path):
+    """All seven formats are implemented, so a run warns about nothing.
+
+    `--out` keeps the run out of the versioned `output/`: a test that rewrites
+    files the repository archives would make `git status` a report about the
+    last pytest run rather than about the last change.
+    """
+    result = run_main("alligator", "--dataset", "romanempire", "--out", str(tmp_path))
+    output = result.stderr + result.stdout
     assert result.returncode == 0
-    assert "romanempire_timeline.json" in result.stderr + result.stdout
-    assert "S3" in result.stderr + result.stdout
+    assert "romanempire_timeline.json" in output
+    assert "romanempire_amt.ttl" in output
+    assert "WARNING" not in output
 
 
-def test_unimplemented_phase_warns_but_does_not_crash():
+def test_the_amt_phase_runs_when_the_engine_is_there():
+    """Reads `output/`, writes `output/romanempire/amt/`, which is ignored."""
+    if not ENGINE_INSTALLED:
+        pytest.skip('AMT.engine is optional: pip install -e ".[amt]"')
     result = run_main("amt", "--dataset", "romanempire")
+    output = result.stderr + result.stdout
     assert result.returncode == 0
-    assert "S6" in result.stderr + result.stdout
+    assert "Validation passed" in output
 
 
-def test_strict_makes_an_unimplemented_phase_fail():
+def test_strict_fails_on_the_known_consistency_violations():
+    """They are real violations, just not ours -- PRIMER D-19."""
+    if not ENGINE_INSTALLED:
+        pytest.skip('AMT.engine is optional: pip install -e ".[amt]"')
     assert run_main("amt", "--dataset", "romanempire", "--strict").returncode == 1
+
+
+def test_a_missing_engine_names_the_install_command():
+    if ENGINE_INSTALLED:
+        pytest.skip("the engine is installed, so the message cannot be provoked")
+    result = run_main("amt", "--dataset", "romanempire")
+    assert result.returncode == 1
+    assert 'pip install -e ".[amt]"' in result.stderr + result.stdout
 
 
 def test_datasets_are_present():

@@ -63,8 +63,8 @@ Damit ist Alpaka zum ersten Mal durchgängig in einer Sprache erreichbar:
 Echte Logik sind rund 700 Zeilen.
 
 **Der AMT-Block ist Daten, kein Code.** Gemessen an
-`v1/alligator_re_results_amt.ttl`: 33 `amt:Role`, 29 `amt:InverseAxiom`, 127
-`amt:RoleChainAxiom`, 32 `amt:SelfDisjointAxiom`, 7 `amt:DisjointAxiom` — die
+`v1/alligator_re_results_amt.ttl`: 31 `amt:Role`, 28 `amt:InverseAxiom`, 126
+`amt:RoleChainAxiom`, 31 `amt:SelfDisjointAxiom`, 6 `amt:DisjointAxiom` — die
 Kompositionstafel der Allen-Algebra, für jede Eingabe identisch. Sie wird eine
 statische `.ttl`-Datei.
 
@@ -285,6 +285,9 @@ Jede beabsichtigte Abweichung steht hier. Alle Befunde sind an
 | D-16 | `writeRDFasText` schreibt `nfsn`/`nfen`, aber nicht `nfsnE`/`nfenE` | beide Nachbar-IRIs werden geschrieben | Das Vokabular deklariert `nfsnE` und `nfenE` als Object Properties, und `RDFEvents.writeRDF` — die Dateivariante derselben Klasse — schreibt sie. Nur der Pfad, den das Webtool aufruft, lässt sie weg, weshalb sie in den Golden Files fehlen. Ein Name ist keine Referenz: zwei Ereignisse dürfen denselben tragen |
 | D-17 | die AMT-Datei legt Ereignisknoten (`rgzm:jNEOv3`) neben Rollen und Axiome (`rgzm:di`) in einen Namensraum | Ereignisse unter `ae:`, `rgzm:` nur noch Vokabular | Siehe A6. Nebenwirkung und eigentlicher Gewinn: Alligator-TTL und AMT-TTL eines Laufs benennen dieselben Ereignisse und lassen sich zu einem Graphen vereinigen. In Java war das ausgeschlossen, weil schon die IDs je Datei andere waren (D-01) |
 | D-14 | `Cypher` verkettet den Ereignisnamen ohne Maskierung in das Statement | einfache Anführungszeichen und Backslashes werden maskiert | Ein Name mit Apostroph erzeugt in Java eine Datei, die Neo4j nicht liest. Für jeden Namen, der vorher funktioniert hat, ändert sich nichts — eine Abweichung ist es trotzdem |
+| D-18 | — (in Java gab es keine Engine-Anbindung) | die Ausgabe von AMT.engine wird **nicht** versioniert, als einzige Ausgabe dieses Repos | `amt/core.py` iteriert die Axiomklassen über ein `set` von URIRefs, also entscheidet die String-Hashung die Anwendungsreihenfolge und damit die Reihenfolge der `amt:provenance`-Listen in `reasoned.ttl`, `.cypher` und `.edges.csv`. `PYTHONHASHSEED=0` legt sie fest, aber der gesetzte String-Hash hat zwischen Python 3.10 und 3.11 den Algorithmus gewechselt. Nachgewiesen: zwei Läufe ohne Saat unterscheiden sich, mit Saat nicht; sortiert man beide Dateien, sind sie inhaltsgleich. Fällt weg, sobald die Engine sortiert lädt |
+| D-19 | der Axiomblock erklärt jede Rolle für selbstdisjunkt und leitet zugleich Selbstschleifen ab | unverändert übernommen, die Verletzungen werden als bekannt gemeldet statt behoben | Der Konsistenzcheck der Engine meldet auf `romanempire` 14 Verletzungen und auf `potterlimes` 18, alle abgeleitet, keine steht in unserer Datei. Zwei Ursachen: `RCA0091` (`e ∘ e → e`) über eine Relation, die die Datei symmetrisch trägt — wo `A e B` steht, steht auch `B e A`, und die Kette schließt sich zu `A e A`; und `RCA0117` (`d ∘ di → q`), wo `di` schon per `InverseAxiom` aus jedem `d` folgt. Beide Folgerungen sind richtig, die `amt:SelfDisjointAxiom` darüber sind es nicht: `e` ist per Definition reflexiv, `q` ist die volle Disjunktion und schließt Gleichheit ein. Der Block ist Fremdgut aus dem Java-Werkzeug; ihn zu ändern ist eine fachliche Entscheidung, keine Portierungsfrage. Bis dahin meldet `amt_phase.review` jede Selbstschleife als Warnung und jede `DisjointAxiom`-Verletzung als Fehler — letztere wäre eine Aussage über zwei **verschiedene** Ereignisse und damit über die Daten |
+| D-20 | drei Zeilen der Kompositionstafel liefern die Inverse statt der Identität: `RCA0105` (`s ∘ e → si`), `RCA0119` (`d ∘ e → di`), `RCA0133` (`f ∘ e → fi`) | unverändert übernommen und registriert | Die Verknüpfung mit `e` muss die Identität sein. In elf der vierzehn Zeilen ist sie es auch (`b ∘ e → b`, `m ∘ e → m`, `o ∘ e → o`, `fi ∘ e → fi`, `di ∘ e → di`, `si ∘ e → si`, `oi`, `mi`, `a`, `e`, `q`). Betroffen sind genau die drei Rollen, deren Inverse sich nur durch das angehängte `i` unterscheidet und die selbst ohne `i` geschrieben werden — ein systematischer Tippfehler, kein Einzelfall. Gefunden über S6: auf `potterlimes` erzeugt `RCA0133` `f`/`fi`-Selbstschleifen, die `romanempire` nicht zeigt, weil dort kein Ereignispaar ein gemeinsames Ende hat. Folge für uns: nur zusätzliche Verletzungen im Konsistenzcheck, denn wir schreiben abgeleitete Kanten nicht zurück. Meldung an Allard, zusammen mit D-19 |
 
 **Folgen von D-13, gemessen an `romanempire`:** die Allen-Matrix behält ihre
 12×12-Form, aber die Hauptdiagonale wird leer statt `=`. Der Graph verliert 12
@@ -305,7 +308,7 @@ also ausdrücklich ausnehmen.
 | S3 | RDF-Ausgaben: Alligator-TTL und AMT-TTL | S1, S2 | **erledigt** 2026-08-28 |
 | S4 | GitHub Pages | S2 | offen |
 | S5 | CA-Phase: Zähltabelle → AGT | S1 | offen |
-| S6 | AMT-Anbindung: `amt-engine` als optionale Phase | S3 | offen |
+| S6 | AMT-Anbindung: `amt-engine` als optionale Phase | S3 | **erledigt** 2026-08-28 |
 | S7 | Politur: README, CITATION.cff, Pins, Zenodo | alle | offen |
 
 S4 hängt nur an S2, nicht an S3 — die Seite liest JSON, kein RDF. S5 hängt an
@@ -603,10 +606,11 @@ Achsen. 139 Tests.
 **Fertig, weil:** beide Dateien dieselben Tripel tragen wie die Referenz —
 namensbasiert verglichen, jede Abweichung als benannte Tabelle in
 `tests/test_rdf.py` —, die AMT-Datei die 921 Tripel der Allen-Axiome trägt und
-drei Läufe in drei Prozessen byte-identisch sind. Was **nicht** geprüft ist: die
-SHACL-Validierung durch AMT.engine. Deren Shapes liegen nicht im Repo; das ist
-S6, und `test_the_axioms_are_the_ones_the_reference_carries` ist bis dahin der
-Ersatz.
+drei Läufe in drei Prozessen byte-identisch sind. Die SHACL-Validierung durch
+AMT.engine war zu diesem Zeitpunkt offen, weil deren Shapes nicht im Repo
+liegen; sie ist mit S6 nachgeholt und besteht.
+`test_the_axioms_are_the_ones_the_reference_carries` bleibt der Test, der ohne
+die optionale Abhängigkeit läuft.
 
 ### Die Alligator-Datei
 
@@ -876,28 +880,89 @@ Alpaka-Kette einmal von Ende zu Ende zeigen.
 
 **Uploads:** keine.
 
-**Ergebnis:** eine Phase `amt` in `main.py`, das optionale Extra `[amt]`, ein
-Abschnitt im README.
+**Ergebnis:** `py/amt_phase.py`, die Phase `amt` in `main.py`, das optionale
+Extra `[amt]`, `--with-amt` für `all`, ein Abschnitt im README.
 
 **Fertig, wenn:** `python py/main.py amt --dataset romanempire` die Datei
 validiert, reasoniert und die Ausgaben der Engine unter `output/romanempire/amt/`
-ablegt.
+ablegt. — Erfüllt: SHACL besteht, 68 gesetzte Relationen werden zu 138, sechs
+Dateien werden geschrieben.
 
-`amt-runner` ist als Vorlage gedacht — die README sagt ausdrücklich, man solle
-`run_amt.py` in das eigene Repo kopieren statt zu forken. Genau das tun wir; die
-Datei bleibt Fremdcode und wird als solcher gekennzeichnet.
+### Keine Kopie von `run_amt.py`
+
+Die README von `amt-runner` empfiehlt, `run_amt.py` in das eigene Repo zu
+kopieren statt zu forken. Wir tun es trotzdem nicht, und der Grund ist nicht
+Geschmack: Das Skript löst zwei Probleme, und beide Lösungen passen hier nicht.
+Es beschafft die Engine per `git clone` in einen Cache und `pip install` zur
+Laufzeit in den laufenden Interpreter — ein Skript, das beim Ausführen Pakete
+nachinstalliert, ist das Gegenteil des S7-Kriteriums. Und es legt je Lauf einen
+zeitgestempelten Ordner an, damit nichts überschrieben wird — wir wollen genau
+das Gegenteil, einen festen Ordner, den man diffen kann.
+
+Beschafft wird die Engine also dort, wo Abhängigkeiten hingehören: als Extra
+`[amt]` in der `pyproject.toml`, per `pip install git+…@<SHA>`. Getestet: die
+`ontology/`-Dateien kommen bei der Installation mit, die Engine findet ihre
+Shapes. Auf einen Tag kann nicht gepinnt werden, weil `amt-engine` keine hat;
+der Pin steht auf `968e80e`.
+
+### Aufruf als Subprozess
+
+`py/amt_phase.py` ruft `python -m amt.runner` als Subprozess auf, nicht die
+Bibliotheks-API. Das kostet einen Prozessstart und ist trotzdem richtig: Die
+Engine lädt ihre Axiome mit `for atype in axiom_types:` über ein `set` von
+URIRefs (`amt/core.py`), also entscheidet die String-Hashung, ob zuerst
+Rollenketten oder Inverse angewandt werden. Der Graph ist in beiden Fällen
+derselbe — die Reihenfolge der `amt:provenance`-Listen nicht, und drei der
+sechs Ausgabedateien tragen Provenance. `PYTHONHASHSEED=0` legt das fest, und
+eine Umgebungsvariable muss vor dem Interpreterstart gesetzt sein.
+
+Was der Runner sonst noch anders macht als die CLI, nehmen wir mit: Er räumt
+sein Ausgabeverzeichnis vor dem Schreiben leer, schreibt alle sechs Formate und
+legt einen Markdown-Report dazu. Eine neue Ausgabeart der Engine landet damit
+ohne Änderung hier.
+
+### Was der erste Lauf ergeben hat
+
+```
+VAL  Validating romanempire_amt.ttl ...
+OK   Validation passed.
+OK   1 Concepts | 31 Roles | 12 Nodes | 68 Edges | 191 Axioms
+FAIL 14 consistency violation(s)
+     reasoning produced 70 inferred edge(s)
+```
+
+Die SHACL-Prüfung ist der eigentliche Abnahmetest für S3, und sie besteht. Der
+Konsistenzcheck fällt durch, aber an keiner Stelle wegen unserer Daten: alle 14
+Verletzungen sind Selbstschleifen, alle abgeleitet, keine davon steht in
+unserer Datei. Sie folgen aus dem Axiomblock selbst (D-19).
+
+`potterlimes` hat dann noch etwas gezeigt, das `romanempire` nicht zeigen kann.
+Dort stehen 18 Verletzungen, darunter Selbstschleifen über `f` und `fi`, und
+die führen auf drei vertauschte Zeilen der Kompositionstafel — `s ∘ e → si`,
+`d ∘ e → di`, `f ∘ e → fi`, wo jeweils die Identität stehen müsste. In
+`romanempire` teilt sich kein Ereignispaar ein Ende, deshalb greift die Zeile
+dort nie. Das ist D-20 und der Grund, warum ein zweiter Datensatz mehr wert ist
+als ein zweiter Testlauf auf demselben.
 
 **Zu beachten:**
 
-- Die Engine validiert vor dem Reasoning gegen `ontology/amt-shapes.ttl`. Das
-  ist der eigentliche Test unserer AMT-Ausgabe und der Grund, warum D-06 kein
-  Geschmacksurteil ist.
-- Die Engine erzeugt bei jedem Lauf einen zeitgestempelten Ordner und einen
-  Report mit Zeitstempel. Das verträgt sich nicht mit A3. Vorschlag: die
-  Engine-Ausgabe ist git-ignoriert; versioniert wird nur unsere Eingabedatei.
-- **[OFFEN]** Ob die Phase eine Vorgabe ist oder nur auf `--with-amt` läuft. Sie
-  klont beim ersten Mal ein fremdes Repository und installiert drei Pakete; das
-  gehört nicht in einen Vorgabelauf.
+- Die Engine-Ausgabe bleibt git-ignoriert (D-18), anders als jede andere
+  Ausgabe dieses Repos. Nicht wegen der Zeitstempel im Report — die betreffen
+  nur eine der sechs Dateien —, sondern weil die Provenance-Reihenfolge an der
+  Hash-Saat hängt und der gesetzte String-Hash sich zwischen Python 3.10 und
+  3.11 geändert hat. Byte-Gleichheit gilt damit je Maschine, nicht über
+  Versionen hinweg.
+- Die zwei CSV-Ausgaben der Engine kommen mit CRLF. `amt_phase.normalise_newlines`
+  schreibt sie auf LF um, damit der Arbeitsbaum der Zusage aus A3 entspricht und
+  nicht nur der Git-Index über `.gitattributes`.
+- Die Phase läuft in `all` nur mit `--with-amt`. Der ursprüngliche Grund — sie
+  klont ein fremdes Repository — ist mit dem Extra entfallen; es bleibt, dass
+  ein `pip install -r requirements.txt` die Engine nicht mitbringt.
+- **[OFFEN] Zwei Meldungen an `amt-engine`,** beide klein, beide in eurem
+  eigenen Repo: `sorted(axiom_types, key=str)` in `core.py` macht die Ausgabe
+  ohne Umweg reproduzierbar und lässt D-18 wegfallen; und
+  `package-data = ["../ontology/*.ttl"]` legt bei der Installation ein
+  Top-Level-`ontology/` in die `site-packages` statt es ins Paket zu nehmen.
 
 ## S7 — Politur
 
@@ -983,7 +1048,15 @@ Nicht einem Schritt zugeordnet, aber nicht zu vergessen:
   Folgerung wieder `q`, sie absorbiert also; und sie ist die Folgerung überall
   dort, wo die Komposition zweier Relationen mehrdeutig ist (`b ∘ a`, `d ∘ di`).
   Wir schreiben sie nie als Kante — sie entsteht erst im Reasoning der Engine.
-  Die Axiomdatei trägt sie vollständig.
+  Die Axiomdatei trägt sie vollständig. S6 hat die Deutung bestätigt: In Allens
+  Kompositionstafel sind `b;bi` und `d;di` genau die beiden Einträge, deren
+  Ergebnis die volle Menge aller 13 Relationen ist. AMT kann keine Disjunktion
+  ausdrücken, also steht `q` für eine. Daraus folgt auch D-19: „irgendeine
+  Relation" schließt Gleichheit ein, `q` kann nicht selbstdisjunkt sein.
+- **Die Kompositionstafel ist an drei Stellen falsch** (S6, D-20). Zu melden
+  ist beides zusammen: die drei vertauschten Zeilen und die
+  `SelfDisjointAxiom` über `e` und `q`. Wer den Block anfasst, sollte beides in
+  einem Zug tun, weil ein Teilfix die Verletzungen nur verschiebt.
 - `Timeline.writeTimeline` und `Graph.writeGraph` schreiben nach `../timeline/`
   und `../graph/`, `AlligatorAPI.loadCAgetRDF` nach
   `/opt/tomcat/webapps/alligator-files/`. Alle drei sind tote Pfade aus der

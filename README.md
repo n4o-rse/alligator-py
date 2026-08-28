@@ -13,10 +13,11 @@ reasons over it.
 > (step S1); the timeline, the graph, both matrices, the Cypher file and the
 > figures follow (step S2); and so do the two Turtle outputs, the Alligator
 > graph and the Academic Meta Tool file (step S3). All seven are checked
-> against the reference outputs of the Java tool. Still missing are the static
-> web page (S4), the correspondence analysis that writes an `*.agt` (S5) and
-> the AMT.engine binding (S6); those three phases point at the step of the work
-> plan that implements them. See [`PRIMER.md`](PRIMER.md).
+> against the reference outputs of the Java tool. The `amt` phase hands the
+> last of them to AMT.engine and closes the Alpaka chain (step S6). Still
+> missing are the static web page (S4) and the correspondence analysis that
+> writes an `*.agt` (S5); those two phases point at the step of the work plan
+> that implements them. See [`PRIMER.md`](PRIMER.md).
 
 ## What it does
 
@@ -43,7 +44,8 @@ coordinates and a date range per event, the tool
 alligator-py/
 ├── data/<dataset>/          input: counts.csv, dates.csv, <dataset>.agt
 ├── output/<dataset>/        generated results (version-controlled)
-│   └── img/                 the same views as SVG and 300 dpi JPEG
+│   ├── img/                 the same views as SVG and 300 dpi JPEG
+│   └── amt/                 AMT.engine output (reproduced, not archived)
 ├── docs/                    static GitHub Pages site (generated)
 ├── py/
 │   ├── main.py              single entry point
@@ -57,6 +59,7 @@ alligator-py/
 │   │   └── vocab/           static ontology assets
 │   ├── ca/ca.py             correspondence analysis
 │   ├── wd_repro.py          byte-reproducible matplotlib (shared, verbatim)
+│   ├── amt_phase.py         runs AMT.engine over the AMT Turtle
 │   └── build_docs.py        assembles docs/ from output/
 ├── tests/
 │   └── reference/           golden files from the Java tool, two datasets
@@ -108,11 +111,13 @@ Each phase runs on its own as well:
 python py/main.py ca         --dataset romanempire
 python py/main.py alligator  --dataset romanempire
 python py/main.py docs
+python py/main.py amt        --dataset romanempire
 ```
 
 Useful flags: `--verbose`, `--strict`, `--dataset NAME`, `--out DIR`. The
 `alligator` phase additionally takes `--floating-value`, `--dimensions`,
-`--formats`, `--dpi`, `--max-neighbour-distance` and `--random-ids`.
+`--formats`, `--dpi`, `--max-neighbour-distance` and `--random-ids`. `all`
+takes `--with-amt`.
 
 ### Outputs
 
@@ -129,6 +134,43 @@ Useful flags: `--verbose`, `--strict`, `--dataset NAME`, `--out DIR`. The
 `--formats` takes any comma-separated subset of `timeline,graph,matrix,cypher,`
 `img,ttl,amt`. The figures are an addition to the interactive page, not a
 replacement for it: the page of step S4 stays vis.js and reads the JSON.
+
+### The AMT phase
+
+`<ds>_amt.ttl` is written for the [Academic Meta
+Tool](https://github.com/n4o-rse/amt-engine), and the `amt` phase is what
+actually sends it there. The engine is an optional dependency, so it is not
+installed by default:
+
+```bash
+pip install -e ".[amt]"
+python py/main.py amt --dataset romanempire
+```
+
+The engine validates the file against its SHACL shapes, checks the graph for
+consistency, applies the Allen composition table as fuzzy role chains and
+exports the reasoned graph six ways into `output/<ds>/amt/`: `*.reasoned.ttl`,
+`*.cypher`, `*.nodes.csv`, `*.edges.csv`, an interactive `*.html` and a
+Markdown run report. On `romanempire` the 68 asserted relations become 138.
+
+Two things are worth knowing before reading the output.
+
+**The consistency check fails, and that is not about this file.** The engine
+reports 14 self-loops on `romanempire` and 18 on `potterlimes`. Every one of
+them is derived, none is asserted, and the Allen axiom block we copy from the
+Java implementation both derives them and forbids them: `e ∘ e → e` closes into
+a loop because the file carries equality in both directions, and three rows of
+the composition table (`s ∘ e → si`, `d ∘ e → di`, `f ∘ e → fi`) yield the
+inverse role where composing with equals must yield the identity. The phase
+reports self-loops as a warning and fails on a `DisjointAxiom` violation, which
+would be a claim about two different events and so about the data. See
+`PRIMER.md`, D-19 and D-20.
+
+**The engine's output is not version-controlled.** It is reproduced by the
+command above, not archived, because the engine loads its axioms out of a set
+and the order of the `amt:provenance` lists therefore follows string hashing.
+The phase pins `PYTHONHASHSEED=0`, which makes a rerun byte-identical on one
+machine but not across Python versions. See `PRIMER.md`, D-18.
 
 ## The AGT format
 

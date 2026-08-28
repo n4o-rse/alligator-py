@@ -10,5 +10,12 @@ pandas==2.2.3
 matplotlib==3.10.8
 pillow==12.1.1
 
-# Optional extra [amt] — only needed for the amt phase (step S6):
-# pyshacl==0.29.0
+# Optional extra [amt] — the AMT.engine binding of step S6. Deliberately not
+# listed here: it is a git dependency pinned to a commit, and a pin like that
+# belongs in pyproject.toml rather than in a file of version numbers. Install
+# it on top of this one with
+#
+#     pip install -e ".[amt]"
+#
+# which brings the engine and its own three dependencies (rdflib, pyshacl,
+# pyvis). Without it the pipeline is complete except for the amt phase.

@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "alligator-py"
 version = "0.1.0"
@@ -19,11 +23,24 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-amt = ["pyshacl>=0.29"]
+# AMT.engine, for the optional `amt` phase (step S6). Pinned to a commit
+# rather than a tag because the repository has none; re-pin when it releases.
+# The engine brings rdflib, pyshacl and pyvis itself.
+amt = [
+    "amt @ git+https://github.com/n4o-rse/amt-engine.git@968e80ea1e66a110276f4255625edec10dace49c",
+]
 dev = ["pytest>=8.0", "ruff>=0.6"]
 
 [project.urls]
 Repository = "https://github.com/n4o-rse/alligator-py"
+
+# Nothing here is importable as a library: the pipeline is run as
+# `python py/main.py`, and `py/` is put on the path at runtime. Without this,
+# setuptools' flat-layout discovery finds `py`, `data`, `output` and
+# `reference` and refuses to build -- which made `pip install -e ".[amt]"`,
+# the only way to get the optional extra, impossible.
+[tool.setuptools]
+packages = []
 
 [tool.ruff]
 line-length = 88

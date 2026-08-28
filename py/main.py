@@ -6,6 +6,7 @@ Run from the repository root:
     python py/main.py ca         --dataset romanempire
     python py/main.py alligator  --dataset romanempire
     python py/main.py docs
+    python py/main.py amt        --dataset romanempire
     python py/main.py all        --dataset romanempire
 
 Every phase is also runnable on its own; this script only orchestrates. See
@@ -72,8 +73,12 @@ def phase_docs(args: argparse.Namespace) -> list[Path]:
 
 def phase_amt(args: argparse.Namespace) -> list[Path]:
     """Hand the AMT Turtle file to AMT.engine for reasoning."""
-    raise NotImplementedError(
-        "The AMT phase is step S6 of the work plan. See PRIMER.md, part C."
+    from amt_phase import run
+
+    return run(
+        ttl=OUTPUT_DIR / args.dataset / f"{args.dataset}_amt.ttl",
+        out_dir=OUTPUT_DIR / args.dataset / "amt",
+        args=args,
     )
 
 
@@ -88,8 +93,9 @@ PHASES: dict[str, tuple[str, str, object]] = {
     "amt": ("AMT ttl -> AMT.engine (validate, reason, export)", "S6", phase_amt),
 }
 
-# Order used by `all`. The AMT phase is opt-in: it clones a foreign repository
-# on first use, which does not belong in a default run.
+# Order used by `all`. The AMT phase is opt-in, because it needs an optional
+# dependency that a plain `pip install -r requirements.txt` does not bring:
+# `all` runs it only when `--with-amt` is given.
 DEFAULT_ORDER = ["ca", "alligator", "docs"]
 
 
@@ -113,6 +119,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--verbose", action="store_true", help="debug-level logging")
     parser.add_argument(
         "--strict", action="store_true", help="turn warnings into errors and stop"
+    )
+    parser.add_argument(
+        "--with-amt",
+        action="store_true",
+        help="let 'all' run the amt phase too; needs the optional [amt] extra",
     )
 
     group = parser.add_argument_group("alligator phase")
@@ -194,6 +205,8 @@ def main(argv: list[str] | None = None) -> int:
         globals()["OUTPUT_DIR"] = args.out
 
     order = DEFAULT_ORDER if args.phase == "all" else [args.phase]
+    if args.phase == "all" and args.with_amt:
+        order = [*order, "amt"]
     failures = 0
 
     for number, key in enumerate(order, start=1):
@@ -208,8 +221,16 @@ def main(argv: list[str] | None = None) -> int:
             if args.strict:
                 return 1
             continue
-        except Exception:
-            LOG.exception("phase %s failed", key)
+        except Exception as error:
+            # An AlligatorError is a diagnosis the code made on purpose -- a
+            # missing input, an unusable option, a failed dependency. Printing
+            # a traceback over it hides the sentence the user needs to read.
+            from alligator.core import AlligatorError
+
+            if isinstance(error, AlligatorError):
+                LOG.error("%s", error)
+            else:
+                LOG.exception("phase %s failed", key)
             return 1
         elapsed = time.perf_counter() - started
         for path in written:
