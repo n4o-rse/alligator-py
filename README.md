@@ -8,9 +8,12 @@ Part of the **Alpaka** framework: alligator builds the graph of Allen interval
 relations, the [Academic Meta Tool](https://github.com/n4o-rse/amt-engine)
 reasons over it.
 
-> **Status: skeleton.** Only the pipeline scaffolding exists so far. Every
-> phase raises `NotImplementedError` and points at the step of the work plan
-> that implements it. See [`PRIMER.md`](PRIMER.md).
+> **Status: the core calculates, nothing is written yet.** Parsing, the CA
+> distance model, the dating of floating ends and the Allen relations are in
+> place and checked against the reference outputs of the Java tool (step S1).
+> The six output writers are steps S2 and S3, so the `alligator` phase still
+> ends in `NotImplementedError`. Every phase points at the step of the work
+> plan that implements it. See [`PRIMER.md`](PRIMER.md).
 
 ## What it does
 

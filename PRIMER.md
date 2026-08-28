@@ -144,6 +144,11 @@ darauf läuft.
 | Ziel der CA-Phase | dem ADP-Ergebnis nahekommen, nicht es byte-genau nachbilden. Ein eigenständiges Skript mit Parametern auf der Kommandozeile | 2026-08-28 |
 | Golden Files | `tests/reference/`, aus <https://tools.leiza.de/alligator/> gezogen. Vergleich **namensbasiert**, nicht ID-basiert | 2026-08-28 |
 | Lizenz | MIT, Fortschreibung von Florian Thiery / LEIZA | 2026-08-28 |
+| Grundlage der IDs | die **Rohzeichenkette** der AGT-Zeile, nach Abschneiden der Randleerzeichen. `0.0810` und `0.081` bleiben unterscheidbar; die Spaltenausrichtung der CA-Ausgabe wirkt nicht auf die ID. Spalte 7 und die Zeilennummer gehen nicht ein | 2026-08-28 |
+| Datumsvergleich | **exakt**, wie Java. Ein nicht ganzzahliges Datum ist eine Warnung, kein Fehler | 2026-08-28 |
+| Spalte 7 gegen den Floating-Wert | Widerspruch ist eine Warnung; unter `--strict` bricht der Lauf ab. Entschieden wird in jedem Fall nach dem Floating-Wert (A7) | 2026-08-28 |
+| Umgedrehte Intervalle | `b < a` nach der Datierung wird **nicht** in den Zustand geschrieben. `a` und `b` bleiben stehen, `start`, `end` und `reversed` sind abgeleitete Eigenschaften — siehe A8/D-05 | 2026-08-28 |
+| `--random-ids` | stellt die *Eigenschaft* des Java-Verhaltens wieder her (IDs, die zwischen zwei Läufen wechseln), nicht dessen Hashid-Algorithmus. Für A/B-Vergleiche reicht das, byte-gleich wird ein Zufallslauf ohnehin nie | 2026-08-28 |
 
 ## A5. Wie der Stand in den Chat kommt
 
@@ -243,11 +248,11 @@ Jede beabsichtigte Abweichung steht hier. Alle Befunde sind an
 
 | ID | Java | alligator-py | Warum |
 |---|---|---|---|
-| D-01 | pro Ereignis ein Hashid aus einer frischen Zufalls-UUID | deterministische ID aus dem Zeileninhalt | In `v1/` trägt **jede der sechs Dateien andere IDs**, weil jede aus einem eigenen API-Aufruf stammt. Ergebnisse sind so weder vergleichbar noch versionierbar |
+| D-01 | pro Ereignis ein Hashid aus einer frischen Zufalls-UUID | deterministische ID aus dem Zeileninhalt | In `v1/` trägt **jede der sechs Dateien andere IDs**, weil jede aus einem eigenen API-Aufruf stammt. Ergebnisse sind so weder vergleichbar noch versionierbar. `--random-ids` bringt zufällige IDs zurück, aber nicht die Hashid-Bibliothek |
 | D-02 | `Cypher` baut die Relationsnamen mit einer Kette von `replace()` | Dictionary | Belegt in `alligator_re_results_cypther.cql`: dort stehen `DURINGi`, `MEETSi`, `OVERLAPSi` statt `CONTAINS`, `MET_BY`, `OVERLAPPED_BY`. `di` wurde zu `DURING`+`i`, weil `d` zuerst ersetzt wird. Betrifft `mi`, `oi`, `si`, `fi`, `di` |
 | D-03 | Startwert der Minimalsuche ist `200.0`; findet sich kein Nachbar, folgt eine `NullPointerException` | `--max-neighbour-distance`, Vorgabe `200.0`, sonst klarer Fehler | undokumentierte magische Zahl, unbrauchbarer Abbruch |
 | D-04 | `String.valueOf(x) != "null"` filtert leere Relationen | expliziter `is None`-Test | funktioniert in Java nur über String-Interning |
-| D-05 | `b < a` nach der Datierung → `a` und `b` werden stillschweigend getauscht, Eintrag wird rot | gleiches Ergebnis, zusätzlich eine Warnung | Ergebnis erhalten, Problem sichtbar machen |
+| D-05 | `b < a` nach der Datierung → `Timeline.writeTimeline` tauscht `a` und `b` **im Ereignisobjekt**, Eintrag wird rot | `a` und `b` bleiben, wie sie berechnet wurden; `start`, `end` und `reversed` leiten das Getauschte ab, dazu eine Warnung | Gleiches Ergebnis in der Timeline, aber kein Schreiber verändert mehr den Zustand, den die anderen fünf lesen (A3). In Java hängt es an der Aufrufreihenfolge, ob ein Format das getauschte Intervall sieht |
 | D-06 | alle RDF-Literale sind untypisierte Strings (`amt:weight "0.99"`) | typisierte Literale (`"0.99"^^xsd:decimal`) | AMT.engine schreibt und erwartet `xsd:decimal`; ihre SHACL-Shapes prüfen darauf. Untypisierte Zahlen sind für SPARQL ohnehin unbrauchbar |
 | D-07 | die Relations-IRI wird ohne spitze Klammern in den String geschrieben und danach per `replace()` zu `time:…` repariert | echte IRIs über rdflib | das Zwischenergebnis war kein gültiges Turtle |
 | D-08 | `/amtrepo` lädt per curl in ein RDF4J-Repository | entfällt | ausserhalb des Umfangs |
@@ -270,8 +275,8 @@ also ausdrücklich ausnehmen.
 
 | ID | Schritt | hängt ab von | Status |
 |---|---|---|---|
-| S0 | Festlegungen, Repo-Skelett, kein Algorithmus | — | offen |
-| S1 | Kern: AGT-Parser, Modell, Allen-Algebra, IDs | S0 | offen |
+| S0 | Festlegungen, Repo-Skelett, kein Algorithmus | — | **erledigt** 2026-08-28 |
+| S1 | Kern: AGT-Parser, Modell, Allen-Algebra, IDs | S0 | **erledigt** 2026-08-28 |
 | S2 | Ausgaben: Timeline, Graph, Matrizen, Cypher | S1 | offen |
 | S3 | RDF-Ausgaben: Alligator-TTL und AMT-TTL | S1, S2 | offen |
 | S4 | GitHub Pages | S2 | offen |
@@ -365,10 +370,10 @@ Jedes Modul bleibt einzeln lauffähig; `main.py` orchestriert nur.
   kein haltbarer Namensraum.
 - **Ort der Ereignisknoten in der AMT-Ausgabe** — `rgzm:` beibehalten oder
   trennen (A6)?
-- **Vergleich mit Float-Toleranz oder exakt?** Java vergleicht exakt. Alle
-  Werte in den Testdaten sind ganze Jahre. Vorschlag: exakt, plus Warnung bei
-  nicht ganzzahligen Daten.
-- **Spalte 7 gegen den Floating-Wert:** warnen, oder unter `--strict` abbrechen?
+- ~~**Vergleich mit Float-Toleranz oder exakt?**~~ exakt, plus Warnung bei
+  nicht ganzzahligen Daten — entschieden in S1, siehe A4.
+- ~~**Spalte 7 gegen den Floating-Wert:**~~ Warnung, unter `--strict` Abbruch —
+  entschieden in S1, siehe A4.
 
 ## S1 — Kern
 
@@ -383,6 +388,13 @@ Tests.
 **Fertig, wenn:** `romanempire.agt` dieselben virtuellen Jahre und dieselbe
 Allen-Matrix liefert wie `v1/alligator_re_results_allenmatrix.json` — bei
 namensbasiertem Vergleich, nicht ID-basiert.
+
+**Erledigt am 2026-08-28.** `calculate()` nimmt eine geparste AGT-Datei und
+liefert ein `Result`; Dateien sieht der Kern nicht (A3). Geprüft wird gegen alle
+drei Golden Files von `romanempire`: Allen-Matrix ohne Hauptdiagonale (D-13),
+Distanzmatrix auf vier Nachkommastellen nach Komma-zu-Punkt (D-10), virtuelle
+Jahre samt Nachbarnamen und Punktereignissen aus der Timeline. `potterlimes`
+deckt die gewichteten Achsen und den gemischten Fall `120 … 9999` ab. 91 Tests.
 
 ### Das Distanzmodell
 
@@ -457,7 +469,12 @@ bis das erfüllt ist.
 
 Gehasht wird die **Rohzeichenkette wie in der Datei**, nicht der geparste Float:
 so dokumentiert die ID die Eingabe wörtlich, und `0.0810` und `0.081` sind
-unterscheidbar. **[OFFEN]** ob das gewollt ist oder eher stört.
+unterscheidbar. Randleerzeichen fallen vorher weg, sonst entschiede die
+Spaltenausrichtung der CA-Ausgabe über die ID. Spalte 7 geht nicht ein, weil
+über das Floaten der Metadatenblock entscheidet und nicht diese Spalte; die
+Zeilennummer auch nicht, damit Umsortieren die IDs nicht neu vergibt.
+Beschlossen in S1, siehe A4. Der Preis: schreibt die CA-Phase dieselben
+Koordinaten später mit anderer Nachkommastellenzahl, wechseln alle IDs.
 
 **Achtung beim Vergleich mit `v1/`:** dort hat jede der sechs Dateien eigene
 IDs. Golden-File-Tests müssen über `rdfs:label` beziehungsweise `content`
