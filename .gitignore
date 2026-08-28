@@ -26,3 +26,5 @@ output/*/amt/
 # data/ and output/ are part of the reproducible archive and are NOT ignored.
 # That only works because identical inputs give byte-identical outputs; see
 # PRIMER.md, part A3.
+PATCH-README.md
+*.zip
