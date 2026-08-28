@@ -33,6 +33,17 @@ writes untyped weight literals where AMT.engine expects `xsd:decimal` (D-06).
 | `romanempire.ttl` | `/turtle` |
 | `romanempire_amt.ttl` | `/amt` |
 
-**To do before step S1 is closed:** pull all seven outputs again in one
-session, from one input file, and record which version of the service produced
-them. Until then these files are indicative, not authoritative.
+## To do before step S1 is closed
+
+Pull all seven outputs again from <https://tools.leiza.de/alligator/> in one
+session, from one input file, and record the provenance here:
+
+- **Date** the files were pulled.
+- **Service version** — `GET /` on the API returns the Maven coordinates from
+  `POM.getInfo()`; paste them verbatim.
+- **Input file** — which AGT was posted, and its SHA-256, so the pair can be
+  checked later.
+
+Until that is recorded, these files are indicative, not authoritative: they come
+from six separate calls at an unknown state of the service, which is why the
+identifiers differ between them.

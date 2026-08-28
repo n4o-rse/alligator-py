@@ -1,0 +1,8 @@
+# Development and test tooling. Install on top of requirements.txt:
+#
+#     pip install -r requirements.txt -r requirements-dev.txt
+#
+# Kept separate so that a plain run of the pipeline does not pull in a test
+# runner. The same list is available as the [dev] extra in pyproject.toml.
+pytest==8.3.4
+ruff==0.8.4

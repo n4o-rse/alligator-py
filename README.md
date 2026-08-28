@@ -50,12 +50,15 @@ alligator-py/
 │   └── build_docs.py        assembles docs/ from output/
 ├── tests/
 │   └── reference/           golden files from the Java tool
+├── reference/
+│   └── alligator-java/      the Java sources, vendored for reference only
 ├── CITATION.cff
 ├── LICENSE
 ├── PRIMER.md                design decisions and work plan
 ├── README.md
 ├── pyproject.toml
-└── requirements.txt
+├── requirements.txt         what the pipeline needs
+└── requirements-dev.txt     what the tests need
 ```
 
 ## How to run
@@ -74,6 +77,19 @@ pip install -r requirements.txt
 
 python py/main.py --list
 python py/main.py all --dataset romanempire
+```
+
+Note the `-r`: `pip install requirements.txt` looks for a package of that name
+and fails.
+
+### Tests
+
+The test runner is not needed to run the pipeline, so it lives in a separate
+file:
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest -q
 ```
 
 Each phase runs on its own as well:

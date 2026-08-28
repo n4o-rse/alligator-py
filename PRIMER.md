@@ -4,9 +4,10 @@ Arbeitsplan für die Portierung des Java-Werkzeugs `alligator` (Allen
 Transformer) nach Python, als Teil des Alpaka-Frameworks aus Alligator und
 Academic Meta Tool.
 
-**Ort.** <https://github.com/leiza-rse/alligator-py/blob/main/PRIMER.md>
+**Ort.** <https://github.com/n4o-rse/alligator-py/blob/main/PRIMER.md>
 
-**So wird es benutzt.** Es wird in jedem Chat vollständig hochgeladen. Danach
+**So wird es benutzt.** Es wird in jedem Chat vollständig hochgeladen (oder aus
+dem öffentlichen Repo gelesen, siehe A5). Danach
 genügt ein Satz: „Wir machen S2." Teil A gilt immer, Teil B ist die Übersicht,
 Teil C beschreibt den einzelnen Schritt. Die Statusspalte in Teil B und die
 Beschlusslage in A4 werden nach jedem Chat nachgeführt, damit spätere Chats den
@@ -29,6 +30,13 @@ aktuellen Stand sehen.
 
 **Das laufende Java-Werkzeug** steht unter <https://tools.leiza.de/alligator/>.
 Es ist die Referenz, gegen die portiert wird, und die Quelle der Golden Files.
+Sein Quelltext liegt seit dem 2026-08-28 unter `reference/alligator-java/` im
+Repo; nachzuschlagen ist also nichts mehr hochzuladen.
+
+**Der Ort.** alligator-py liegt unter `n4o-rse`, also in derselben Organisation
+wie `amt-engine` und `amt-runner`. Die drei Alpaka-Bausteine sind damit
+benachbart; die Vorläufer `alligator`, `alligator-app` und `alligator-ca`
+bleiben unter `leiza-rse`.
 
 **Die AMT-Seite ist bereits Python.** Das ist die wichtigste Änderung der
 Ausgangslage gegenüber der Zeit, in der der Java-Alligator entstand:
@@ -123,7 +131,7 @@ darauf läuft.
 | RDF-Erzeugung | **`rdflib`**, keine String-Verkettung | 2026-08-28 |
 | Basis-URI der Ontologie | `http://archaeology.link/ontology#` (Triceratops Edition). Die beiden abweichenden URIs im Java-Code werden aufgegeben | 2026-08-28 |
 | Python-Version | ≥ 3.10 | 2026-08-28 |
-| Abhängigkeiten | `rdflib`, `numpy`, `pandas`; `pyshacl` nur im optionalen Extra `[amt]` | 2026-08-28 |
+| Abhängigkeiten | `rdflib`, `numpy`, `pandas` in `requirements.txt`; `pytest` und `ruff` in `requirements-dev.txt`; `pyshacl` nur im optionalen Extra `[amt]`. Ein reiner Pipelinelauf zieht keinen Testrunner nach | 2026-08-28 |
 | AMT-Ausgabe | zielt auf **AMT.engine**, nicht auf den Java-Block: Gewichte als `xsd:decimal`, Validierung gegen `amt-shapes.ttl` | 2026-08-28 |
 | AMT-Vokabular in der Ausgabe | nein. Die Engine lädt `ontology/amt.ttl` selbst; wir schreiben nur die Allen-Rollen und -Axiome | 2026-08-28 |
 | Ort der Allen-Axiome | statische Datei `py/alligator/vocab/amt_allen_axioms.ttl`, aus dem Java-Block extrahiert | 2026-08-28 |
@@ -137,30 +145,35 @@ darauf läuft.
 | Golden Files | `tests/reference/`, aus <https://tools.leiza.de/alligator/> gezogen. Vergleich **namensbasiert**, nicht ID-basiert | 2026-08-28 |
 | Lizenz | MIT, Fortschreibung von Florian Thiery / LEIZA | 2026-08-28 |
 
-## A5. Was in welchem Chat hochgeladen wird
+## A5. Wie der Stand in den Chat kommt
 
 Die Zeile **Uploads** bei jedem Schritt in Teil C nennt, was zusätzlich gebraucht
-wird. Grundregel: lieber das Bundle als einzelne Dateien.
+wird. Für den Regelfall gilt: **gar nichts.**
 
-**Das alligator-py-Bundle.** Solange das Repo klein ist, genügt ein ZIP des
-ganzen Arbeitsbaums ohne `.git`, `.venv` und `__pycache__`:
+**Das Repo ist öffentlich.** <https://github.com/n4o-rse/alligator-py> lässt sich
+im Chat direkt klonen; ein Upload ist nur nötig, wenn ungepushte Arbeit im Spiel
+ist. Der Satz „Wir machen S1" genügt also, sofern der Stand auf `main` liegt.
 
-Jeder Befehl steht auf **einer** Zeile — keine Fortsetzungszeichen.
+Was das mitbringt und damit nie mehr hochgeladen werden muss: der Java-Quelltext
+unter `reference/alligator-java/`, die Testdaten unter `data/`, die Golden Files
+unter `tests/reference/` und dieser PRIMER.
+
+**Wenn doch ein Bundle gebraucht wird** — ungepushte Änderungen, oder GitHub ist
+gerade nicht erreichbar. Ein Befehl, **eine** Zeile; `&` statt `&&`, weil
+robocopy bei Erfolg Exitcode 1 liefert und `&&` daran abbräche:
 
 ```cmd
-cd /d C:\git
-robocopy alligator-py bundle\alligator-py /E /XD .git .venv __pycache__ .pytest_cache
-powershell -NoProfile -Command "Compress-Archive -Path 'bundle\alligator-py' -DestinationPath 'alligator-py_bundle.zip' -Force"
+cd /d C:\git & rmdir /s /q bundle 2>nul & robocopy alligator-py bundle\alligator-py /E /MAX:2000000 /NFL /NDL /XD .git .venv __pycache__ .pytest_cache vendor & powershell -NoProfile -Command "Compress-Archive -Path 'bundle\alligator-py' -DestinationPath 'alligator-py_bundle.zip' -Force"
 ```
 
-Robocopy meldet Exitcode 1 bei Erfolg.
+Ergebnis: `C:\git\alligator-py_bundle.zip`, derzeit rund 700 KB. `/XD vendor`
+greift erst ab S4, wenn `docs/vendor/` mit vis.js und den Cairo-Fonts dazukommt.
 
-**Dauerhaft mitzuschicken, solange sie nicht im Repo liegen:** die Java-Quellen
-(`alligator.zip`), `v1.zip` mit den sechs Referenzausgaben, `romanempire.agt`.
-Ab S1 liegen Testdaten und Golden Files im Repo und kommen mit dem Bundle.
-
-**Nicht hochladen:** `.venv/`, `.git/`, das `docs/`-Vendor-Verzeichnis nach dem
-ersten Mal (Fonts und `vis.js` sind gross und ändern sich nie).
+**Rückweg.** Änderungen aus dem Chat kommen als Patch-ZIP zurück: nur neue und
+geänderte Dateien, in der Ordnerstruktur des Repos, mit einer `PATCH-README.md`
+an der Wurzel. Über dem Repo-Wurzelverzeichnis entpacken, die dort genannten
+Befehle laufen lassen, `git status` prüfen, committen. Erzeugte Dateien reisen
+nicht mit — sie werden vor Ort neu gebaut.
 
 ## A6. IRI-Landkarte
 
@@ -279,7 +292,7 @@ Algorithmus. S6 setzt S3 voraus, weil die Engine unsere AMT-Datei liest.
 **Ziel:** die Entscheidungen treffen, die später teuer werden, und ein Repo, in
 dem ab S1 nur noch Logik dazukommt.
 
-**Uploads:** keine über A5 hinaus.
+**Uploads:** keine.
 
 **Ergebnis:** Verzeichnisbaum, `pyproject.toml`, `requirements.txt`, `LICENSE`,
 `.gitignore`, `.gitattributes`, `py/main.py` als leerer Orchestrator, dieser
@@ -321,6 +334,8 @@ alligator-py/
 │   │   └── vocab/                 alligator.ttl, amt_allen_axioms.ttl
 │   ├── ca/ca.py                   Korrespondenzanalyse
 │   └── build_docs.py
+├── reference/
+│   └── alligator-java/            der Java-Quelltext, unverändert, nur zum Nachschlagen
 ├── tests/
 │   ├── reference/                 Golden Files aus dem Java-Werkzeug
 │   └── test_*.py
@@ -360,7 +375,7 @@ Jedes Modul bleibt einzeln lauffähig; `main.py` orchestriert nur.
 **Ziel:** aus einem AGT-File die vollständig datierten Intervalle und ihre
 Allen-Relationen, ohne jede Ausgabeformatierung.
 
-**Uploads:** Bundle; `alligator.zip`, falls noch nicht im Repo gespiegelt.
+**Uploads:** keine — `reference/alligator-java/` liegt im Repo.
 
 **Ergebnis:** `agt.py`, `model.py`, `allen.py`, `ids.py`, `core.py` und ihre
 Tests.
@@ -452,7 +467,7 @@ verknüpfen.
 
 **Ziel:** Timeline, Graph, beide Matrizen und Cypher.
 
-**Uploads:** Bundle; `v1.zip`, falls noch nicht in `tests/reference/`.
+**Uploads:** keine — die Golden Files liegen unter `tests/reference/`.
 
 **Ergebnis:** `py/alligator/outputs/{timeline,graph,matrix,cypher}.py`.
 
@@ -483,8 +498,7 @@ stillschweigend gelockerten Vergleich.
 
 **Ziel:** die beiden Turtle-Ausgaben, gebaut mit rdflib und byte-stabil.
 
-**Uploads:** Bundle; `alligator/ontology/alligator.ttl`;
-`v1/alligator_re_results_amt.ttl` und `…_rdf.ttl`.
+**Uploads:** keine — Vokabular und Golden Files liegen im Repo.
 
 **Ergebnis:** `outputs/rdf.py`, `outputs/amt.py`,
 `vocab/amt_allen_axioms.ttl`, `vocab/alligator.ttl`.
@@ -542,7 +556,7 @@ nötig ist — an der ersten realen Datei messen, nicht raten.
 **Ziel:** die Timeline und die übrigen Ansichten laufen ohne Server aus den
 erzeugten Dateien.
 
-**Uploads:** Bundle; `alligator-app.zip`.
+**Uploads:** `alligator-app.zip` — die Front-End-Dateien liegen noch nicht im Repo.
 
 **Ergebnis:** `docs/` und `py/build_docs.py`.
 
@@ -573,7 +587,7 @@ Vorschlag: nein — die Seite ist ein Betrachter für abgelegte Ergebnisse.
 **Ziel:** ein eigenständiges Python-Skript, das aus einer Zähltabelle und einer
 Datumsliste ein AGT-File erzeugt und dabei dem Ergebnis der ADP-Seite nahekommt.
 
-**Uploads:** Bundle; `alligator-ca.zip`.
+**Uploads:** `alligator-ca.zip` — das R-Skript liegt noch nicht im Repo.
 
 **Ergebnis:** `py/ca/ca.py`, die Phase `ca` in `main.py`, Testdaten unter
 `data/<dataset>/`.
@@ -740,7 +754,7 @@ benennt es: *„für sowas braucht man python."*
 **Ziel:** die erzeugte AMT-Datei tatsächlich durch AMT.engine schicken und die
 Alpaka-Kette einmal von Ende zu Ende zeigen.
 
-**Uploads:** Bundle.
+**Uploads:** keine.
 
 **Ergebnis:** eine Phase `amt` in `main.py`, das optionale Extra `[amt]`, ein
 Abschnitt im README.
@@ -823,7 +837,10 @@ Nicht einem Schritt zugeordnet, aber nicht zu vergessen:
   jemand wiederfinden konnte.
 - **Läuft der Java-Alligator noch, wenn wir ihn brauchen?** Die Golden Files
   hängen daran. Sobald sie einmal gezogen und im Repo sind, ist die Abhängigkeit
-  erledigt — das sollte früh geschehen, nicht in S7.
+  erledigt — das sollte früh geschehen, nicht in S7. Beim Neuziehen zu
+  protokollieren: Datum, die von `GET /` gemeldete Version aus `POM.getInfo()`,
+  und dass alle sieben Ausgaben aus **einer** Sitzung mit **einer**
+  Eingabedatei stammen. Beides gehört nach `tests/reference/README.md`.
 - `alligator-app` liest die AGT-Datei clientseitig mit `jquery.csv` und schickt
   sie unverändert weiter. Der Parser dort ist also gar keiner; falls die
   Pages-Seite je wieder Dateien annehmen soll, ist das eine offene Baustelle.
