@@ -1,0 +1,15 @@
+[
+	["", "fruehkaiserzeitlich", "2ndHalfFirstCentury", "Usurpator", "Galba", "Otho", "Vespasian", "Titus", "Domitian", "Nerva", "Trajan", "Vitellius", "DomitianConsulate2"],
+	["fruehkaiserzeitlich", "=", "di", "", "", "", "di", "di", "di", "di", "di", "", "di"],
+	["2ndHalfFirstCentury", "d", "=", "", "", "", "di", "di", "di", "di", "o", "", "di"],
+	["Usurpator", "", "", "=", "=", "=", "", "", "", "", "", "=", ""],
+	["Galba", "", "", "=", "=", "=", "", "", "", "", "", "=", ""],
+	["Otho", "", "", "=", "=", "=", "", "", "", "", "", "=", ""],
+	["Vespasian", "d", "d", "", "", "", "=", "m", "<", "<", "<", "", "<"],
+	["Titus", "d", "d", "", "", "", "mi", "=", "m", "<", "<", "", "m"],
+	["Domitian", "d", "d", "", "", "", ">", "mi", "=", "m", "<", "", "="],
+	["Nerva", "d", "d", "", "", "", ">", ">", "mi", "=", "m", "", "mi"],
+	["Trajan", "d", "oi", "", "", "", ">", ">", ">", "mi", "=", "", ">"],
+	["Vitellius", "", "", "=", "=", "=", "", "", "", "", "", "=", ""],
+	["DomitianConsulate2", "d", "d", "", "", "", ">", "mi", "=", "m", "<", "", "="]
+]

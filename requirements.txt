@@ -1,0 +1,8 @@
+# Pinned once the versions have actually been installed and run (PRIMER A3).
+# Core:
+rdflib==7.1.1
+numpy==2.1.3
+pandas==2.2.3
+
+# Optional extra [amt] — only needed for the amt phase (step S6):
+# pyshacl==0.29.0

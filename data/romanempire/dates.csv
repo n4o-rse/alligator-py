@@ -1,0 +1,13 @@
+name,from,to,fixed,method_f,method_t,certainty_f,certainty_t
+fruehkaiserzeitlich,1,150,fixed,9999,9999,9999,9999
+2ndHalfFirstCentury,50,100,fixed,9999,9999,9999,9999
+Usurpator,69,69,fixed,9999,9999,9999,9999
+Galba,69,69,fixed,9999,9999,9999,9999
+Otho,69	69,fixed,9999,9999,9999,9999
+Vespasian,69,79,fixed,9999,9999,9999,9999
+Titus,79,81,fixed,9999,9999,9999,9999
+Domitian,81,96,fixed,9999,9999,9999,9999
+Nerva,96,98,fixed,9999,9999,9999,9999
+Trajan,98,117,fixed,9999,9999,9999,9999
+Vitellius,69,69,fixed,9999,9999,9999,9999
+DomitianConsulate2,9999,9999,floating,9999,9999,9999,9999

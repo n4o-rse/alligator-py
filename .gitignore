@@ -1,0 +1,28 @@
+# --- Python ---
+**/__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+
+# --- Virtual environments ---
+.venv/
+venv/
+env/
+
+# --- Editors / OS ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- AMT.engine working files (step S6) ---
+.amt-cache/
+output/*/amt/
+
+# --- Note ---
+# data/ and output/ are part of the reproducible archive and are NOT ignored.
+# That only works because identical inputs give byte-identical outputs; see
+# PRIMER.md, part A3.

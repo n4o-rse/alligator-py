@@ -1,0 +1,15 @@
+name,from,to,fixed,method_f,method_t,certainty_f,certainty_t
+AlbLimes,97,260,fixed,9999,9999,9999,9999
+DonauLimesPhase1,30,70,fixed,9999,9999,9999,9999
+DonauLimesPhase2,70,260,fixed,9999,9999,9999,9999
+Elisabethenstrasse,74,104,fixed,9999,9999,9999,9999
+HadriansWall,9999,9999,floating,9999,9999,9999,9999
+Neckarlimes,117,260,fixed,9999,9999,9999,9999
+NoordzeeKust,120,9999,floating,9999,9999,9999,9999
+Wetteraulimes,110,260,fixed,9999,9999,9999,9999
+Odenwaldlimes,110,260,fixed,9999,9999,9999,9999
+RätischeLimes,110,260,fixed,9999,9999,9999,9999
+
+
+
+

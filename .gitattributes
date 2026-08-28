@@ -1,0 +1,9 @@
+# Generated text files are written with LF. Without this, Git rewrites line
+# endings on Windows checkout and byte-identity holds only locally.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.ttf binary
+*.woff binary
+*.woff2 binary
+*.eot binary

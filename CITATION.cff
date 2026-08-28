@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+title: "alligator-py: Allen Transformer"
+abstract: >-
+  Python port of the alligator Allen Transformer. Reads an Alligator file
+  (*.agt) holding correspondence-analysis coordinates and partly unknown
+  absolute dates, dates the floating intervals from their nearest fixed
+  neighbours in CA space, derives the Allen interval relations between all
+  events and exports them as RDF/Turtle, Academic Meta Tool Turtle, Neo4j
+  Cypher and interactive views.
+type: software
+authors:
+  - family-names: Thiery
+    given-names: Florian
+    orcid: "https://orcid.org/0000-0002-3246-3531"
+  - family-names: Mees
+    given-names: Allard W.
+    orcid: "https://orcid.org/0000-0002-7634-5342"
+license: MIT
+version: "0.1.0"
+date-released: "2026-08-28"  # TODO: confirm on release
+repository-code: "https://github.com/leiza-rse/alligator-py"
+# doi: "10.5281/zenodo.XXXXXXX"  # TODO: add Zenodo DOI once minted
+keywords:
+  - Linked Open Data
+  - Allen Interval Algebra
+  - Relative Chronology
+  - Correspondence Analysis
+references:
+  - type: software
+    title: "alligator - Allen Transformer"
+    abstract: "The Java implementation this repository is ported from."
+    authors:
+      - family-names: Thiery
+        given-names: Florian
+        orcid: "https://orcid.org/0000-0002-3246-3531"
+      - family-names: Mees
+        given-names: Allard W.
+        orcid: "https://orcid.org/0000-0002-7634-5342"
+    doi: "10.5281/zenodo.2540709"
+    repository-code: "https://github.com/leiza-rse/alligator"
+    license: MIT

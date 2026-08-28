@@ -1,0 +1,17 @@
+#9999
+#true
+#1.0|1.0|1.0
+#data
+name	x	y	z	von	bis	fixed
+fruehkaiserzeitlich	-0.2660	0.2530	0.0072	1	150	fixed
+2ndHalfFirstCentury	0.1235	-0.4078	-0.0481	50	100	fixed
+Usurpator	2.3415	0.5180	0.0610	69	69	fixed
+Galba	1.3550	0.3500	0.0580	69	69	fixed
+Otho	1.3550	0.3500	0.0580	69	69	fixed
+Vespasian	0.0810	-0.1420	-0.1450	69	79	fixed
+Titus	-0.1320	-0.2240	-0.1790	79	81	fixed
+Domitian	-0.1430	-0.2960	0.1180	81	96	fixed
+Nerva	-0.1320	-0.2240	-0.1790	96	98	fixed
+Trajan	-0.4230	0.5490	0.0170	98	117	fixed
+Vitellius	2.2780	0.1590	0.0560	69	69	fixed
+DomitianConsulate2	-0.2646	-0.8560	1.0336	9999	9999	floating
