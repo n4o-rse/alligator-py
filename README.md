@@ -8,14 +8,15 @@ Part of the **Alpaka** framework: alligator builds the graph of Allen interval
 relations, the [Academic Meta Tool](https://github.com/n4o-rse/amt-engine)
 reasons over it.
 
-> **Status: everything but the RDF is written.** Parsing, the CA distance
+> **Status: the `alligator` phase is complete.** Parsing, the CA distance
 > model, the dating of floating ends and the Allen relations are in place
-> (step S1), and so are the timeline, the graph, both matrices, the Cypher file
-> and the figures, all checked against the reference outputs of the Java tool
-> (step S2). The two Turtle outputs are step S3 and are still missing; asking
-> for them prints a warning and the rest is written anyway. Every phase points
-> at the step of the work plan that implements it. See
-> [`PRIMER.md`](PRIMER.md).
+> (step S1); the timeline, the graph, both matrices, the Cypher file and the
+> figures follow (step S2); and so do the two Turtle outputs, the Alligator
+> graph and the Academic Meta Tool file (step S3). All seven are checked
+> against the reference outputs of the Java tool. Still missing are the static
+> web page (S4), the correspondence analysis that writes an `*.agt` (S5) and
+> the AMT.engine binding (S6); those three phases point at the step of the work
+> plan that implements them. See [`PRIMER.md`](PRIMER.md).
 
 ## What it does
 
@@ -122,7 +123,8 @@ Useful flags: `--verbose`, `--strict`, `--dataset NAME`, `--out DIR`. The
 | Matrices | `<ds>_matrix_allen.*`, `<ds>_matrix_dist.*` | JSON for the web page, CSV for everything else |
 | Cypher | `<ds>.cypher` | `CREATE` / `MERGE` / `RETURN`, for Neo4j |
 | Figures | `img/<ds>_*.svg`, `img/<ds>_*.jpg` | the same four views, drawn with matplotlib in the palette shared with [`CAA2026-alligator`](https://github.com/leiza-scit/CAA2026-alligator) |
-| Turtle | `<ds>.ttl`, `<ds>_amt.ttl` | step S3, not written yet |
+| Turtle | `<ds>.ttl` | the events and their Allen relations, OWL-Time |
+| AMT | `<ds>_amt.ttl` | the same relations reified and weighted, for AMT.engine |
 
 `--formats` takes any comma-separated subset of `timeline,graph,matrix,cypher,`
 `img,ttl,amt`. The figures are an addition to the interactive page, not a
@@ -162,8 +164,11 @@ neither is an acceptance case for the `ca` phase. See `PRIMER.md`, part D.
 
 Identical inputs give byte-identical outputs, so `git status` stays clean after
 a second run and a diff always means something changed. This requires
-deterministic identifiers, deterministic ordering, sorted Turtle, fixed number
-formats, LF line endings and no timestamps in any generated file. The Java
+deterministic identifiers, deterministic ordering, deterministic blank node
+labels, fixed number formats, LF line endings and no timestamps in any
+generated file. Turtle is written by `outputs/turtle.py` rather than by
+`rdflib.Graph.serialize`, which draws blank node labels from a per-process
+counter and so writes a different file every time. The Java
 implementation satisfies none of these — the differences are registered in
 `PRIMER.md`, part A8.
 

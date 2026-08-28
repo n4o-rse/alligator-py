@@ -134,7 +134,11 @@ darauf läuft.
 | Abhängigkeiten | `rdflib`, `numpy`, `pandas`, `matplotlib`, `pillow` in `requirements.txt`; `pytest` und `ruff` in `requirements-dev.txt`; `pyshacl` nur im optionalen Extra `[amt]`. Ein reiner Pipelinelauf zieht keinen Testrunner nach. `pillow` ist eigens gepinnt: das SVG ist über Versionen hinweg byte-stabil, das JPEG nicht | 2026-08-28 |
 | AMT-Ausgabe | zielt auf **AMT.engine**, nicht auf den Java-Block: Gewichte als `xsd:decimal`, Validierung gegen `amt-shapes.ttl` | 2026-08-28 |
 | AMT-Vokabular in der Ausgabe | nein. Die Engine lädt `ontology/amt.ttl` selbst; wir schreiben nur die Allen-Rollen und -Axiome | 2026-08-28 |
-| Ort der Allen-Axiome | statische Datei `py/alligator/vocab/amt_allen_axioms.ttl`, aus dem Java-Block extrahiert | 2026-08-28 |
+| Ort der Allen-Axiome | statische Datei `py/alligator/vocab/amt_allen_axioms.ttl`, aus dem Java-Block extrahiert: 921 Tripel, 1 `amt:Concept`, 31 `amt:Role`, 28 `amt:InverseAxiom`, 126 `amt:RoleChainAxiom`, 31 `amt:SelfDisjointAxiom`, 6 `amt:DisjointAxiom`. Die Zahlen, die hier bis S3 standen, waren um eins bis zwei zu hoch: der Block steht **zweimal** in `AMTEvents.java` und wurde offenbar über beide Kopien gezählt. Beide sind identisch und stimmen tripelgenau mit dem Block in den Referenzdateien überein | 2026-08-28, korrigiert in S3 |
+| Namensraum der Ereignisse | `http://data.archaeology.link/data/ae/` — was das laufende Werkzeug heute schreibt, belegt in `potterlimes.ttl`. `http://example.net/event#` aus dem Java-Quelltext wird aufgegeben | 2026-08-28 |
+| Klasse eines Ereignisses | `alligator:Alligator_Event`, die einzige, die das Vokabular deklariert. `alligator:event` aus dem Java-String war nie erklärt — siehe A8/D-15 | 2026-08-28 |
+| Ereignisse in der AMT-Datei | unter `ae:`, nicht unter `rgzm:`. `rgzm:` trägt danach nur noch Vokabular, und die beiden Turtle-Dateien eines Laufs beschreiben dieselben IRIs — siehe A8/D-17 | 2026-08-28 |
+| Kanonisches Turtle | **eigener Schreiber**, `outputs/turtle.py`. Der Graph wird mit rdflib gebaut, das Byte-Layout kommt von uns: ein Tripel pro Zeile, Reihenfolge der AGT-Datei, deterministische Blank-Node-Labels. `rdflib.Graph.serialize` scheidet aus, gemessen — siehe S3 | 2026-08-28 |
 | Timeline auf GitHub Pages | statisch, liest `docs/data/<dataset>/*.json`. Kein Upload-Formular, kein API-Aufruf | 2026-08-28 |
 | Statische Abbildungen | **zusätzlich** zur interaktiven Seite, nicht statt ihrer: jede der vier Ansichten als SVG und als JPEG mit 300 dpi. Die Seite bleibt vis.js, die Bilder sind für Paper, Poster und Zenodo | 2026-08-28 |
 | Ort der Abbildungen | `output/<dataset>/img/`, Dateinamen mit demselben Stamm wie die Datendatei: `<ds>_graph.json` und `<ds>_graph.svg` sind dieselbe Sache zweimal | 2026-08-28 |
@@ -191,18 +195,28 @@ nicht mit — sie werden vor Ort neu gebaut.
 | Präfix | Namensraum | Rolle | Status |
 |---|---|---|---|
 | `alligator` | `http://archaeology.link/ontology#` | Klassen und Properties des Alligator-Vokabulars | beschlossen |
-| `ae` | `http://archaeology.link/event#` | Instanzdaten: die Ereignisse | **[OFFEN]**, Java nutzt `http://example.net/event#` |
+| `ae` | `http://data.archaeology.link/data/ae/` | Instanzdaten: die Ereignisse, in beiden Turtle-Dateien | beschlossen in S3 |
 | `time` | `http://www.w3.org/2006/time#` | die 13 Allen-Relationen | aktiv |
 | `amt` | `http://academic-meta-tool.xyz/vocab#` | AMT-Vokabular | aktiv, extern |
-| `rgzm` | `http://rgzm.de/datingmechanism#` | AMT-Rollen und -Axiome der Allen-Algebra | **[OFFEN]**, siehe unten |
+| `rgzm` | `http://rgzm.de/datingmechanism#` | AMT-Rollen und -Axiome der Allen-Algebra, **nur Vokabular** | beschlossen in S3 |
 | `rdf`, `rdfs`, `dc`, `xsd` | Standard | | aktiv |
 
-**Zu klären.** Der `rgzm:`-Namensraum trägt in der AMT-Ausgabe zwei
+**Geklärt in S3.** Der `rgzm:`-Namensraum trug in der Java-AMT-Ausgabe zwei
 verschiedene Dinge: die Ereignisknoten (`rgzm:jNEOv3`) und die Allen-Rollen
 (`rgzm:di`, `rgzm:mi`). Instanzdaten und Vokabular flach in einem Namensraum ist
-genau das Muster, das anderswo als Fehler geführt wird. Ein Umzug bräche
-allerdings die Kompatibilität mit bestehenden AMT-Dateien. Vorschlag: Rollen
-bleiben unter `rgzm:`, Ereignisse ziehen nach `ae:`; zu entscheiden in S3.
+genau das Muster, das anderswo als Fehler geführt wird. Umgesetzt wie
+vorgeschlagen: Rollen und Axiome bleiben unter `rgzm:`, die Ereignisse ziehen
+nach `ae:` (D-17). Die Kompatibilität mit AMT.engine hängt nicht daran — die
+Engine erreicht ein Ereignis über `amt:instanceOf rgzm:Event`, nie über die Form
+seiner IRI.
+
+**Ebenfalls geklärt.** Die beiden Golden Files widersprechen sich im
+`ae:`-Namensraum: `romanempire.ttl` trägt `http://example.net/event#`,
+`potterlimes.ttl` dagegen `http://data.archaeology.link/data/ae/` und
+`alligator:` bereits auf `archaeology.link`. Die zweite Datei ist die jüngere
+und zeigt, was der laufende Dienst heute schreibt; sie gilt. Der
+PRIMER-Vorschlag `http://archaeology.link/event#` war eine Vermutung und wird
+zurückgezogen.
 
 Die Java-Ausgabe schreibt in `alligator_re_results_rdf.ttl` den Präfix
 `alligator:` auf `http://rgzm.github.io/alligator/ontology#`, `RDFEvents.writeRDF`
@@ -267,6 +281,9 @@ Jede beabsichtigte Abweichung steht hier. Alle Befunde sind an
 | D-11 | der AMT-Ontologieblock wird bei jedem Aufruf neu in den String geschrieben | statische `.ttl`, per rdflib gemischt | 980 Zeilen Vokabular sind Daten. AMT.engine lädt `amt.ttl` ohnehin selbst |
 | D-12 | Blank Nodes der AMT-Reifikation sind Zufalls-Hashids (`_:p60nn4bO03`) | deterministische Labels aus Subjekt, Prädikat und Objekt | Folge von D-01 auf der Kantenebene |
 | D-13 | Selbstrelationen stehen in Matrix, Graph und Cypher (`MERGE (NK81Wo)-[:EQUALS]->(NK81Wo)`), in RDF und AMT nicht | **überall ausgeschlossen** | Dass ein Intervall sich selbst gleicht, ist keine Aussage über die Chronologie. Java ist an dieser Stelle uneinheitlich, weil die sechs Schreiber zwei verschiedene Datenstrukturen lesen: `calculateAllenSigns` filtert `thisEvent != loopEvent` nur für die RDF-Listen, während Matrix, Graph und Cypher die vollständige `allenRelations`-Map durchlaufen |
+| D-15 | die Alligator-Turtle typisiert jedes Ereignis als `alligator:event` | `alligator:Alligator_Event` | Die Klasse aus dem Java-String ist in **keiner** Fassung des Vokabulars deklariert — weder in der Triceratops Edition noch unter den beiden aufgegebenen URIs. Deklariert ist `:Alligator_Event rdfs:subClassOf time:Interval`. `a time:Interval` bleibt trotzdem ausdrücklich stehen, wie in der Referenz, damit ein Konsument ohne Reasoner es nicht verliert |
+| D-16 | `writeRDFasText` schreibt `nfsn`/`nfen`, aber nicht `nfsnE`/`nfenE` | beide Nachbar-IRIs werden geschrieben | Das Vokabular deklariert `nfsnE` und `nfenE` als Object Properties, und `RDFEvents.writeRDF` — die Dateivariante derselben Klasse — schreibt sie. Nur der Pfad, den das Webtool aufruft, lässt sie weg, weshalb sie in den Golden Files fehlen. Ein Name ist keine Referenz: zwei Ereignisse dürfen denselben tragen |
+| D-17 | die AMT-Datei legt Ereignisknoten (`rgzm:jNEOv3`) neben Rollen und Axiome (`rgzm:di`) in einen Namensraum | Ereignisse unter `ae:`, `rgzm:` nur noch Vokabular | Siehe A6. Nebenwirkung und eigentlicher Gewinn: Alligator-TTL und AMT-TTL eines Laufs benennen dieselben Ereignisse und lassen sich zu einem Graphen vereinigen. In Java war das ausgeschlossen, weil schon die IDs je Datei andere waren (D-01) |
 | D-14 | `Cypher` verkettet den Ereignisnamen ohne Maskierung in das Statement | einfache Anführungszeichen und Backslashes werden maskiert | Ein Name mit Apostroph erzeugt in Java eine Datei, die Neo4j nicht liest. Für jeden Namen, der vorher funktioniert hat, ändert sich nichts — eine Abweichung ist es trotzdem |
 
 **Folgen von D-13, gemessen an `romanempire`:** die Allen-Matrix behält ihre
@@ -285,7 +302,7 @@ also ausdrücklich ausnehmen.
 | S0 | Festlegungen, Repo-Skelett, kein Algorithmus | — | **erledigt** 2026-08-28 |
 | S1 | Kern: AGT-Parser, Modell, Allen-Algebra, IDs | S0 | **erledigt** 2026-08-28 |
 | S2 | Ausgaben: Timeline, Graph, Matrizen, Cypher, Abbildungen | S1 | **erledigt** 2026-08-28 |
-| S3 | RDF-Ausgaben: Alligator-TTL und AMT-TTL | S1, S2 | offen |
+| S3 | RDF-Ausgaben: Alligator-TTL und AMT-TTL | S1, S2 | **erledigt** 2026-08-28 |
 | S4 | GitHub Pages | S2 | offen |
 | S5 | CA-Phase: Zähltabelle → AGT | S1 | offen |
 | S6 | AMT-Anbindung: `amt-engine` als optionale Phase | S3 | offen |
@@ -578,59 +595,81 @@ Achsen. 139 Tests.
 ## S3 — RDF
 
 **Ziel:** die beiden Turtle-Ausgaben, gebaut mit rdflib und byte-stabil.
+**Erledigt** am 2026-08-28.
 
-**Uploads:** keine — Vokabular und Golden Files liegen im Repo.
+**Ergebnis:** `outputs/turtle.py`, `outputs/rdf.py`, `outputs/amt.py`,
+`vocab/amt_allen_axioms.ttl`, `tests/test_rdf.py`.
 
-**Ergebnis:** `outputs/rdf.py`, `outputs/amt.py`,
-`vocab/amt_allen_axioms.ttl`, `vocab/alligator.ttl`.
-
-**Fertig, wenn:** beide Dateien dieselben Tripel tragen wie die Referenz
-(namensbasiert verglichen, typisierte Literale ausgenommen), die AMT-Datei die
-SHACL-Prüfung von AMT.engine besteht und zwei Läufe byte-identisch sind.
+**Fertig, weil:** beide Dateien dieselben Tripel tragen wie die Referenz —
+namensbasiert verglichen, jede Abweichung als benannte Tabelle in
+`tests/test_rdf.py` —, die AMT-Datei die 921 Tripel der Allen-Axiome trägt und
+drei Läufe in drei Prozessen byte-identisch sind. Was **nicht** geprüft ist: die
+SHACL-Validierung durch AMT.engine. Deren Shapes liegen nicht im Repo; das ist
+S6, und `test_the_axioms_are_the_ones_the_reference_carries` ist bis dahin der
+Ersatz.
 
 ### Die Alligator-Datei
 
-Je Ereignis: `a alligator:event`, `a time:Interval`, `dc:identifier`,
-`rdfs:label`, `alligator:estimatedstart` / `estimatedend`,
+Je Ereignis: `a alligator:Alligator_Event` (D-15), `a time:Interval`,
+`dc:identifier`, `rdfs:label`, `alligator:estimatedstart` / `estimatedend`,
 `alligator:cax` / `cay` / `caz`, `alligator:startfixed` / `endfixed`; wo ein
 Datum übernommen wurde zusätzlich `alligator:nfsn` / `nfen` mit dem Namen des
-Nachbarn und `nfsnE` / `nfenE` mit seiner IRI. Danach die Relationstripel über
-`time:`. In `romanempire` sind das 68 Relationen.
+Nachbarn und `nfsnE` / `nfenE` mit seiner IRI (D-16). Danach die
+Relationstripel über `time:`. In `romanempire` sind das 68 Relationen.
+
+Die Literaltypen sind keine Ermessensfrage (D-06): das Vokabular schreibt sie
+vor. `cax`, `cay`, `caz`, `estimatedstart` und `estimatedend` haben
+`rdfs:range xsd:double`, `startfixed` und `endfixed` `xsd:boolean`, `nfsn` und
+`nfen` `xsd:string`. Geschrieben wird die kürzeste Zahlform, die exakt
+zurückliest — dieselbe Regel wie in `ids.normalise`, damit zwei Zeilen mit
+gleicher ID auch gleiche Literale bekommen.
 
 ### Die AMT-Datei
 
 Sie ist die Schnittstelle zu AMT.engine und wird deshalb an deren Format
 ausgerichtet, nicht am Java-String:
 
-- Knoten: `rgzm:<id> amt:instanceOf rgzm:Event` und `rdfs:label`.
+- Knoten: `ae:<id> amt:instanceOf rgzm:Event` und `rdfs:label` (D-17).
 - Kanten als Reifikation: `rdf:subject` / `rdf:predicate` / `rdf:object` plus
-  `amt:weight`. Gewicht `0.99`, wenn beide Enden des Subjekts fixiert sind,
-  sonst `0.95`. In `romanempire`: 61-mal `0.99`, 7-mal `0.95` — die sieben
-  sind die Relationen mit `DomitianConsulate2` als Subjekt.
+  `amt:weight` als `xsd:decimal`. Gewicht `0.99`, wenn beide Enden des Subjekts
+  fixiert sind, sonst `0.95`. In `romanempire`: 61-mal `0.99`, 7-mal `0.95` —
+  die sieben sind die Relationen mit `DomitianConsulate2` als Subjekt.
 - Prädikate sind die Allen-Zeichen als Rollen, mit den Ersetzungen
-  `<`→`b`, `>`→`a`, `=`→`e`. In `romanempire` kommen `a`, `b`, `d`, `di`, `e`,
-  `m`, `mi`, `o`, `oi` vor; `rgzm:e` 14-mal, weil vier Ereignisse auf 69 und
-  zwei auf 81–96 liegen und Selbstrelationen hier nicht geschrieben werden.
-- Die Axiome kommen aus `vocab/amt_allen_axioms.ttl`: 33 Rollen, 29
-  `InverseAxiom`, 127 `RoleChainAxiom`, 32 `SelfDisjointAxiom`, 7
-  `DisjointAxiom`.
+  `<`→`b`, `>`→`a`, `=`→`e`.
+- Die Axiome kommen wörtlich aus `vocab/amt_allen_axioms.ttl`: 921 Tripel,
+  1 `amt:Concept`, 31 Rollen, 28 `InverseAxiom`, 126 `RoleChainAxiom`, 31
+  `SelfDisjointAxiom`, 6 `DisjointAxiom`. Abschnittskommentare und Layout der
+  veröffentlichten Datei bleiben stehen, damit ein Diff gegen eine bestehende
+  AMT-Datei lesbar bleibt.
 - Das allgemeine AMT-Vokabular (`amt:Concept rdfs:subClassOf rdfs:Class` und
-  die übrigen Klassenaxiome) wird **nicht** mitgeschrieben; AMT.engine lädt
-  `ontology/amt.ttl` selbst.
+  die zwölf Tripel daneben) wird **nicht** mitgeschrieben; AMT.engine lädt
+  `ontology/amt.ttl` selbst. Genau diese dreizehn Tripel sind der ganze
+  Unterschied zwischen unserer Vokabeldatei und dem Java-Block.
 
-**Zu prüfen in S3.** Der Java-Block benutzt die alte zweistellige Form
-`amt:antecedent1` / `antecedent2`. AMT.engine akzeptiert sie ausdrücklich als
-Legacy-Form, empfiehlt aber die n-äre `amt:antecedents`-Liste. Umstellen oder
-belassen? Vorschlag: belassen und die Frage an die Engine-Seite geben —
-127 Axiome umzuschreiben ist eine mechanische Übung, aber sie ändert eine
-publizierte Datei.
+**Entschieden:** die alte zweistellige Form `amt:antecedent1` / `antecedent2`
+bleibt. AMT.engine nimmt sie ausdrücklich an, die n-äre `amt:antecedents`-Liste
+ist nur empfohlen, und 126 Axiome umzuschreiben ändert eine veröffentlichte
+Datei ohne Not. Die Frage gehört auf die Engine-Seite; kommt sie von dort
+zurück, ist es eine Ersetzung in einer statischen Datei und kein Codeeingriff.
 
 ### Kanonisches Turtle
 
-rdflib serialisiert nicht stabil. Es gibt genau **eine** Stelle im Code, die
-Turtle schreibt: sie sortiert die Tripel und vergibt deterministische
-Blank-Node-Labels. **[OFFEN]** ob Sortierung genügt oder eine Nachbearbeitung
-nötig ist — an der ersten realen Datei messen, nicht raten.
+**Gemessen, nicht geraten.** `rdflib.Graph.serialize` scheidet aus: derselbe
+Graph mit Blank Nodes, dreimal in drei Prozessen serialisiert, ergibt drei
+verschiedene SHA-256. Ohne Blank Nodes ist die Ausgabe stabil, aber das ist ein
+Implementierungsdetail, das rdflib nirgends zusagt — und die AMT-Datei sind 68
+Blank Nodes.
+
+Deshalb `outputs/turtle.py`: der Graph wird weiter mit rdflib gebaut, rdflib
+maskiert und kürzt auch die Terme, aber das Byte-Layout kommt von uns. Ein
+Tripel pro Zeile, Subjekt wiederholt, Reihenfolge der AGT-Datei statt Sortierung
+— wie in jeder anderen Ausgabe —, Blank-Node-Labels aus Subjekt, Rolle und
+Objekt (D-12). Jedes Dokument parst am Ende seine eigene Ausgabe zurück und
+vergleicht sie per `isomorphic` mit dem Graphen, aus dem es gebaut wurde; ein
+Layoutfehler fällt beim Schreiben auf und nicht beim Lesen.
+
+Der Test dafür startet drei Subprozesse mit verschiedenem `PYTHONHASHSEED`.
+Zwei Läufe im selben Interpreter hätten das Problem nie gezeigt.
 
 ## S4 — GitHub Pages
 
@@ -906,8 +945,24 @@ Nicht einem Schritt zugeordnet, aber nicht zu vergessen:
   `http://data.archaeology.link/data/ae/`, `CAA2026-alligator` nutzt
   `http://leiza-scit.github.io/CAA2026-alligator/`. Die gelebte Praxis ist also
   ein Namensraum **pro Datensatz beziehungsweise pro Repositorium**, nicht ein
-  globaler. Das spricht dafür, ihn in S3 konfigurierbar zu machen statt ihn
-  festzuschreiben — siehe A6.
+  globaler. S3 hat den mittleren festgeschrieben, weil eine Festlegung besser
+  ist als eine Vermutung (A6), aber der Punkt bleibt offen: sobald ein zweites
+  Repositorium diese Ausgaben veröffentlicht, braucht `rdf.EVENT` ein
+  `--base-uri` auf der Kommandozeile. Solange es eine Konstante an genau einer
+  Stelle ist, kostet dieser Schritt eine Zeile.
+- **Die SVG-Byte-Stabilität hält innerhalb einer Maschine, aber nicht über
+  Maschinen hinweg.** Beim Neubau in S3 kamen `<ds>_timeline.svg` und
+  `<ds>_matrix_dist.svg` beider Datensätze verändert heraus, obwohl an den
+  Abbildungen nichts angefasst wurde. Der ganze Unterschied ist `M -0` statt
+  `M 0` in einem Markerpfad und die daraus folgende andere Pfad-ID: negatives
+  Null. Gleiche matplotlib-, pillow- und numpy-Version, zweimal hintereinander
+  auf derselben Maschine byte-gleich — es liegt an der Gleitkommaarithmetik
+  darunter, nicht an `wd_repro.py`. Für die Praxis heisst das: `output/` bleibt
+  reproduzierbar für den, der es gebaut hat, und wer die Abbildungen auf einer
+  anderen Maschine neu baut, bekommt einen Diff über vier Dateien ohne
+  inhaltlichen Unterschied. Zu entscheiden in S7, ob `short_float_fmt` das
+  Vorzeichen der Null normalisieren soll oder ob die SVGs aus `output/`
+  ausziehen.
 - Der Dezimaltrenner der Distanzmatrix hängt an der Server-Locale (D-10). Falls
   jemand veröffentlichte Alligator-Matrizen weiterverarbeitet, ist das eine
   Fussangel, die nicht bei uns liegt, aber erwähnt gehört.
@@ -921,10 +976,14 @@ Nicht einem Schritt zugeordnet, aber nicht zu vergessen:
   einmal *survived by* und einmal *survives* zurück, der zweite ist
   unerreichbar. Nur relevant, falls die Beschreibungen je in eine Ausgabe
   wandern.
-- Die Rolle `rgzm:q` steht im AMT-Block und in 127 Axiomen, hat aber keine
-  Entsprechung unter den 13 Allen-Zeichen. Vermutlich die „unbestimmte"
-  Disjunktionsrolle der Kompositionstafel. Vor S3 klären, damit die Datei nicht
-  ohne Verständnis kopiert wird.
+- **`rgzm:q` ist geklärt** (S3). Die Rolle trägt das Label `questionmark`,
+  steht in 30 der 126 Rollenkettenaxiome und hat keine Entsprechung unter den
+  13 Allen-Zeichen — sie ist die *unbestimmte* Relation der Kompositionstafel.
+  Zwei Eigenschaften belegen das: sobald `q` in einer Kette vorkommt, ist die
+  Folgerung wieder `q`, sie absorbiert also; und sie ist die Folgerung überall
+  dort, wo die Komposition zweier Relationen mehrdeutig ist (`b ∘ a`, `d ∘ di`).
+  Wir schreiben sie nie als Kante — sie entsteht erst im Reasoning der Engine.
+  Die Axiomdatei trägt sie vollständig.
 - `Timeline.writeTimeline` und `Graph.writeGraph` schreiben nach `../timeline/`
   und `../graph/`, `AlligatorAPI.loadCAgetRDF` nach
   `/opt/tomcat/webapps/alligator-files/`. Alle drei sind tote Pfade aus der

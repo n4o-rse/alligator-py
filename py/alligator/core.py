@@ -285,7 +285,7 @@ def write(
     Kept out of `run` so that a caller with a `Result` in hand -- a test, or the
     FastAPI layer A2 leaves room for -- can write without going near argparse.
     """
-    from alligator.outputs import cypher, graph, matrix, render, timeline
+    from alligator.outputs import amt, cypher, graph, matrix, rdf, render, timeline
 
     written: list[Path] = []
     if "timeline" in formats:
@@ -303,14 +303,10 @@ def write(
             if strict:
                 raise
             LOG.warning("      no figures: %s", error)
-
-    pending = [name for name in formats if FORMATS[name] != "S2"]
-    if pending:
-        LOG.warning(
-            "      %s not written: step %s of the work plan. See PRIMER.md, part C.",
-            ", ".join(pending),
-            FORMATS[pending[0]],
-        )
+    if "ttl" in formats:
+        written += rdf.write(result, out_dir, dataset)
+    if "amt" in formats:
+        written += amt.write(result, out_dir, dataset)
     return written
 
 
