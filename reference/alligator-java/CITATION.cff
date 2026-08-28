@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+title: alligator - Allen Transformer
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - family-names: Thiery
+    given-names: Florian
+    orcid: 'https://orcid.org/0000-0002-3246-3531'
+  - family-names: Allard W.
+    given-names: Mees
+    orcid: 'https://orcid.org/0000-0002-7634-5342'
+  - name: alligator - Allen Transformer
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.2540709
+    description: >-
+      This is the collection of archived snapshots of all
+      versions
+  - type: doi
+    value: 10.5281/zenodo.7391278
+    description: This is the archived snapshot of version 1.0
+  - type: doi
+    value: 10.5281/zenodo.2540710
+    description: This is the archived snapshot of version 0.1
+repository-code: 'https://github.com/leiza-rse/alligator'
+abstract: API of the Alligator Allen Transformer
+keywords:
+  - Linked Open Data
+  - Allen Interval Algebra
+  - Relative Chronology
+license: MIT
+version: '1.1'
+date-released: '2024-04-25'
+doi: 10.5281/zenodo.2540709
+contact:
+  - affiliation: 'LEIZA, Mainz Germany'
+    email: florian.thiery@leiza.de
+    family-names: Florian
+    given-names: Thiery
