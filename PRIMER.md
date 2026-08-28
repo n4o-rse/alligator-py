@@ -131,11 +131,15 @@ darauf läuft.
 | RDF-Erzeugung | **`rdflib`**, keine String-Verkettung | 2026-08-28 |
 | Basis-URI der Ontologie | `http://archaeology.link/ontology#` (Triceratops Edition). Die beiden abweichenden URIs im Java-Code werden aufgegeben | 2026-08-28 |
 | Python-Version | ≥ 3.10 | 2026-08-28 |
-| Abhängigkeiten | `rdflib`, `numpy`, `pandas` in `requirements.txt`; `pytest` und `ruff` in `requirements-dev.txt`; `pyshacl` nur im optionalen Extra `[amt]`. Ein reiner Pipelinelauf zieht keinen Testrunner nach | 2026-08-28 |
+| Abhängigkeiten | `rdflib`, `numpy`, `pandas`, `matplotlib`, `pillow` in `requirements.txt`; `pytest` und `ruff` in `requirements-dev.txt`; `pyshacl` nur im optionalen Extra `[amt]`. Ein reiner Pipelinelauf zieht keinen Testrunner nach. `pillow` ist eigens gepinnt: das SVG ist über Versionen hinweg byte-stabil, das JPEG nicht | 2026-08-28 |
 | AMT-Ausgabe | zielt auf **AMT.engine**, nicht auf den Java-Block: Gewichte als `xsd:decimal`, Validierung gegen `amt-shapes.ttl` | 2026-08-28 |
 | AMT-Vokabular in der Ausgabe | nein. Die Engine lädt `ontology/amt.ttl` selbst; wir schreiben nur die Allen-Rollen und -Axiome | 2026-08-28 |
 | Ort der Allen-Axiome | statische Datei `py/alligator/vocab/amt_allen_axioms.ttl`, aus dem Java-Block extrahiert | 2026-08-28 |
 | Timeline auf GitHub Pages | statisch, liest `docs/data/<dataset>/*.json`. Kein Upload-Formular, kein API-Aufruf | 2026-08-28 |
+| Statische Abbildungen | **zusätzlich** zur interaktiven Seite, nicht statt ihrer: jede der vier Ansichten als SVG und als JPEG mit 300 dpi. Die Seite bleibt vis.js, die Bilder sind für Paper, Poster und Zenodo | 2026-08-28 |
+| Ort der Abbildungen | `output/<dataset>/img/`, Dateinamen mit demselben Stamm wie die Datendatei: `<ds>_graph.json` und `<ds>_graph.svg` sind dieselbe Sache zweimal | 2026-08-28 |
+| Erzeugt werden sie in | **S2**, nicht in S4. Sie lesen den `Result`, nicht die JSON-Dateien, und hängen damit nicht an der Pages-Phase | 2026-08-28 |
+| Rendering | matplotlib. Kein networkx: das Graph-Layout ist ein fester Kreis, weil ein kraftbasiertes Layout mit festem Seed nur so aussieht, als wäre es reproduzierbar | 2026-08-28 |
 | CA-Implementierung | numpy, Algorithmus im README ausgeschrieben — kein `prince` | 2026-08-28 |
 | Zeilenenden | LF beim Schreiben, CRLF und LF beim Lesen. `.gitattributes` mit `eol=lf` | 2026-08-28 |
 | Kodierung | UTF-8 ohne BOM (`RätischeLimes`, `fruehkaiserzeitlich`) | 2026-08-28 |
@@ -261,6 +265,7 @@ Jede beabsichtigte Abweichung steht hier. Alle Befunde sind an
 | D-11 | der AMT-Ontologieblock wird bei jedem Aufruf neu in den String geschrieben | statische `.ttl`, per rdflib gemischt | 980 Zeilen Vokabular sind Daten. AMT.engine lädt `amt.ttl` ohnehin selbst |
 | D-12 | Blank Nodes der AMT-Reifikation sind Zufalls-Hashids (`_:p60nn4bO03`) | deterministische Labels aus Subjekt, Prädikat und Objekt | Folge von D-01 auf der Kantenebene |
 | D-13 | Selbstrelationen stehen in Matrix, Graph und Cypher (`MERGE (NK81Wo)-[:EQUALS]->(NK81Wo)`), in RDF und AMT nicht | **überall ausgeschlossen** | Dass ein Intervall sich selbst gleicht, ist keine Aussage über die Chronologie. Java ist an dieser Stelle uneinheitlich, weil die sechs Schreiber zwei verschiedene Datenstrukturen lesen: `calculateAllenSigns` filtert `thisEvent != loopEvent` nur für die RDF-Listen, während Matrix, Graph und Cypher die vollständige `allenRelations`-Map durchlaufen |
+| D-14 | `Cypher` verkettet den Ereignisnamen ohne Maskierung in das Statement | einfache Anführungszeichen und Backslashes werden maskiert | Ein Name mit Apostroph erzeugt in Java eine Datei, die Neo4j nicht liest. Für jeden Namen, der vorher funktioniert hat, ändert sich nichts — eine Abweichung ist es trotzdem |
 
 **Folgen von D-13, gemessen an `romanempire`:** die Allen-Matrix behält ihre
 12×12-Form, aber die Hauptdiagonale wird leer statt `=`. Der Graph verliert 12
@@ -277,7 +282,7 @@ also ausdrücklich ausnehmen.
 |---|---|---|---|
 | S0 | Festlegungen, Repo-Skelett, kein Algorithmus | — | **erledigt** 2026-08-28 |
 | S1 | Kern: AGT-Parser, Modell, Allen-Algebra, IDs | S0 | **erledigt** 2026-08-28 |
-| S2 | Ausgaben: Timeline, Graph, Matrizen, Cypher | S1 | offen |
+| S2 | Ausgaben: Timeline, Graph, Matrizen, Cypher, Abbildungen | S1 | **erledigt** 2026-08-28 |
 | S3 | RDF-Ausgaben: Alligator-TTL und AMT-TTL | S1, S2 | offen |
 | S4 | GitHub Pages | S2 | offen |
 | S5 | CA-Phase: Zähltabelle → AGT | S1 | offen |
@@ -486,11 +491,12 @@ verknüpfen.
 
 ## S2 — Ausgaben ohne RDF
 
-**Ziel:** Timeline, Graph, beide Matrizen und Cypher.
+**Ziel:** Timeline, Graph, beide Matrizen, Cypher und die statischen Abbildungen.
 
 **Uploads:** keine — die Golden Files liegen unter `tests/reference/`.
 
-**Ergebnis:** `py/alligator/outputs/{timeline,graph,matrix,cypher}.py`.
+**Ergebnis:** `py/alligator/outputs/{timeline,graph,matrix,cypher,render}.py`,
+dazu `outputs/files.py` für die Schreibkonventionen.
 
 **Fertig, wenn:** die vier Dateien für `romanempire` gegen `v1/` bestehen und
 zwei Läufe byte-identisch sind.
@@ -501,6 +507,7 @@ zwei Läufe byte-identisch sind.
 | Graph | `<ds>_graph.json` | `{nodes: [{id,label}], edges: [{from,to,label}]}` |
 | Matrizen | `<ds>_matrix_allen.*`, `<ds>_matrix_dist.*` | Java liefert JSON-Arrays von Arrays; wir schreiben JSON **und** CSV — die Seite braucht JSON, die Auswertung CSV |
 | Cypher | `<ds>.cypher` | `CREATE` / `MERGE` / `RETURN` |
+| Abbildungen | `img/<ds>_{timeline,graph,matrix_allen,matrix_dist}.{svg,jpg}` | vier Ansichten, je zweimal; zusätzlich zur vis.js-Seite (A4) |
 
 Farbregeln der Timeline, unverändert: `blue` = beide Enden fixiert, `orange` =
 mindestens ein Ende über einen Nachbarn datiert, `red` = `b < a` nach der
@@ -514,6 +521,41 @@ Zwei Stellen weichen hier bewusst von den Golden Files ab: die Cypher-Namen nach
 D-02 (`CONTAINS` statt `DURINGi`) und die fehlenden Selbstrelationen nach D-13.
 Beide gehören in den Testcode als ausdrückliche Ausnahme, nicht als
 stillschweigend gelockerten Vergleich.
+
+### Die Abbildungen
+
+Vier Ansichten, jede einmal als SVG und einmal als JPEG mit 300 dpi aus
+**einer** matplotlib-Figur — sonst können die beiden Fassungen auseinanderlaufen.
+Das SVG ist die Archivfassung, das JPEG die, die sich überall einfügen lässt.
+
+| Ansicht | Was sie zeigt |
+|---|---|
+| Timeline | ein Balken je Ereignis in Dateireihenfolge, in den drei Timeline-Farben; Punktereignisse als Raute |
+| Graph | die Ereignisse auf einem Kreis, eine gebogene Kante je Relation, nach Allen-Zeichen eingefärbt, mit Legende. Keine Kantenbeschriftung — 68 Kanten tragen keine |
+| Allen-Matrix | die Tafel als Farbfeld mit dem Zeichen in der Zelle, Hauptdiagonale leer (D-13) |
+| Distanzmatrix | Heatmap mit Farbskala, Werte in den Zellen, solange die Matrix höchstens 20 Ereignisse hat |
+
+Byte-Gleichheit braucht hier drei Einstellungen, die nicht matplotlibs Vorgabe
+sind: ein festes `svg.hashsalt`, damit die erzeugten Element-IDs stehen bleiben;
+`metadata={"Date": None}`, damit kein Erzeugungsdatum ins SVG geschrieben wird;
+und Text als Pfade, damit die Datei nicht davon abhängt, welche Schriften der
+Leser installiert hat. Dazu kommt, dass das SVG **nicht** von `savefig` selbst
+geschrieben wird: matplotlib öffnet die Datei im Textmodus und würde unter
+Windows CRLF hineinschreiben, was `.gitattributes` widerspricht und die Datei
+nach jedem Lauf als geändert erscheinen liesse.
+
+Die Gleichheit gilt für einen installierten Satz von Versionen. Eine andere
+matplotlib legt dieselbe Figur anders aus, ein anderes libjpeg komprimiert
+anders — deshalb sind `matplotlib` und `pillow` in `requirements.txt` gepinnt.
+
+**Erledigt am 2026-08-28.** `core.write()` schreibt die angeforderten Formate
+und gibt zurück, was geschrieben wurde; `core.run()` ist nur noch die Schicht
+darüber, die argparse auspackt. Geprüft gegen alle vier Golden Files von
+`romanempire`, mit den zwei Abweichungen als benannte Ausnahmetabellen im
+Testcode (`D_02_JAVA_NAMES` und der Diagonalfall) statt als gelockertem
+Vergleich — eine dritte Abweichung fällt damit auf, statt durchzurutschen.
+`ttl` und `amt` bleiben in `--formats` stehen und warnen, dass sie S3 sind.
+130 Tests.
 
 ## S3 — RDF
 
@@ -873,6 +915,11 @@ Nicht einem Schritt zugeordnet, aber nicht zu vergessen:
   R-Skript noch die Formatbeschreibung sagen, wann `false` sinnvoll ist. Mit
   `--weights equal` bildet die CA-Phase es ab; ob es jemals benutzt wurde, ist
   unklar.
+- Die JPEGs sind das erste Binärformat im versionierten `output/`. Bei zwei
+  Datensätzen sind das rund 3 MB; bei einer CA über 500 Töpfer wird die
+  Distanzmatrix als Bild sinnlos und als Datei gross. Zusammen mit dem Punkt
+  unten neu zu entscheiden — womöglich Bilder nur für die Datensätze, die auch
+  im Paper stehen.
 - Ob `output/` dauerhaft versioniert bleibt, hängt daran, wie viele Datensätze
   dazukommen. Bei einem Dutzend Ereignissen sind es Kilobytes; bei einer CA über
   500 Töpfer wächst die Distanzmatrix quadratisch. Neu entscheiden, sobald der

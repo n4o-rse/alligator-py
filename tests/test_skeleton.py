@@ -32,14 +32,22 @@ def test_bare_call_lists_phases():
     assert run_main().returncode == 0
 
 
-def test_unimplemented_phase_warns_but_does_not_crash():
+def test_the_alligator_phase_writes_its_s2_outputs():
+    """S2 is implemented; the RDF formats are still S3 and only warn."""
     result = run_main("alligator", "--dataset", "romanempire")
     assert result.returncode == 0
-    assert "S1" in result.stderr or "S1" in result.stdout
+    assert "romanempire_timeline.json" in result.stderr + result.stdout
+    assert "S3" in result.stderr + result.stdout
+
+
+def test_unimplemented_phase_warns_but_does_not_crash():
+    result = run_main("amt", "--dataset", "romanempire")
+    assert result.returncode == 0
+    assert "S6" in result.stderr + result.stdout
 
 
 def test_strict_makes_an_unimplemented_phase_fail():
-    assert run_main("alligator", "--dataset", "romanempire", "--strict").returncode == 1
+    assert run_main("amt", "--dataset", "romanempire", "--strict").returncode == 1
 
 
 def test_datasets_are_present():
@@ -69,3 +77,13 @@ def test_reference_files_are_present():
         "romanempire_amt.ttl",
     ):
         assert (reference / name).is_file()
+
+
+def test_an_output_directory_outside_the_repository_is_accepted(tmp_path):
+    """`--out` may point anywhere; the log must not raise on the way out."""
+    result = run_main(
+        "alligator", "--dataset", "romanempire", "--out", str(tmp_path), "--formats", "cypher"
+    )
+    assert result.returncode == 0, result.stderr
+    assert "Traceback" not in result.stderr
+    assert (tmp_path / "romanempire" / "romanempire.cypher").is_file()

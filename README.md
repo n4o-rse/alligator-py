@@ -8,12 +8,14 @@ Part of the **Alpaka** framework: alligator builds the graph of Allen interval
 relations, the [Academic Meta Tool](https://github.com/n4o-rse/amt-engine)
 reasons over it.
 
-> **Status: the core calculates, nothing is written yet.** Parsing, the CA
-> distance model, the dating of floating ends and the Allen relations are in
-> place and checked against the reference outputs of the Java tool (step S1).
-> The six output writers are steps S2 and S3, so the `alligator` phase still
-> ends in `NotImplementedError`. Every phase points at the step of the work
-> plan that implements it. See [`PRIMER.md`](PRIMER.md).
+> **Status: everything but the RDF is written.** Parsing, the CA distance
+> model, the dating of floating ends and the Allen relations are in place
+> (step S1), and so are the timeline, the graph, both matrices, the Cypher file
+> and the figures, all checked against the reference outputs of the Java tool
+> (step S2). The two Turtle outputs are step S3 and are still missing; asking
+> for them prints a warning and the rest is written anyway. Every phase points
+> at the step of the work plan that implements it. See
+> [`PRIMER.md`](PRIMER.md).
 
 ## What it does
 
@@ -29,8 +31,10 @@ coordinates and a date range per event, the tool
 1. dates every event whose start or end is unknown from its nearest fixed
    neighbour in CA space,
 2. derives the Allen interval relation between every pair of events,
-3. writes the result as RDF/Turtle, AMT Turtle, Neo4j Cypher, a vis.js
-   timeline, a vis.js graph and two matrices.
+3. writes the result as a vis.js timeline, a vis.js graph, two matrices, a
+   Neo4j Cypher script, RDF/Turtle and AMT Turtle,
+4. and draws the first four of those as figures, each as SVG and as a 300 dpi
+   JPEG, for use outside a browser.
 
 ## Repository structure
 
@@ -38,6 +42,7 @@ coordinates and a date range per event, the tool
 alligator-py/
 ├── data/<dataset>/          input: counts.csv, dates.csv, <dataset>.agt
 ├── output/<dataset>/        generated results (version-controlled)
+│   └── img/                 the same views as SVG and 300 dpi JPEG
 ├── docs/                    static GitHub Pages site (generated)
 ├── py/
 │   ├── main.py              single entry point
@@ -105,7 +110,22 @@ python py/main.py docs
 
 Useful flags: `--verbose`, `--strict`, `--dataset NAME`, `--out DIR`. The
 `alligator` phase additionally takes `--floating-value`, `--dimensions`,
-`--formats`, `--max-neighbour-distance` and `--random-ids`.
+`--formats`, `--dpi`, `--max-neighbour-distance` and `--random-ids`.
+
+### Outputs
+
+| Format | File | |
+|---|---|---|
+| Timeline | `<ds>_timeline.json` | vis.js items, one per event |
+| Graph | `<ds>_graph.json` | vis.js network of the Allen relations |
+| Matrices | `<ds>_matrix_allen.*`, `<ds>_matrix_dist.*` | JSON for the web page, CSV for everything else |
+| Cypher | `<ds>.cypher` | `CREATE` / `MERGE` / `RETURN`, for Neo4j |
+| Figures | `img/<ds>_*.svg`, `img/<ds>_*.jpg` | the same four views, drawn with matplotlib |
+| Turtle | `<ds>.ttl`, `<ds>_amt.ttl` | step S3, not written yet |
+
+`--formats` takes any comma-separated subset of `timeline,graph,matrix,cypher,`
+`img,ttl,amt`. The figures are an addition to the interactive page, not a
+replacement for it: the page of step S4 stays vis.js and reads the JSON.
 
 ## The AGT format
 

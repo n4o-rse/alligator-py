@@ -4,5 +4,11 @@ rdflib==7.1.1
 numpy==2.1.3
 pandas==2.2.3
 
+# Figures (step S2). Pillow is matplotlib's JPEG writer and is pinned in its own
+# right: the SVG is byte-stable across versions, the JPEG is not, so an
+# unpinned Pillow would turn a rebuild into a diff (PRIMER A3, A4).
+matplotlib==3.10.8
+pillow==12.1.1
+
 # Optional extra [amt] — only needed for the amt phase (step S6):
 # pyshacl==0.29.0

@@ -52,4 +52,5 @@ def golden():
         "matrix_dist": load("matrix_dist.json"),
         "timeline": load("timeline.json"),
         "graph": load("graph.json"),
+        "cypher": load("romanempire.cypher"),
     }

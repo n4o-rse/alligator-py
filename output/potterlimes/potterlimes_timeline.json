@@ -1,0 +1,74 @@
+[
+  {
+    "id": "eQ2R6SEVH",
+    "content": "AlbLimes",
+    "start": 97.0,
+    "end": 260.0,
+    "className": "blue",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eUPPM2U32",
+    "content": "DonauLimesPhase1",
+    "start": 30.0,
+    "end": 70.0,
+    "className": "blue",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "e5M7GWB3A",
+    "content": "DonauLimesPhase2",
+    "start": 70.0,
+    "end": 260.0,
+    "className": "blue",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "ePVCUCL2E",
+    "content": "Elisabethenstrasse",
+    "start": 74.0,
+    "end": 104.0,
+    "className": "blue",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eAXY5BXML",
+    "content": "HadriansWall-->Wetteraulimes,Wetteraulimes",
+    "start": 110.0,
+    "end": 260.0,
+    "className": "orange",
+    "nn_start": "Wetteraulimes",
+    "nn_end": "Wetteraulimes"
+  },
+  {
+    "id": "eNICCMT3N",
+    "content": "Neckarlimes",
+    "start": 117.0,
+    "end": 260.0,
+    "className": "blue",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eFECDTHNZ",
+    "content": "NoordzeeKust-->*,Wetteraulimes",
+    "start": 120.0,
+    "end": 260.0,
+    "className": "orange",
+    "nn_start": null,
+    "nn_end": "Wetteraulimes"
+  },
+  {
+    "id": "eZWCSP56Y",
+    "content": "Wetteraulimes",
+    "start": 110.0,
+    "end": 260.0,
+    "className": "blue",
+    "nn_start": null,
+    "nn_end": null
+  }
+]

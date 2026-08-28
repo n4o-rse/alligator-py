@@ -245,6 +245,75 @@ def calculate_file(path: str | Path, **kwargs) -> Result:
     return calculate(agt_module.read(path), **kwargs)
 
 
+#: Every format the `alligator` phase knows, and the step that implements it.
+FORMATS: dict[str, str] = {
+    "timeline": "S2",
+    "graph": "S2",
+    "matrix": "S2",
+    "cypher": "S2",
+    "img": "S2",
+    "ttl": "S3",
+    "amt": "S3",
+}
+
+
+def parse_formats(text: str | None) -> list[str]:
+    """Split `--formats` and check the names, keeping the declared order."""
+    if not text:
+        return list(FORMATS)
+    wanted = [chunk.strip() for chunk in text.split(",") if chunk.strip()]
+    unknown = [chunk for chunk in wanted if chunk not in FORMATS]
+    if unknown:
+        raise AlligatorError(
+            f"unknown output format {', '.join(sorted(unknown))}; "
+            f"known are {', '.join(FORMATS)}"
+        )
+    return [name for name in FORMATS if name in wanted]
+
+
+def write(
+    result: Result,
+    out_dir: Path,
+    dataset: str,
+    formats: list[str],
+    *,
+    dpi: int | None = None,
+    strict: bool = False,
+) -> list[Path]:
+    """Write the requested formats and return the files that were written.
+
+    Kept out of `run` so that a caller with a `Result` in hand -- a test, or the
+    FastAPI layer A2 leaves room for -- can write without going near argparse.
+    """
+    from alligator.outputs import cypher, graph, matrix, render, timeline
+
+    written: list[Path] = []
+    if "timeline" in formats:
+        written += timeline.write(result, out_dir, dataset)
+    if "graph" in formats:
+        written += graph.write(result, out_dir, dataset)
+    if "matrix" in formats:
+        written += matrix.write(result, out_dir, dataset)
+    if "cypher" in formats:
+        written += cypher.write(result, out_dir, dataset)
+    if "img" in formats:
+        try:
+            written += render.write(result, out_dir, dataset, dpi or render.DPI)
+        except render.RenderError as error:
+            if strict:
+                raise
+            LOG.warning("      no figures: %s", error)
+
+    pending = [name for name in formats if FORMATS[name] != "S2"]
+    if pending:
+        LOG.warning(
+            "      %s not written: step %s of the work plan. See PRIMER.md, part C.",
+            ", ".join(pending),
+            FORMATS[pending[0]],
+        )
+    return written
+
+
 def run(agt: Path, out_dir: Path, args) -> list[Path]:
     """Read an AGT file and write the requested output formats."""
     result = calculate_file(
@@ -271,9 +340,16 @@ def run(agt: Path, out_dir: Path, args) -> list[Path]:
             event.b,
             "fixed" if event.fixed else f"{event.nn_start_name},{event.nn_end_name}",
         )
-    raise NotImplementedError(
-        "The calculation is done (step S1), but the output writers are steps S2 "
-        "and S3 of the work plan, so nothing was written. See PRIMER.md, part C."
+    for message in result.warnings:
+        LOG.debug("      %s", message)
+
+    return write(
+        result,
+        Path(out_dir),
+        Path(agt).stem,
+        parse_formats(getattr(args, "formats", None)),
+        dpi=getattr(args, "dpi", None),
+        strict=getattr(args, "strict", False),
     )
 
 

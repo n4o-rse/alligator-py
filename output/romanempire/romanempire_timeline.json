@@ -1,0 +1,114 @@
+[
+  {
+    "id": "eWCE2JZ2E",
+    "content": "fruehkaiserzeitlich",
+    "start": 1.0,
+    "end": 150.0,
+    "className": "blue",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eQXCN5T3V",
+    "content": "2ndHalfFirstCentury",
+    "start": 50.0,
+    "end": 100.0,
+    "className": "blue",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eVFHT5DGC",
+    "content": "Usurpator",
+    "start": 69.0,
+    "end": 69.0,
+    "className": "blue",
+    "type": "point",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eYY7OJJVV",
+    "content": "Galba",
+    "start": 69.0,
+    "end": 69.0,
+    "className": "blue",
+    "type": "point",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eQAF5F5GO",
+    "content": "Otho",
+    "start": 69.0,
+    "end": 69.0,
+    "className": "blue",
+    "type": "point",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eJ3OUJL6G",
+    "content": "Vespasian",
+    "start": 69.0,
+    "end": 79.0,
+    "className": "blue",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eIR666UI7",
+    "content": "Titus",
+    "start": 79.0,
+    "end": 81.0,
+    "className": "blue",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eVLZZQIF2",
+    "content": "Domitian",
+    "start": 81.0,
+    "end": 96.0,
+    "className": "blue",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eF4XXMGPB",
+    "content": "Nerva",
+    "start": 96.0,
+    "end": 98.0,
+    "className": "blue",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eZXF7TVC5",
+    "content": "Trajan",
+    "start": 98.0,
+    "end": 117.0,
+    "className": "blue",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eG47XIJSX",
+    "content": "Vitellius",
+    "start": 69.0,
+    "end": 69.0,
+    "className": "blue",
+    "type": "point",
+    "nn_start": null,
+    "nn_end": null
+  },
+  {
+    "id": "eEUVY3COO",
+    "content": "DomitianConsulate2-->Domitian,Domitian",
+    "start": 81.0,
+    "end": 96.0,
+    "className": "orange",
+    "nn_start": "Domitian",
+    "nn_end": "Domitian"
+  }
+]

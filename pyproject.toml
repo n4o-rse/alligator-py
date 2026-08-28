@@ -10,7 +10,13 @@ authors = [
     { name = "Allard W. Mees" },
 ]
 keywords = ["Linked Open Data", "Allen Interval Algebra", "Relative Chronology"]
-dependencies = ["rdflib>=7.1", "numpy>=2.1", "pandas>=2.2"]
+dependencies = [
+    "rdflib>=7.1",
+    "numpy>=2.1",
+    "pandas>=2.2",
+    "matplotlib>=3.9",
+    "pillow>=10.0",
+]
 
 [project.optional-dependencies]
 amt = ["pyshacl>=0.29"]

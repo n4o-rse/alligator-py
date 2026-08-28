@@ -53,7 +53,7 @@ def phase_ca(args: argparse.Namespace) -> list[Path]:
 
 
 def phase_alligator(args: argparse.Namespace) -> list[Path]:
-    """Allen transformation: *.agt -> six output formats."""
+    """Allen transformation: *.agt -> the output formats."""
     from alligator.core import run
 
     return run(
@@ -79,7 +79,11 @@ def phase_amt(args: argparse.Namespace) -> list[Path]:
 
 PHASES: dict[str, tuple[str, str, object]] = {
     "ca": ("counts + dates -> *.agt (correspondence analysis)", "S5", phase_ca),
-    "alligator": ("*.agt -> ttl, amt, cypher, timeline, graph, matrices", "S1-S3", phase_alligator),
+    "alligator": (
+        "*.agt -> timeline, graph, matrices, cypher, figures, ttl, amt",
+        "S1-S3",
+        phase_alligator,
+    ),
     "docs": ("output/ -> docs/ (static GitHub Pages site)", "S4", phase_docs),
     "amt": ("AMT ttl -> AMT.engine (validate, reason, export)", "S6", phase_amt),
 }
@@ -125,8 +129,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     group.add_argument(
         "--formats",
-        default="ttl,amt,cypher,timeline,graph,matrix",
-        help="comma-separated list of output formats to write",
+        default="timeline,graph,matrix,cypher,img,ttl,amt",
+        help=(
+            "comma-separated list of output formats to write; 'img' draws the "
+            "four figures as SVG and JPEG"
+        ),
+    )
+    group.add_argument(
+        "--dpi",
+        type=int,
+        default=300,
+        help="resolution of the JPEG figures; the SVG does not have one",
     )
     group.add_argument(
         "--max-neighbour-distance",
@@ -140,6 +153,20 @@ def build_parser() -> argparse.ArgumentParser:
         help="use random Hashids like the Java implementation (not reproducible)",
     )
     return parser
+
+
+def relative(path: Path | str) -> Path:
+    """A path for the log: relative to the repository, absolute if it is outside.
+
+    `--out` may point anywhere, and `Path.relative_to` raises rather than
+    falling back, so a run writing outside the repository used to end in a
+    traceback after every file had already been written correctly.
+    """
+    path = Path(path)
+    try:
+        return path.relative_to(ROOT)
+    except ValueError:
+        return path
 
 
 def print_phases() -> None:
@@ -186,7 +213,7 @@ def main(argv: list[str] | None = None) -> int:
             return 1
         elapsed = time.perf_counter() - started
         for path in written:
-            LOG.info("      wrote %s", Path(path).relative_to(ROOT))
+            LOG.info("      wrote %s", relative(path))
         LOG.info("      done in %.1f s", elapsed)
 
     return 1 if failures and args.strict else 0
