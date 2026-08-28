@@ -29,5 +29,10 @@ Repository = "https://github.com/n4o-rse/alligator-py"
 line-length = 88
 target-version = "py310"
 
+[tool.ruff.lint.per-file-ignores]
+# A verbatim copy of leiza-scit/CAA2026-alligator/py/wd_repro.py. Kept byte-for-
+# byte so the two can be diffed; any change belongs upstream first.
+"py/wd_repro.py" = ["EXE001", "UP031", "DTZ001"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

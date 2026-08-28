@@ -1,0 +1,1204 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix amt: <http://academic-meta-tool.xyz/vocab#> .
+@prefix rgzm: <http://rgzm.de/datingmechanism#> .
+
+rgzm:P0bYBG amt:instanceOf rgzm:Event .
+rgzm:P0bYBG rdfs:label "AlbLimes" .
+
+rgzm:Wx75Vv amt:instanceOf rgzm:Event .
+rgzm:Wx75Vv rdfs:label "DonauLimesPhase1" .
+
+rgzm:P9xykW amt:instanceOf rgzm:Event .
+rgzm:P9xykW rdfs:label "DonauLimesPhase2" .
+
+rgzm:x6L2lw amt:instanceOf rgzm:Event .
+rgzm:x6L2lw rdfs:label "Elisabethenstrasse" .
+
+rgzm:x5BwXG amt:instanceOf rgzm:Event .
+rgzm:x5BwXG rdfs:label "HadriansWall" .
+
+rgzm:QnbwlX amt:instanceOf rgzm:Event .
+rgzm:QnbwlX rdfs:label "Neckarlimes" .
+
+rgzm:q2GKkX amt:instanceOf rgzm:Event .
+rgzm:q2GKkX rdfs:label "NoordzeeKust" .
+
+rgzm:r6p1A4 amt:instanceOf rgzm:Event .
+rgzm:r6p1A4 rdfs:label "Wetteraulimes" .
+
+_:rbnVZV2lnY rdf:subject rgzm:P0bYBG. 
+_:rbnVZV2lnY rdf:object rgzm:Wx75Vv. 
+_:rbnVZV2lnY rdf:predicate rgzm:a. 
+_:rbnVZV2lnY amt:weight "0.99". 
+_:RmLADaVJbZ rdf:subject rgzm:P0bYBG. 
+_:RmLADaVJbZ rdf:object rgzm:P9xykW. 
+_:RmLADaVJbZ rdf:predicate rgzm:f. 
+_:RmLADaVJbZ amt:weight "0.99". 
+_:QV7xM4rzNW rdf:subject rgzm:P0bYBG. 
+_:QV7xM4rzNW rdf:object rgzm:x6L2lw. 
+_:QV7xM4rzNW rdf:predicate rgzm:oi. 
+_:QV7xM4rzNW amt:weight "0.99". 
+_:YV014PBY6N rdf:subject rgzm:P0bYBG. 
+_:YV014PBY6N rdf:object rgzm:x5BwXG. 
+_:YV014PBY6N rdf:predicate rgzm:fi. 
+_:YV014PBY6N amt:weight "0.99". 
+_:q0xLoj7Kko rdf:subject rgzm:P0bYBG. 
+_:q0xLoj7Kko rdf:object rgzm:QnbwlX. 
+_:q0xLoj7Kko rdf:predicate rgzm:fi. 
+_:q0xLoj7Kko amt:weight "0.99". 
+_:dp7N5pan6A rdf:subject rgzm:P0bYBG. 
+_:dp7N5pan6A rdf:object rgzm:q2GKkX. 
+_:dp7N5pan6A rdf:predicate rgzm:fi. 
+_:dp7N5pan6A amt:weight "0.99". 
+_:lVkbjVOQkr rdf:subject rgzm:P0bYBG. 
+_:lVkbjVOQkr rdf:object rgzm:r6p1A4. 
+_:lVkbjVOQkr rdf:predicate rgzm:fi. 
+_:lVkbjVOQkr amt:weight "0.99". 
+_:gd3pBrDPx7 rdf:subject rgzm:Wx75Vv. 
+_:gd3pBrDPx7 rdf:object rgzm:P0bYBG. 
+_:gd3pBrDPx7 rdf:predicate rgzm:b. 
+_:gd3pBrDPx7 amt:weight "0.99". 
+_:qE2xgq5zvY rdf:subject rgzm:Wx75Vv. 
+_:qE2xgq5zvY rdf:object rgzm:P9xykW. 
+_:qE2xgq5zvY rdf:predicate rgzm:m. 
+_:qE2xgq5zvY amt:weight "0.99". 
+_:rEeN8EMGaQ rdf:subject rgzm:Wx75Vv. 
+_:rEeN8EMGaQ rdf:object rgzm:x6L2lw. 
+_:rEeN8EMGaQ rdf:predicate rgzm:b. 
+_:rEeN8EMGaQ amt:weight "0.99". 
+_:VXYmM80gYp rdf:subject rgzm:Wx75Vv. 
+_:VXYmM80gYp rdf:object rgzm:x5BwXG. 
+_:VXYmM80gYp rdf:predicate rgzm:b. 
+_:VXYmM80gYp amt:weight "0.99". 
+_:Q4GWZd2QYr rdf:subject rgzm:Wx75Vv. 
+_:Q4GWZd2QYr rdf:object rgzm:QnbwlX. 
+_:Q4GWZd2QYr rdf:predicate rgzm:b. 
+_:Q4GWZd2QYr amt:weight "0.99". 
+_:ExkQBvyNag rdf:subject rgzm:Wx75Vv. 
+_:ExkQBvyNag rdf:object rgzm:q2GKkX. 
+_:ExkQBvyNag rdf:predicate rgzm:b. 
+_:ExkQBvyNag amt:weight "0.99". 
+_:mKbyRKp3LV rdf:subject rgzm:Wx75Vv. 
+_:mKbyRKp3LV rdf:object rgzm:r6p1A4. 
+_:mKbyRKp3LV rdf:predicate rgzm:b. 
+_:mKbyRKp3LV amt:weight "0.99". 
+_:zoZK5wWjEV rdf:subject rgzm:P9xykW. 
+_:zoZK5wWjEV rdf:object rgzm:P0bYBG. 
+_:zoZK5wWjEV rdf:predicate rgzm:fi. 
+_:zoZK5wWjEV amt:weight "0.99". 
+_:EdJDrdjo0b rdf:subject rgzm:P9xykW. 
+_:EdJDrdjo0b rdf:object rgzm:Wx75Vv. 
+_:EdJDrdjo0b rdf:predicate rgzm:mi. 
+_:EdJDrdjo0b amt:weight "0.99". 
+_:AJR1eLDkRX rdf:subject rgzm:P9xykW. 
+_:AJR1eLDkRX rdf:object rgzm:x6L2lw. 
+_:AJR1eLDkRX rdf:predicate rgzm:di. 
+_:AJR1eLDkRX amt:weight "0.99". 
+_:P6mKJ4j7l1 rdf:subject rgzm:P9xykW. 
+_:P6mKJ4j7l1 rdf:object rgzm:x5BwXG. 
+_:P6mKJ4j7l1 rdf:predicate rgzm:fi. 
+_:P6mKJ4j7l1 amt:weight "0.99". 
+_:QR096M9VY2 rdf:subject rgzm:P9xykW. 
+_:QR096M9VY2 rdf:object rgzm:QnbwlX. 
+_:QR096M9VY2 rdf:predicate rgzm:fi. 
+_:QR096M9VY2 amt:weight "0.99". 
+_:g7ZqlmeGWy rdf:subject rgzm:P9xykW. 
+_:g7ZqlmeGWy rdf:object rgzm:q2GKkX. 
+_:g7ZqlmeGWy rdf:predicate rgzm:fi. 
+_:g7ZqlmeGWy amt:weight "0.99". 
+_:k2egdjnJOG rdf:subject rgzm:P9xykW. 
+_:k2egdjnJOG rdf:object rgzm:r6p1A4. 
+_:k2egdjnJOG rdf:predicate rgzm:fi. 
+_:k2egdjnJOG amt:weight "0.99". 
+_:K07Q8xdQv2 rdf:subject rgzm:x6L2lw. 
+_:K07Q8xdQv2 rdf:object rgzm:P0bYBG. 
+_:K07Q8xdQv2 rdf:predicate rgzm:o. 
+_:K07Q8xdQv2 amt:weight "0.99". 
+_:jZz10LdYna rdf:subject rgzm:x6L2lw. 
+_:jZz10LdYna rdf:object rgzm:Wx75Vv. 
+_:jZz10LdYna rdf:predicate rgzm:a. 
+_:jZz10LdYna amt:weight "0.99". 
+_:gpjXy2gKB7 rdf:subject rgzm:x6L2lw. 
+_:gpjXy2gKB7 rdf:object rgzm:P9xykW. 
+_:gpjXy2gKB7 rdf:predicate rgzm:d. 
+_:gpjXy2gKB7 amt:weight "0.99". 
+_:Zn3DalgR9E rdf:subject rgzm:x6L2lw. 
+_:Zn3DalgR9E rdf:object rgzm:x5BwXG. 
+_:Zn3DalgR9E rdf:predicate rgzm:b. 
+_:Zn3DalgR9E amt:weight "0.99". 
+_:YgbA2Y1QkO rdf:subject rgzm:x6L2lw. 
+_:YgbA2Y1QkO rdf:object rgzm:QnbwlX. 
+_:YgbA2Y1QkO rdf:predicate rgzm:b. 
+_:YgbA2Y1QkO amt:weight "0.99". 
+_:bO1PKgXMNK rdf:subject rgzm:x6L2lw. 
+_:bO1PKgXMNK rdf:object rgzm:q2GKkX. 
+_:bO1PKgXMNK rdf:predicate rgzm:b. 
+_:bO1PKgXMNK amt:weight "0.99". 
+_:VeBKJjmoNz rdf:subject rgzm:x6L2lw. 
+_:VeBKJjmoNz rdf:object rgzm:r6p1A4. 
+_:VeBKJjmoNz rdf:predicate rgzm:b. 
+_:VeBKJjmoNz amt:weight "0.99". 
+_:xlvNawEBey rdf:subject rgzm:x5BwXG. 
+_:xlvNawEBey rdf:object rgzm:P0bYBG. 
+_:xlvNawEBey rdf:predicate rgzm:f. 
+_:xlvNawEBey amt:weight "0.95". 
+_:DpvVqkQwE7 rdf:subject rgzm:x5BwXG. 
+_:DpvVqkQwE7 rdf:object rgzm:Wx75Vv. 
+_:DpvVqkQwE7 rdf:predicate rgzm:a. 
+_:DpvVqkQwE7 amt:weight "0.95". 
+_:n9k5yaOrkx rdf:subject rgzm:x5BwXG. 
+_:n9k5yaOrkx rdf:object rgzm:P9xykW. 
+_:n9k5yaOrkx rdf:predicate rgzm:f. 
+_:n9k5yaOrkx amt:weight "0.95". 
+_:ZYx9bmgyMK rdf:subject rgzm:x5BwXG. 
+_:ZYx9bmgyMK rdf:object rgzm:x6L2lw. 
+_:ZYx9bmgyMK rdf:predicate rgzm:a. 
+_:ZYx9bmgyMK amt:weight "0.95". 
+_:ok70jvVqp9 rdf:subject rgzm:x5BwXG. 
+_:ok70jvVqp9 rdf:object rgzm:QnbwlX. 
+_:ok70jvVqp9 rdf:predicate rgzm:fi. 
+_:ok70jvVqp9 amt:weight "0.95". 
+_:WBy53Vb5Z2 rdf:subject rgzm:x5BwXG. 
+_:WBy53Vb5Z2 rdf:object rgzm:q2GKkX. 
+_:WBy53Vb5Z2 rdf:predicate rgzm:fi. 
+_:WBy53Vb5Z2 amt:weight "0.95". 
+_:gN6dk2dn1y rdf:subject rgzm:x5BwXG. 
+_:gN6dk2dn1y rdf:object rgzm:r6p1A4. 
+_:gN6dk2dn1y rdf:predicate rgzm:e. 
+_:gN6dk2dn1y amt:weight "0.95". 
+_:WKLq4MYeXd rdf:subject rgzm:QnbwlX. 
+_:WKLq4MYeXd rdf:object rgzm:P0bYBG. 
+_:WKLq4MYeXd rdf:predicate rgzm:f. 
+_:WKLq4MYeXd amt:weight "0.99". 
+_:yYaVxq8DEl rdf:subject rgzm:QnbwlX. 
+_:yYaVxq8DEl rdf:object rgzm:Wx75Vv. 
+_:yYaVxq8DEl rdf:predicate rgzm:a. 
+_:yYaVxq8DEl amt:weight "0.99". 
+_:A35Ozlpd0G rdf:subject rgzm:QnbwlX. 
+_:A35Ozlpd0G rdf:object rgzm:P9xykW. 
+_:A35Ozlpd0G rdf:predicate rgzm:f. 
+_:A35Ozlpd0G amt:weight "0.99". 
+_:VN86lj4Prz rdf:subject rgzm:QnbwlX. 
+_:VN86lj4Prz rdf:object rgzm:x6L2lw. 
+_:VN86lj4Prz rdf:predicate rgzm:a. 
+_:VN86lj4Prz amt:weight "0.99". 
+_:AvO1G8MoWQ rdf:subject rgzm:QnbwlX. 
+_:AvO1G8MoWQ rdf:object rgzm:x5BwXG. 
+_:AvO1G8MoWQ rdf:predicate rgzm:f. 
+_:AvO1G8MoWQ amt:weight "0.99". 
+_:wvb98pzyjd rdf:subject rgzm:QnbwlX. 
+_:wvb98pzyjd rdf:object rgzm:q2GKkX. 
+_:wvb98pzyjd rdf:predicate rgzm:fi. 
+_:wvb98pzyjd amt:weight "0.99". 
+_:wZ6AXB0LVY rdf:subject rgzm:QnbwlX. 
+_:wZ6AXB0LVY rdf:object rgzm:r6p1A4. 
+_:wZ6AXB0LVY rdf:predicate rgzm:f. 
+_:wZ6AXB0LVY amt:weight "0.99". 
+_:NvyV9Y2dDm rdf:subject rgzm:q2GKkX. 
+_:NvyV9Y2dDm rdf:object rgzm:P0bYBG. 
+_:NvyV9Y2dDm rdf:predicate rgzm:f. 
+_:NvyV9Y2dDm amt:weight "0.95". 
+_:G5Ae2jM67m rdf:subject rgzm:q2GKkX. 
+_:G5Ae2jM67m rdf:object rgzm:Wx75Vv. 
+_:G5Ae2jM67m rdf:predicate rgzm:a. 
+_:G5Ae2jM67m amt:weight "0.95". 
+_:xok5Mgr6kl rdf:subject rgzm:q2GKkX. 
+_:xok5Mgr6kl rdf:object rgzm:P9xykW. 
+_:xok5Mgr6kl rdf:predicate rgzm:f. 
+_:xok5Mgr6kl amt:weight "0.95". 
+_:kO8vORdm7L rdf:subject rgzm:q2GKkX. 
+_:kO8vORdm7L rdf:object rgzm:x6L2lw. 
+_:kO8vORdm7L rdf:predicate rgzm:a. 
+_:kO8vORdm7L amt:weight "0.95". 
+_:l0AlpDVKAe rdf:subject rgzm:q2GKkX. 
+_:l0AlpDVKAe rdf:object rgzm:x5BwXG. 
+_:l0AlpDVKAe rdf:predicate rgzm:f. 
+_:l0AlpDVKAe amt:weight "0.95". 
+_:LOvkY05MrW rdf:subject rgzm:q2GKkX. 
+_:LOvkY05MrW rdf:object rgzm:QnbwlX. 
+_:LOvkY05MrW rdf:predicate rgzm:f. 
+_:LOvkY05MrW amt:weight "0.95". 
+_:LjK0RMYDm9 rdf:subject rgzm:q2GKkX. 
+_:LjK0RMYDm9 rdf:object rgzm:r6p1A4. 
+_:LjK0RMYDm9 rdf:predicate rgzm:f. 
+_:LjK0RMYDm9 amt:weight "0.95". 
+_:qL5ZO6gKmD rdf:subject rgzm:r6p1A4. 
+_:qL5ZO6gKmD rdf:object rgzm:P0bYBG. 
+_:qL5ZO6gKmD rdf:predicate rgzm:f. 
+_:qL5ZO6gKmD amt:weight "0.99". 
+_:jK0VWgyVOv rdf:subject rgzm:r6p1A4. 
+_:jK0VWgyVOv rdf:object rgzm:Wx75Vv. 
+_:jK0VWgyVOv rdf:predicate rgzm:a. 
+_:jK0VWgyVOv amt:weight "0.99". 
+_:MyoNpZGJRO rdf:subject rgzm:r6p1A4. 
+_:MyoNpZGJRO rdf:object rgzm:P9xykW. 
+_:MyoNpZGJRO rdf:predicate rgzm:f. 
+_:MyoNpZGJRO amt:weight "0.99". 
+_:Y379A6o87r rdf:subject rgzm:r6p1A4. 
+_:Y379A6o87r rdf:object rgzm:x6L2lw. 
+_:Y379A6o87r rdf:predicate rgzm:a. 
+_:Y379A6o87r amt:weight "0.99". 
+_:byzJwMOVD4 rdf:subject rgzm:r6p1A4. 
+_:byzJwMOVD4 rdf:object rgzm:x5BwXG. 
+_:byzJwMOVD4 rdf:predicate rgzm:e. 
+_:byzJwMOVD4 amt:weight "0.99". 
+_:Ex4JQpXNZl rdf:subject rgzm:r6p1A4. 
+_:Ex4JQpXNZl rdf:object rgzm:QnbwlX. 
+_:Ex4JQpXNZl rdf:predicate rgzm:fi. 
+_:Ex4JQpXNZl amt:weight "0.99". 
+_:rXlj4eAxZz rdf:subject rgzm:r6p1A4. 
+_:rXlj4eAxZz rdf:object rgzm:q2GKkX. 
+_:rXlj4eAxZz rdf:predicate rgzm:fi. 
+_:rXlj4eAxZz amt:weight "0.99". 
+
+# AMT Ontology - Leonard Edition 
+# http://academic-meta-tool.xyz/ontology 
+amt:Concept rdfs:subClassOf rdfs:Class . 
+amt:Role rdfs:subClassOf rdf:Property . 
+amt:Axiom rdfs:subclassOf rdfs:Class . 
+amt:InferenceAxiom rdfs:subClassOf amt:Axiom . 
+amt:IntegrityAxiom rdfs:subClassOf amt:Axiom . 
+amt:RoleChainAxiom rdfs:subClassOf amt:InferenceAxiom . 
+amt:InverseAxiom rdfs:subClassOf amt:InferenceAxiom . 
+amt:DisjointAxiom rdfs:subClassOf amt:IntegrityAxiom . 
+amt:SelfDisjointAxiom rdfs:subClassOf amt:IntegrityAxiom . 
+amt:Logic rdfs:subClassOf rdfs:Class . 
+amt:LukasiewiczLogic rdf:type amt:Logic . 
+amt:ProductLogic rdf:type amt:Logic . 
+amt:GoedelLogic rdf:type amt:Logic . 
+# time ontology  
+  
+# Concepts  
+rgzm:Event rdf:type amt:Concept .  
+rgzm:Event rdfs:label 'Event' .  
+rgzm:Event amt:placeholder 'name of event' .  
+  
+# Roles  
+rgzm:q rdf:type amt:Role .  
+rgzm:q rdfs:label 'questionmark' .  
+rgzm:q rdfs:domain rgzm:Event .  
+rgzm:q rdfs:range rgzm:Event .  
+rgzm:e rdf:type amt:Role .  
+rgzm:e rdfs:label 'equals' .  
+rgzm:e rdfs:domain rgzm:Event .  
+rgzm:e rdfs:range rgzm:Event .  
+rgzm:b rdf:type amt:Role .  
+rgzm:b rdfs:label 'before' .  
+rgzm:b rdfs:domain rgzm:Event .  
+rgzm:b rdfs:range rgzm:Event .  
+rgzm:a rdf:type amt:Role .  
+rgzm:a rdfs:label 'after' .  
+rgzm:a rdfs:domain rgzm:Event .  
+rgzm:a rdfs:range rgzm:Event .  
+rgzm:d rdf:type amt:Role .  
+rgzm:d rdfs:label 'during' .  
+rgzm:d rdfs:domain rgzm:Event .  
+rgzm:d rdfs:range rgzm:Event .  
+rgzm:di rdf:type amt:Role .  
+rgzm:di rdfs:label 'contains' .  
+rgzm:di rdfs:domain rgzm:Event .  
+rgzm:di rdfs:range rgzm:Event .  
+rgzm:o rdf:type amt:Role .  
+rgzm:o rdfs:label 'overlaps' .  
+rgzm:o rdfs:domain rgzm:Event .  
+rgzm:o rdfs:range rgzm:Event .  
+rgzm:oi rdf:type amt:Role .  
+rgzm:oi rdfs:label 'overlapped-by' .  
+rgzm:oi rdfs:domain rgzm:Event .  
+rgzm:oi rdfs:range rgzm:Event .  
+rgzm:m rdf:type amt:Role .  
+rgzm:m rdfs:label 'meets' .  
+rgzm:m rdfs:domain rgzm:Event .  
+rgzm:m rdfs:range rgzm:Event .  
+rgzm:mi rdf:type amt:Role .  
+rgzm:mi rdfs:label 'met-by' .  
+rgzm:mi rdfs:domain rgzm:Event .  
+rgzm:mi rdfs:range rgzm:Event .  
+rgzm:s rdf:type amt:Role .  
+rgzm:s rdfs:label 'starts' .  
+rgzm:s rdfs:domain rgzm:Event .  
+rgzm:s rdfs:range rgzm:Event .  
+rgzm:si rdf:type amt:Role .  
+rgzm:si rdfs:label 'started-by' .  
+rgzm:si rdfs:domain rgzm:Event .  
+rgzm:si rdfs:range rgzm:Event .  
+rgzm:f rdf:type amt:Role .  
+rgzm:f rdfs:label 'finishes' .  
+rgzm:f rdfs:domain rgzm:Event .  
+rgzm:f rdfs:range rgzm:Event .  
+rgzm:fi rdf:type amt:Role .  
+rgzm:fi rdfs:label 'finished-by' .  
+rgzm:fi rdfs:domain rgzm:Event .  
+rgzm:fi rdfs:range rgzm:Event .  
+rgzm:ol rdf:type amt:Role .  
+rgzm:ol rdfs:label 'older' .  
+rgzm:ol rdfs:domain rgzm:Event .  
+rgzm:ol rdfs:range rgzm:Event .  
+rgzm:yo rdf:type amt:Role .  
+rgzm:yo rdfs:label 'younger' .  
+rgzm:yo rdfs:domain rgzm:Event .  
+rgzm:yo rdfs:range rgzm:Event .  
+rgzm:hh rdf:type amt:Role .  
+rgzm:hh rdfs:label 'head to head with' .  
+rgzm:hh rdfs:domain rgzm:Event .  
+rgzm:hh rdfs:range rgzm:Event .  
+rgzm:tt rdf:type amt:Role .  
+rgzm:tt rdfs:label 'tail to tail with' .  
+rgzm:tt rdfs:domain rgzm:Event .  
+rgzm:tt rdfs:range rgzm:Event .  
+rgzm:sv rdf:type amt:Role .  
+rgzm:sv rdfs:label 'survives' .  
+rgzm:sv rdfs:domain rgzm:Event .  
+rgzm:sv rdfs:range rgzm:Event .  
+rgzm:sb rdf:type amt:Role .  
+rgzm:sb rdfs:label 'survived by' .  
+rgzm:sb rdfs:domain rgzm:Event .  
+rgzm:sb rdfs:range rgzm:Event .  
+rgzm:pr rdf:type amt:Role .  
+rgzm:pr rdfs:label 'precedes' .  
+rgzm:pr rdfs:domain rgzm:Event .  
+rgzm:pr rdfs:range rgzm:Event .  
+rgzm:sd rdf:type amt:Role .  
+rgzm:sd rdfs:label 'succeeds' .  
+rgzm:sd rdfs:domain rgzm:Event .  
+rgzm:sd rdfs:range rgzm:Event .  
+rgzm:bd rdf:type amt:Role .  
+rgzm:bd rdfs:label 'born before death of' .  
+rgzm:bd rdfs:domain rgzm:Event .  
+rgzm:bd rdfs:range rgzm:Event .  
+rgzm:db rdf:type amt:Role .  
+rgzm:db rdfs:label 'died after birth of' .  
+rgzm:db rdfs:domain rgzm:Event .  
+rgzm:db rdfs:range rgzm:Event .  
+rgzm:ob rdf:type amt:Role .  
+rgzm:ob rdfs:label 'older & survived by' .  
+rgzm:ob rdfs:domain rgzm:Event .  
+rgzm:ob rdfs:range rgzm:Event .  
+rgzm:ys rdf:type amt:Role .  
+rgzm:ys rdfs:label 'younger & survives' .  
+rgzm:ys rdfs:domain rgzm:Event .  
+rgzm:ys rdfs:range rgzm:Event .  
+rgzm:sc rdf:type amt:Role .  
+rgzm:sc rdfs:label 'surviving contemporary of' .  
+rgzm:sc rdfs:domain rgzm:Event .  
+rgzm:sc rdfs:range rgzm:Event .  
+rgzm:bc rdf:type amt:Role .  
+rgzm:bc rdfs:label 'survived by contemporary of' .  
+rgzm:bc rdfs:domain rgzm:Event .  
+rgzm:bc rdfs:range rgzm:Event .  
+rgzm:oc rdf:type amt:Role .  
+rgzm:oc rdfs:label 'older contemporary of' .  
+rgzm:oc rdfs:domain rgzm:Event .  
+rgzm:oc rdfs:range rgzm:Event .  
+rgzm:yc rdf:type amt:Role .  
+rgzm:yc rdfs:label 'younger contemporary of' .  
+rgzm:yc rdfs:domain rgzm:Event .  
+rgzm:yc rdfs:range rgzm:Event .  
+rgzm:ct rdf:type amt:Role .  
+rgzm:ct rdfs:label 'contemporary of' .  
+rgzm:ct rdfs:domain rgzm:Event .  
+rgzm:ct rdfs:range rgzm:Event .  
+  
+# InverseAxioms  
+rgzm:IA001 rdf:type amt:InverseAxiom .  
+rgzm:IA001 amt:antecedent rgzm:b .  
+rgzm:IA001 amt:inverse rgzm:a .  
+rgzm:IA002 rdf:type amt:InverseAxiom .  
+rgzm:IA002 amt:antecedent rgzm:a .  
+rgzm:IA002 amt:inverse rgzm:b .  
+rgzm:IA003 rdf:type amt:InverseAxiom .  
+rgzm:IA003 amt:antecedent rgzm:d .  
+rgzm:IA003 amt:inverse rgzm:di .  
+rgzm:IA004 rdf:type amt:InverseAxiom .  
+rgzm:IA004 amt:antecedent rgzm:di .  
+rgzm:IA004 amt:inverse rgzm:d .  
+rgzm:IA005 rdf:type amt:InverseAxiom .  
+rgzm:IA005 amt:antecedent rgzm:o .  
+rgzm:IA005 amt:inverse rgzm:oi .  
+rgzm:IA006 rdf:type amt:InverseAxiom .  
+rgzm:IA006 amt:antecedent rgzm:oi .  
+rgzm:IA006 amt:inverse rgzm:o .  
+rgzm:IA007 rdf:type amt:InverseAxiom .  
+rgzm:IA007 amt:antecedent rgzm:m .  
+rgzm:IA007 amt:inverse rgzm:mi .  
+rgzm:IA008 rdf:type amt:InverseAxiom .  
+rgzm:IA008 amt:antecedent rgzm:mi .  
+rgzm:IA008 amt:inverse rgzm:m .  
+rgzm:IA009 rdf:type amt:InverseAxiom .  
+rgzm:IA009 amt:antecedent rgzm:s .  
+rgzm:IA009 amt:inverse rgzm:si .  
+rgzm:IA010 rdf:type amt:InverseAxiom .  
+rgzm:IA010 amt:antecedent rgzm:si .  
+rgzm:IA010 amt:inverse rgzm:s .  
+rgzm:IA011 rdf:type amt:InverseAxiom .  
+rgzm:IA011 amt:antecedent rgzm:f .  
+rgzm:IA011 amt:inverse rgzm:fi .  
+rgzm:IA012 rdf:type amt:InverseAxiom .  
+rgzm:IA012 amt:antecedent rgzm:fi .  
+rgzm:IA012 amt:inverse rgzm:f .  
+rgzm:IA013 rdf:type amt:InverseAxiom .  
+rgzm:IA013 amt:antecedent rgzm:ol .  
+rgzm:IA013 amt:inverse rgzm:yo .  
+rgzm:IA014 rdf:type amt:InverseAxiom .  
+rgzm:IA014 amt:antecedent rgzm:yo .  
+rgzm:IA014 amt:inverse rgzm:ol .  
+rgzm:IA015 rdf:type amt:InverseAxiom .  
+rgzm:IA015 amt:antecedent rgzm:hh .  
+rgzm:IA015 amt:inverse rgzm:tt .  
+rgzm:IA016 rdf:type amt:InverseAxiom .  
+rgzm:IA016 amt:antecedent rgzm:tt .  
+rgzm:IA016 amt:inverse rgzm:hh .  
+rgzm:IA017 rdf:type amt:InverseAxiom .  
+rgzm:IA017 amt:antecedent rgzm:sv .  
+rgzm:IA017 amt:inverse rgzm:sb .  
+rgzm:IA018 rdf:type amt:InverseAxiom .  
+rgzm:IA018 amt:antecedent rgzm:sb .  
+rgzm:IA018 amt:inverse rgzm:sv .  
+rgzm:IA019 rdf:type amt:InverseAxiom .  
+rgzm:IA019 amt:antecedent rgzm:pr .  
+rgzm:IA019 amt:inverse rgzm:sd .  
+rgzm:IA020 rdf:type amt:InverseAxiom .  
+rgzm:IA020 amt:antecedent rgzm:sd .  
+rgzm:IA020 amt:inverse rgzm:pr .  
+rgzm:IA021 rdf:type amt:InverseAxiom .  
+rgzm:IA021 amt:antecedent rgzm:bd .  
+rgzm:IA021 amt:inverse rgzm:db .  
+rgzm:IA022 rdf:type amt:InverseAxiom .  
+rgzm:IA022 amt:antecedent rgzm:db .  
+rgzm:IA022 amt:inverse rgzm:bd .  
+rgzm:IA023 rdf:type amt:InverseAxiom .  
+rgzm:IA023 amt:antecedent rgzm:ob .  
+rgzm:IA023 amt:inverse rgzm:ys .  
+rgzm:IA024 rdf:type amt:InverseAxiom .  
+rgzm:IA024 amt:antecedent rgzm:ys .  
+rgzm:IA024 amt:inverse rgzm:ob .  
+rgzm:IA025 rdf:type amt:InverseAxiom .  
+rgzm:IA025 amt:antecedent rgzm:sc .  
+rgzm:IA025 amt:inverse rgzm:bc .  
+rgzm:IA026 rdf:type amt:InverseAxiom .  
+rgzm:IA026 amt:antecedent rgzm:bc .  
+rgzm:IA026 amt:inverse rgzm:sc .  
+rgzm:IA027 rdf:type amt:InverseAxiom .  
+rgzm:IA027 amt:antecedent rgzm:oc .  
+rgzm:IA027 amt:inverse rgzm:yc .  
+rgzm:IA028 rdf:type amt:InverseAxiom .  
+rgzm:IA028 amt:antecedent rgzm:yc .  
+rgzm:IA028 amt:inverse rgzm:oc .  
+  
+# SelfDisjointAxioms  
+rgzm:SDA001 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA001 amt:role rgzm:q .  
+rgzm:SDA002 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA002 amt:role rgzm:e .  
+rgzm:SDA003 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA003 amt:role rgzm:b .  
+rgzm:SDA004 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA004 amt:role rgzm:a .  
+rgzm:SDA005 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA005 amt:role rgzm:d .  
+rgzm:SDA006 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA006 amt:role rgzm:di .  
+rgzm:SDA007 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA007 amt:role rgzm:o .  
+rgzm:SDA008 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA008 amt:role rgzm:oi .  
+rgzm:SDA009 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA009 amt:role rgzm:m .  
+rgzm:SDA010 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA010 amt:role rgzm:mi .  
+rgzm:SDA011 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA011 amt:role rgzm:s .  
+rgzm:SDA012 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA012 amt:role rgzm:si .  
+rgzm:SDA013 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA013 amt:role rgzm:f .  
+rgzm:SDA014 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA014 amt:role rgzm:fi .  
+rgzm:SDA015 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA015 amt:role rgzm:ol .  
+rgzm:SDA016 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA016 amt:role rgzm:yo .  
+rgzm:SDA017 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA017 amt:role rgzm:hh .  
+rgzm:SDA018 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA018 amt:role rgzm:tt .  
+rgzm:SDA019 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA019 amt:role rgzm:sv .  
+rgzm:SDA020 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA020 amt:role rgzm:sb .  
+rgzm:SDA021 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA021 amt:role rgzm:pr .  
+rgzm:SDA022 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA022 amt:role rgzm:sd .  
+rgzm:SDA023 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA023 amt:role rgzm:bd .  
+rgzm:SDA024 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA024 amt:role rgzm:db .  
+rgzm:SDA025 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA025 amt:role rgzm:ob .  
+rgzm:SDA026 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA026 amt:role rgzm:ys .  
+rgzm:SDA027 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA027 amt:role rgzm:sc .  
+rgzm:SDA028 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA028 amt:role rgzm:bc .  
+rgzm:SDA029 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA029 amt:role rgzm:oc .  
+rgzm:SDA030 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA030 amt:role rgzm:yc .  
+rgzm:SDA031 rdf:type amt:SelfDisjointAxiom .  
+rgzm:SDA031 amt:role rgzm:ct .  
+  
+# DisjointAxioms  
+rgzm:DA001 rdf:type amt:DisjointAxiom .  
+rgzm:DA001 amt:role1 rgzm:a .  
+rgzm:DA001 amt:role2 rgzm:b .  
+rgzm:DA002 rdf:type amt:DisjointAxiom .  
+rgzm:DA002 amt:role1 rgzm:b .  
+rgzm:DA002 amt:role2 rgzm:a .  
+rgzm:DA003 rdf:type amt:DisjointAxiom .  
+rgzm:DA003 amt:role1 rgzm:mi .  
+rgzm:DA003 amt:role2 rgzm:m .  
+rgzm:DA004 rdf:type amt:DisjointAxiom .  
+rgzm:DA004 amt:role1 rgzm:m .  
+rgzm:DA004 amt:role2 rgzm:mi .  
+rgzm:DA005 rdf:type amt:DisjointAxiom .  
+rgzm:DA005 amt:role1 rgzm:sd .  
+rgzm:DA005 amt:role2 rgzm:pr .  
+rgzm:DA006 rdf:type amt:DisjointAxiom .  
+rgzm:DA006 amt:role1 rgzm:pr .  
+rgzm:DA006 amt:role2 rgzm:sd .  
+  
+# RoleChainAxioms  
+  
+rgzm:RCA0001 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0001 amt:antecedent1 rgzm:b .  
+rgzm:RCA0001 amt:antecedent2 rgzm:b .  
+rgzm:RCA0001 amt:consequent rgzm:b .  
+rgzm:RCA0001 amt:logic amt:ProductLogic .  
+rgzm:RCA0002 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0002 amt:antecedent1 rgzm:b .  
+rgzm:RCA0002 amt:antecedent2 rgzm:m .  
+rgzm:RCA0002 amt:consequent rgzm:b .  
+rgzm:RCA0002 amt:logic amt:ProductLogic .  
+rgzm:RCA0003 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0003 amt:antecedent1 rgzm:b .  
+rgzm:RCA0003 amt:antecedent2 rgzm:o .  
+rgzm:RCA0003 amt:consequent rgzm:b .  
+rgzm:RCA0003 amt:logic amt:ProductLogic .  
+rgzm:RCA0004 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0004 amt:antecedent1 rgzm:b .  
+rgzm:RCA0004 amt:antecedent2 rgzm:fi .  
+rgzm:RCA0004 amt:consequent rgzm:b .  
+rgzm:RCA0004 amt:logic amt:ProductLogic .  
+rgzm:RCA0005 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0005 amt:antecedent1 rgzm:b .  
+rgzm:RCA0005 amt:antecedent2 rgzm:di .  
+rgzm:RCA0005 amt:consequent rgzm:b .  
+rgzm:RCA0005 amt:logic amt:ProductLogic .  
+rgzm:RCA0006 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0006 amt:antecedent1 rgzm:b .  
+rgzm:RCA0006 amt:antecedent2 rgzm:si .  
+rgzm:RCA0006 amt:consequent rgzm:b .  
+rgzm:RCA0006 amt:logic amt:ProductLogic .  
+rgzm:RCA0007 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0007 amt:antecedent1 rgzm:b .  
+rgzm:RCA0007 amt:antecedent2 rgzm:e .  
+rgzm:RCA0007 amt:consequent rgzm:b .  
+rgzm:RCA0007 amt:logic amt:ProductLogic .  
+rgzm:RCA0008 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0008 amt:antecedent1 rgzm:b .  
+rgzm:RCA0008 amt:antecedent2 rgzm:s .  
+rgzm:RCA0008 amt:consequent rgzm:b .  
+rgzm:RCA0008 amt:logic amt:ProductLogic .  
+rgzm:RCA0013 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0013 amt:antecedent1 rgzm:b .  
+rgzm:RCA0013 amt:antecedent2 rgzm:a .  
+rgzm:RCA0013 amt:consequent rgzm:q .  
+rgzm:RCA0013 amt:logic amt:ProductLogic .  
+rgzm:RCA0014 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0014 amt:antecedent1 rgzm:b .  
+rgzm:RCA0014 amt:antecedent2 rgzm:q .  
+rgzm:RCA0014 amt:consequent rgzm:q .  
+rgzm:RCA0014 amt:logic amt:ProductLogic .  
+rgzm:RCA0015 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0015 amt:antecedent1 rgzm:m .  
+rgzm:RCA0015 amt:antecedent2 rgzm:b .  
+rgzm:RCA0015 amt:consequent rgzm:b .  
+rgzm:RCA0015 amt:logic amt:ProductLogic .  
+rgzm:RCA0016 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0016 amt:antecedent1 rgzm:m .  
+rgzm:RCA0016 amt:antecedent2 rgzm:m .  
+rgzm:RCA0016 amt:consequent rgzm:b .  
+rgzm:RCA0016 amt:logic amt:ProductLogic .  
+rgzm:RCA0017 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0017 amt:antecedent1 rgzm:m .  
+rgzm:RCA0017 amt:antecedent2 rgzm:o .  
+rgzm:RCA0017 amt:consequent rgzm:b .  
+rgzm:RCA0017 amt:logic amt:ProductLogic .  
+rgzm:RCA0018 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0018 amt:antecedent1 rgzm:m .  
+rgzm:RCA0018 amt:antecedent2 rgzm:fi .  
+rgzm:RCA0018 amt:consequent rgzm:b .  
+rgzm:RCA0018 amt:logic amt:ProductLogic .  
+rgzm:RCA0019 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0019 amt:antecedent1 rgzm:m .  
+rgzm:RCA0019 amt:antecedent2 rgzm:di .  
+rgzm:RCA0019 amt:consequent rgzm:b .  
+rgzm:RCA0019 amt:logic amt:ProductLogic .  
+rgzm:RCA0020 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0020 amt:antecedent1 rgzm:m .  
+rgzm:RCA0020 amt:antecedent2 rgzm:si .  
+rgzm:RCA0020 amt:consequent rgzm:m .  
+rgzm:RCA0020 amt:logic amt:ProductLogic .  
+rgzm:RCA0021 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0021 amt:antecedent1 rgzm:m .  
+rgzm:RCA0021 amt:antecedent2 rgzm:e .  
+rgzm:RCA0021 amt:consequent rgzm:m .  
+rgzm:RCA0021 amt:logic amt:ProductLogic .  
+rgzm:RCA0022 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0022 amt:antecedent1 rgzm:m .  
+rgzm:RCA0022 amt:antecedent2 rgzm:s .  
+rgzm:RCA0022 amt:consequent rgzm:m .  
+rgzm:RCA0022 amt:logic amt:ProductLogic .  
+rgzm:RCA0028 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0028 amt:antecedent1 rgzm:m .  
+rgzm:RCA0028 amt:antecedent2 rgzm:q .  
+rgzm:RCA0028 amt:consequent rgzm:q .  
+rgzm:RCA0028 amt:logic amt:ProductLogic .  
+rgzm:RCA0029 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0029 amt:antecedent1 rgzm:o .  
+rgzm:RCA0029 amt:antecedent2 rgzm:b .  
+rgzm:RCA0029 amt:consequent rgzm:b .  
+rgzm:RCA0029 amt:logic amt:ProductLogic .  
+rgzm:RCA0030 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0030 amt:antecedent1 rgzm:o .  
+rgzm:RCA0030 amt:antecedent2 rgzm:m .  
+rgzm:RCA0030 amt:consequent rgzm:b .  
+rgzm:RCA0030 amt:logic amt:ProductLogic .  
+rgzm:RCA0035 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0035 amt:antecedent1 rgzm:o .  
+rgzm:RCA0035 amt:antecedent2 rgzm:e .  
+rgzm:RCA0035 amt:consequent rgzm:o .  
+rgzm:RCA0035 amt:logic amt:ProductLogic .  
+rgzm:RCA0036 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0036 amt:antecedent1 rgzm:o .  
+rgzm:RCA0036 amt:antecedent2 rgzm:s .  
+rgzm:RCA0036 amt:consequent rgzm:o .  
+rgzm:RCA0036 amt:logic amt:ProductLogic .  
+rgzm:RCA0042 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0042 amt:antecedent1 rgzm:o .  
+rgzm:RCA0042 amt:antecedent2 rgzm:q .  
+rgzm:RCA0042 amt:consequent rgzm:q .  
+rgzm:RCA0042 amt:logic amt:ProductLogic .  
+rgzm:RCA0043 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0043 amt:antecedent1 rgzm:fi .  
+rgzm:RCA0043 amt:antecedent2 rgzm:b .  
+rgzm:RCA0043 amt:consequent rgzm:b .  
+rgzm:RCA0043 amt:logic amt:ProductLogic .  
+rgzm:RCA0044 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0044 amt:antecedent1 rgzm:fi .  
+rgzm:RCA0044 amt:antecedent2 rgzm:m .  
+rgzm:RCA0044 amt:consequent rgzm:m .  
+rgzm:RCA0044 amt:logic amt:ProductLogic .  
+rgzm:RCA0046 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0046 amt:antecedent1 rgzm:fi .  
+rgzm:RCA0046 amt:antecedent2 rgzm:fi .  
+rgzm:RCA0046 amt:consequent rgzm:fi .  
+rgzm:RCA0046 amt:logic amt:ProductLogic .  
+rgzm:RCA0047 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0047 amt:antecedent1 rgzm:fi .  
+rgzm:RCA0047 amt:antecedent2 rgzm:di .  
+rgzm:RCA0047 amt:consequent rgzm:di .  
+rgzm:RCA0047 amt:logic amt:ProductLogic .  
+rgzm:RCA0048 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0048 amt:antecedent1 rgzm:fi .  
+rgzm:RCA0048 amt:antecedent2 rgzm:si .  
+rgzm:RCA0048 amt:consequent rgzm:di .  
+rgzm:RCA0048 amt:logic amt:ProductLogic .  
+rgzm:RCA0049 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0049 amt:antecedent1 rgzm:fi .  
+rgzm:RCA0049 amt:antecedent2 rgzm:e .  
+rgzm:RCA0049 amt:consequent rgzm:fi .  
+rgzm:RCA0049 amt:logic amt:ProductLogic .  
+rgzm:RCA0050 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0050 amt:antecedent1 rgzm:fi .  
+rgzm:RCA0050 amt:antecedent2 rgzm:s .  
+rgzm:RCA0050 amt:consequent rgzm:o .  
+rgzm:RCA0050 amt:logic amt:ProductLogic .  
+rgzm:RCA0056 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0056 amt:antecedent1 rgzm:fi .  
+rgzm:RCA0056 amt:antecedent2 rgzm:q .  
+rgzm:RCA0056 amt:consequent rgzm:q .  
+rgzm:RCA0056 amt:logic amt:ProductLogic .  
+rgzm:RCA0060 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0060 amt:antecedent1 rgzm:di .  
+rgzm:RCA0060 amt:antecedent2 rgzm:fi .  
+rgzm:RCA0060 amt:consequent rgzm:di .  
+rgzm:RCA0060 amt:logic amt:ProductLogic .  
+rgzm:RCA0061 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0061 amt:antecedent1 rgzm:di .  
+rgzm:RCA0061 amt:antecedent2 rgzm:di .  
+rgzm:RCA0061 amt:consequent rgzm:di .  
+rgzm:RCA0061 amt:logic amt:ProductLogic .  
+rgzm:RCA0062 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0062 amt:antecedent1 rgzm:di .  
+rgzm:RCA0062 amt:antecedent2 rgzm:si .  
+rgzm:RCA0062 amt:consequent rgzm:di .  
+rgzm:RCA0062 amt:logic amt:ProductLogic .  
+rgzm:RCA0063 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0063 amt:antecedent1 rgzm:di .  
+rgzm:RCA0063 amt:antecedent2 rgzm:e .  
+rgzm:RCA0063 amt:consequent rgzm:di .  
+rgzm:RCA0063 amt:logic amt:ProductLogic .  
+rgzm:RCA0070 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0070 amt:antecedent1 rgzm:di .  
+rgzm:RCA0070 amt:antecedent2 rgzm:q .  
+rgzm:RCA0070 amt:consequent rgzm:q .  
+rgzm:RCA0070 amt:logic amt:ProductLogic .  
+rgzm:RCA0074 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0074 amt:antecedent1 rgzm:si .  
+rgzm:RCA0074 amt:antecedent2 rgzm:fi .  
+rgzm:RCA0074 amt:consequent rgzm:di .  
+rgzm:RCA0074 amt:logic amt:ProductLogic .  
+rgzm:RCA0075 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0075 amt:antecedent1 rgzm:si .  
+rgzm:RCA0075 amt:antecedent2 rgzm:di .  
+rgzm:RCA0075 amt:consequent rgzm:di .  
+rgzm:RCA0075 amt:logic amt:ProductLogic .  
+rgzm:RCA0076 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0076 amt:antecedent1 rgzm:si .  
+rgzm:RCA0076 amt:antecedent2 rgzm:si .  
+rgzm:RCA0076 amt:consequent rgzm:si .  
+rgzm:RCA0076 amt:logic amt:ProductLogic .  
+rgzm:RCA0077 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0077 amt:antecedent1 rgzm:si .  
+rgzm:RCA0077 amt:antecedent2 rgzm:e .  
+rgzm:RCA0077 amt:consequent rgzm:si .  
+rgzm:RCA0077 amt:logic amt:ProductLogic .  
+rgzm:RCA0080 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0080 amt:antecedent1 rgzm:si .  
+rgzm:RCA0080 amt:antecedent2 rgzm:f .  
+rgzm:RCA0080 amt:consequent rgzm:oi .  
+rgzm:RCA0080 amt:logic amt:ProductLogic .  
+rgzm:RCA0081 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0081 amt:antecedent1 rgzm:si .  
+rgzm:RCA0081 amt:antecedent2 rgzm:oi .  
+rgzm:RCA0081 amt:consequent rgzm:oi .  
+rgzm:RCA0081 amt:logic amt:ProductLogic .  
+rgzm:RCA0082 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0082 amt:antecedent1 rgzm:si .  
+rgzm:RCA0082 amt:antecedent2 rgzm:mi .  
+rgzm:RCA0082 amt:consequent rgzm:mi .  
+rgzm:RCA0082 amt:logic amt:ProductLogic .  
+rgzm:RCA0083 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0083 amt:antecedent1 rgzm:si .  
+rgzm:RCA0083 amt:antecedent2 rgzm:a .  
+rgzm:RCA0083 amt:consequent rgzm:a .  
+rgzm:RCA0083 amt:logic amt:ProductLogic .  
+rgzm:RCA0084 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0084 amt:antecedent1 rgzm:si .  
+rgzm:RCA0084 amt:antecedent2 rgzm:q .  
+rgzm:RCA0084 amt:consequent rgzm:q .  
+rgzm:RCA0084 amt:logic amt:ProductLogic .  
+rgzm:RCA0085 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0085 amt:antecedent1 rgzm:e .  
+rgzm:RCA0085 amt:antecedent2 rgzm:b .  
+rgzm:RCA0085 amt:consequent rgzm:b .  
+rgzm:RCA0085 amt:logic amt:ProductLogic .  
+rgzm:RCA0086 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0086 amt:antecedent1 rgzm:e .  
+rgzm:RCA0086 amt:antecedent2 rgzm:m .  
+rgzm:RCA0086 amt:consequent rgzm:m .  
+rgzm:RCA0086 amt:logic amt:ProductLogic .  
+rgzm:RCA0087 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0087 amt:antecedent1 rgzm:e .  
+rgzm:RCA0087 amt:antecedent2 rgzm:o .  
+rgzm:RCA0087 amt:consequent rgzm:o .  
+rgzm:RCA0087 amt:logic amt:ProductLogic .  
+rgzm:RCA0088 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0088 amt:antecedent1 rgzm:e .  
+rgzm:RCA0088 amt:antecedent2 rgzm:fi .  
+rgzm:RCA0088 amt:consequent rgzm:fi .  
+rgzm:RCA0088 amt:logic amt:ProductLogic .  
+rgzm:RCA0089 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0089 amt:antecedent1 rgzm:e .  
+rgzm:RCA0089 amt:antecedent2 rgzm:di .  
+rgzm:RCA0089 amt:consequent rgzm:di .  
+rgzm:RCA0089 amt:logic amt:ProductLogic .  
+rgzm:RCA0090 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0090 amt:antecedent1 rgzm:e .  
+rgzm:RCA0090 amt:antecedent2 rgzm:si .  
+rgzm:RCA0090 amt:consequent rgzm:si .  
+rgzm:RCA0090 amt:logic amt:ProductLogic .  
+rgzm:RCA0091 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0091 amt:antecedent1 rgzm:e .  
+rgzm:RCA0091 amt:antecedent2 rgzm:e .  
+rgzm:RCA0091 amt:consequent rgzm:e .  
+rgzm:RCA0091 amt:logic amt:ProductLogic .  
+rgzm:RCA0092 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0092 amt:antecedent1 rgzm:e .  
+rgzm:RCA0092 amt:antecedent2 rgzm:s .  
+rgzm:RCA0092 amt:consequent rgzm:s .  
+rgzm:RCA0092 amt:logic amt:ProductLogic .  
+rgzm:RCA0093 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0093 amt:antecedent1 rgzm:e .  
+rgzm:RCA0093 amt:antecedent2 rgzm:d .  
+rgzm:RCA0093 amt:consequent rgzm:d .  
+rgzm:RCA0093 amt:logic amt:ProductLogic .  
+rgzm:RCA0094 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0094 amt:antecedent1 rgzm:e .  
+rgzm:RCA0094 amt:antecedent2 rgzm:f .  
+rgzm:RCA0094 amt:consequent rgzm:f .  
+rgzm:RCA0094 amt:logic amt:ProductLogic .  
+rgzm:RCA0095 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0095 amt:antecedent1 rgzm:e .  
+rgzm:RCA0095 amt:antecedent2 rgzm:oi .  
+rgzm:RCA0095 amt:consequent rgzm:oi .  
+rgzm:RCA0095 amt:logic amt:ProductLogic .  
+rgzm:RCA0096 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0096 amt:antecedent1 rgzm:e .  
+rgzm:RCA0096 amt:antecedent2 rgzm:mi .  
+rgzm:RCA0096 amt:consequent rgzm:mi .  
+rgzm:RCA0096 amt:logic amt:ProductLogic .  
+rgzm:RCA0097 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0097 amt:antecedent1 rgzm:e .  
+rgzm:RCA0097 amt:antecedent2 rgzm:a .  
+rgzm:RCA0097 amt:consequent rgzm:a .  
+rgzm:RCA0097 amt:logic amt:ProductLogic .  
+rgzm:RCA0098 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0098 amt:antecedent1 rgzm:e .  
+rgzm:RCA0098 amt:antecedent2 rgzm:q .  
+rgzm:RCA0098 amt:consequent rgzm:q .  
+rgzm:RCA0098 amt:logic amt:ProductLogic .  
+rgzm:RCA0099 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0099 amt:antecedent1 rgzm:s .  
+rgzm:RCA0099 amt:antecedent2 rgzm:b .  
+rgzm:RCA0099 amt:consequent rgzm:b .  
+rgzm:RCA0099 amt:logic amt:ProductLogic .  
+rgzm:RCA0100 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0100 amt:antecedent1 rgzm:s .  
+rgzm:RCA0100 amt:antecedent2 rgzm:m .  
+rgzm:RCA0100 amt:consequent rgzm:b .  
+rgzm:RCA0100 amt:logic amt:ProductLogic .  
+rgzm:RCA0105 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0105 amt:antecedent1 rgzm:s .  
+rgzm:RCA0105 amt:antecedent2 rgzm:e .  
+rgzm:RCA0105 amt:consequent rgzm:si .  
+rgzm:RCA0105 amt:logic amt:ProductLogic .  
+rgzm:RCA0106 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0106 amt:antecedent1 rgzm:s .  
+rgzm:RCA0106 amt:antecedent2 rgzm:s .  
+rgzm:RCA0106 amt:consequent rgzm:s .  
+rgzm:RCA0106 amt:logic amt:ProductLogic .  
+rgzm:RCA0107 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0107 amt:antecedent1 rgzm:s .  
+rgzm:RCA0107 amt:antecedent2 rgzm:d .  
+rgzm:RCA0107 amt:consequent rgzm:d .  
+rgzm:RCA0107 amt:logic amt:ProductLogic .  
+rgzm:RCA0108 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0108 amt:antecedent1 rgzm:s .  
+rgzm:RCA0108 amt:antecedent2 rgzm:f .  
+rgzm:RCA0108 amt:consequent rgzm:d .  
+rgzm:RCA0108 amt:logic amt:ProductLogic .  
+rgzm:RCA0110 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0110 amt:antecedent1 rgzm:s .  
+rgzm:RCA0110 amt:antecedent2 rgzm:mi .  
+rgzm:RCA0110 amt:consequent rgzm:mi .  
+rgzm:RCA0110 amt:logic amt:ProductLogic .  
+rgzm:RCA0111 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0111 amt:antecedent1 rgzm:s .  
+rgzm:RCA0111 amt:antecedent2 rgzm:a .  
+rgzm:RCA0111 amt:consequent rgzm:a .  
+rgzm:RCA0111 amt:logic amt:ProductLogic .  
+rgzm:RCA0112 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0112 amt:antecedent1 rgzm:s .  
+rgzm:RCA0112 amt:antecedent2 rgzm:q .  
+rgzm:RCA0112 amt:consequent rgzm:q .  
+rgzm:RCA0112 amt:logic amt:ProductLogic .  
+rgzm:RCA0113 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0113 amt:antecedent1 rgzm:d .  
+rgzm:RCA0113 amt:antecedent2 rgzm:b .  
+rgzm:RCA0113 amt:consequent rgzm:b .  
+rgzm:RCA0113 amt:logic amt:ProductLogic .  
+rgzm:RCA0114 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0114 amt:antecedent1 rgzm:d .  
+rgzm:RCA0114 amt:antecedent2 rgzm:m .  
+rgzm:RCA0114 amt:consequent rgzm:b .  
+rgzm:RCA0114 amt:logic amt:ProductLogic .  
+rgzm:RCA0117 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0117 amt:antecedent1 rgzm:d .  
+rgzm:RCA0117 amt:antecedent2 rgzm:di .  
+rgzm:RCA0117 amt:consequent rgzm:q .  
+rgzm:RCA0117 amt:logic amt:ProductLogic .  
+rgzm:RCA0119 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0119 amt:antecedent1 rgzm:d .  
+rgzm:RCA0119 amt:antecedent2 rgzm:e .  
+rgzm:RCA0119 amt:consequent rgzm:di .  
+rgzm:RCA0119 amt:logic amt:ProductLogic .  
+rgzm:RCA0120 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0120 amt:antecedent1 rgzm:d .  
+rgzm:RCA0120 amt:antecedent2 rgzm:s .  
+rgzm:RCA0120 amt:consequent rgzm:d .  
+rgzm:RCA0120 amt:logic amt:ProductLogic .  
+rgzm:RCA0121 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0121 amt:antecedent1 rgzm:d .  
+rgzm:RCA0121 amt:antecedent2 rgzm:d .  
+rgzm:RCA0121 amt:consequent rgzm:d .  
+rgzm:RCA0121 amt:logic amt:ProductLogic .  
+rgzm:RCA0122 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0122 amt:antecedent1 rgzm:d .  
+rgzm:RCA0122 amt:antecedent2 rgzm:f .  
+rgzm:RCA0122 amt:consequent rgzm:d .  
+rgzm:RCA0122 amt:logic amt:ProductLogic .  
+rgzm:RCA0124 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0124 amt:antecedent1 rgzm:d .  
+rgzm:RCA0124 amt:antecedent2 rgzm:mi .  
+rgzm:RCA0124 amt:consequent rgzm:a .  
+rgzm:RCA0124 amt:logic amt:ProductLogic .  
+rgzm:RCA0125 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0125 amt:antecedent1 rgzm:d .  
+rgzm:RCA0125 amt:antecedent2 rgzm:a .  
+rgzm:RCA0125 amt:consequent rgzm:a .  
+rgzm:RCA0125 amt:logic amt:ProductLogic .  
+rgzm:RCA0126 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0126 amt:antecedent1 rgzm:d .  
+rgzm:RCA0126 amt:antecedent2 rgzm:q .  
+rgzm:RCA0126 amt:consequent rgzm:q .  
+rgzm:RCA0126 amt:logic amt:ProductLogic .  
+rgzm:RCA0127 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0127 amt:antecedent1 rgzm:f .  
+rgzm:RCA0127 amt:antecedent2 rgzm:b .  
+rgzm:RCA0127 amt:consequent rgzm:b .  
+rgzm:RCA0127 amt:logic amt:ProductLogic .  
+rgzm:RCA0128 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0128 amt:antecedent1 rgzm:f .  
+rgzm:RCA0128 amt:antecedent2 rgzm:m .  
+rgzm:RCA0128 amt:consequent rgzm:m .  
+rgzm:RCA0128 amt:logic amt:ProductLogic .  
+rgzm:RCA0133 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0133 amt:antecedent1 rgzm:f .  
+rgzm:RCA0133 amt:antecedent2 rgzm:e .  
+rgzm:RCA0133 amt:consequent rgzm:fi .  
+rgzm:RCA0133 amt:logic amt:ProductLogic .  
+rgzm:RCA0134 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0134 amt:antecedent1 rgzm:f .  
+rgzm:RCA0134 amt:antecedent2 rgzm:s .  
+rgzm:RCA0134 amt:consequent rgzm:d .  
+rgzm:RCA0134 amt:logic amt:ProductLogic .  
+rgzm:RCA0135 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0135 amt:antecedent1 rgzm:f .  
+rgzm:RCA0135 amt:antecedent2 rgzm:d .  
+rgzm:RCA0135 amt:consequent rgzm:d .  
+rgzm:RCA0135 amt:logic amt:ProductLogic .  
+rgzm:RCA0136 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0136 amt:antecedent1 rgzm:f .  
+rgzm:RCA0136 amt:antecedent2 rgzm:f .  
+rgzm:RCA0136 amt:consequent rgzm:f .  
+rgzm:RCA0136 amt:logic amt:ProductLogic .  
+rgzm:RCA0138 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0138 amt:antecedent1 rgzm:f .  
+rgzm:RCA0138 amt:antecedent2 rgzm:mi .  
+rgzm:RCA0138 amt:consequent rgzm:a .  
+rgzm:RCA0138 amt:logic amt:ProductLogic .  
+rgzm:RCA0139 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0139 amt:antecedent1 rgzm:f .  
+rgzm:RCA0139 amt:antecedent2 rgzm:a .  
+rgzm:RCA0139 amt:consequent rgzm:a .  
+rgzm:RCA0139 amt:logic amt:ProductLogic .  
+rgzm:RCA0140 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0140 amt:antecedent1 rgzm:f .  
+rgzm:RCA0140 amt:antecedent2 rgzm:q .  
+rgzm:RCA0140 amt:consequent rgzm:q .  
+rgzm:RCA0140 amt:logic amt:ProductLogic .  
+rgzm:RCA0147 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0147 amt:antecedent1 rgzm:oi .  
+rgzm:RCA0147 amt:antecedent2 rgzm:e .  
+rgzm:RCA0147 amt:consequent rgzm:oi .  
+rgzm:RCA0147 amt:logic amt:ProductLogic .  
+rgzm:RCA0150 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0150 amt:antecedent1 rgzm:oi .  
+rgzm:RCA0150 amt:antecedent2 rgzm:f .  
+rgzm:RCA0150 amt:consequent rgzm:oi .  
+rgzm:RCA0150 amt:logic amt:ProductLogic .  
+rgzm:RCA0152 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0152 amt:antecedent1 rgzm:oi .  
+rgzm:RCA0152 amt:antecedent2 rgzm:mi .  
+rgzm:RCA0152 amt:consequent rgzm:a .  
+rgzm:RCA0152 amt:logic amt:ProductLogic .  
+rgzm:RCA0153 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0153 amt:antecedent1 rgzm:oi .  
+rgzm:RCA0153 amt:antecedent2 rgzm:a .  
+rgzm:RCA0153 amt:consequent rgzm:a .  
+rgzm:RCA0153 amt:logic amt:ProductLogic .  
+rgzm:RCA0154 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0154 amt:antecedent1 rgzm:oi .  
+rgzm:RCA0154 amt:antecedent2 rgzm:q .  
+rgzm:RCA0154 amt:consequent rgzm:q .  
+rgzm:RCA0154 amt:logic amt:ProductLogic .  
+rgzm:RCA0158 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0158 amt:antecedent1 rgzm:mi .  
+rgzm:RCA0158 amt:antecedent2 rgzm:fi .  
+rgzm:RCA0158 amt:consequent rgzm:mi .  
+rgzm:RCA0158 amt:logic amt:ProductLogic .  
+rgzm:RCA0159 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0159 amt:antecedent1 rgzm:mi .  
+rgzm:RCA0159 amt:antecedent2 rgzm:di .  
+rgzm:RCA0159 amt:consequent rgzm:a .  
+rgzm:RCA0159 amt:logic amt:ProductLogic .  
+rgzm:RCA0160 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0160 amt:antecedent1 rgzm:mi .  
+rgzm:RCA0160 amt:antecedent2 rgzm:si .  
+rgzm:RCA0160 amt:consequent rgzm:a .  
+rgzm:RCA0160 amt:logic amt:ProductLogic .  
+rgzm:RCA0161 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0161 amt:antecedent1 rgzm:mi .  
+rgzm:RCA0161 amt:antecedent2 rgzm:e .  
+rgzm:RCA0161 amt:consequent rgzm:mi .  
+rgzm:RCA0161 amt:logic amt:ProductLogic .  
+rgzm:RCA0164 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0164 amt:antecedent1 rgzm:mi .  
+rgzm:RCA0164 amt:antecedent2 rgzm:f .  
+rgzm:RCA0164 amt:consequent rgzm:mi .  
+rgzm:RCA0164 amt:logic amt:ProductLogic .  
+rgzm:RCA0165 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0165 amt:antecedent1 rgzm:mi .  
+rgzm:RCA0165 amt:antecedent2 rgzm:oi .  
+rgzm:RCA0165 amt:consequent rgzm:a .  
+rgzm:RCA0165 amt:logic amt:ProductLogic .  
+rgzm:RCA0166 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0166 amt:antecedent1 rgzm:mi .  
+rgzm:RCA0166 amt:antecedent2 rgzm:mi .  
+rgzm:RCA0166 amt:consequent rgzm:a .  
+rgzm:RCA0166 amt:logic amt:ProductLogic .  
+rgzm:RCA0167 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0167 amt:antecedent1 rgzm:mi .  
+rgzm:RCA0167 amt:antecedent2 rgzm:a .  
+rgzm:RCA0167 amt:consequent rgzm:a .  
+rgzm:RCA0167 amt:logic amt:ProductLogic .  
+rgzm:RCA0168 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0168 amt:antecedent1 rgzm:mi .  
+rgzm:RCA0168 amt:antecedent2 rgzm:q .  
+rgzm:RCA0168 amt:consequent rgzm:q .  
+rgzm:RCA0168 amt:logic amt:ProductLogic .  
+rgzm:RCA0169 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0169 amt:antecedent1 rgzm:a .  
+rgzm:RCA0169 amt:antecedent2 rgzm:b .  
+rgzm:RCA0169 amt:consequent rgzm:q .  
+rgzm:RCA0169 amt:logic amt:ProductLogic .  
+rgzm:RCA0172 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0172 amt:antecedent1 rgzm:a .  
+rgzm:RCA0172 amt:antecedent2 rgzm:fi .  
+rgzm:RCA0172 amt:consequent rgzm:a .  
+rgzm:RCA0172 amt:logic amt:ProductLogic .  
+rgzm:RCA0173 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0173 amt:antecedent1 rgzm:a .  
+rgzm:RCA0173 amt:antecedent2 rgzm:di .  
+rgzm:RCA0173 amt:consequent rgzm:a .  
+rgzm:RCA0173 amt:logic amt:ProductLogic .  
+rgzm:RCA0174 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0174 amt:antecedent1 rgzm:a .  
+rgzm:RCA0174 amt:antecedent2 rgzm:si .  
+rgzm:RCA0174 amt:consequent rgzm:a .  
+rgzm:RCA0174 amt:logic amt:ProductLogic .  
+rgzm:RCA0175 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0175 amt:antecedent1 rgzm:a .  
+rgzm:RCA0175 amt:antecedent2 rgzm:e .  
+rgzm:RCA0175 amt:consequent rgzm:a .  
+rgzm:RCA0175 amt:logic amt:ProductLogic .  
+rgzm:RCA0178 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0178 amt:antecedent1 rgzm:a .  
+rgzm:RCA0178 amt:antecedent2 rgzm:f .  
+rgzm:RCA0178 amt:consequent rgzm:a .  
+rgzm:RCA0178 amt:logic amt:ProductLogic .  
+rgzm:RCA0179 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0179 amt:antecedent1 rgzm:a .  
+rgzm:RCA0179 amt:antecedent2 rgzm:oi .  
+rgzm:RCA0179 amt:consequent rgzm:a .  
+rgzm:RCA0179 amt:logic amt:ProductLogic .  
+rgzm:RCA0180 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0180 amt:antecedent1 rgzm:a .  
+rgzm:RCA0180 amt:antecedent2 rgzm:mi .  
+rgzm:RCA0180 amt:consequent rgzm:a .  
+rgzm:RCA0180 amt:logic amt:ProductLogic .  
+rgzm:RCA0181 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0181 amt:antecedent1 rgzm:a .  
+rgzm:RCA0181 amt:antecedent2 rgzm:a .  
+rgzm:RCA0181 amt:consequent rgzm:a .  
+rgzm:RCA0181 amt:logic amt:ProductLogic .  
+rgzm:RCA0182 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0182 amt:antecedent1 rgzm:a .  
+rgzm:RCA0182 amt:antecedent2 rgzm:q .  
+rgzm:RCA0182 amt:consequent rgzm:q .  
+rgzm:RCA0182 amt:logic amt:ProductLogic .  
+rgzm:RCA0183 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0183 amt:antecedent1 rgzm:q .  
+rgzm:RCA0183 amt:antecedent2 rgzm:b .  
+rgzm:RCA0183 amt:consequent rgzm:q .  
+rgzm:RCA0183 amt:logic amt:ProductLogic .  
+rgzm:RCA0184 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0184 amt:antecedent1 rgzm:q .  
+rgzm:RCA0184 amt:antecedent2 rgzm:m .  
+rgzm:RCA0184 amt:consequent rgzm:q .  
+rgzm:RCA0184 amt:logic amt:ProductLogic .  
+rgzm:RCA0185 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0185 amt:antecedent1 rgzm:q .  
+rgzm:RCA0185 amt:antecedent2 rgzm:o .  
+rgzm:RCA0185 amt:consequent rgzm:q .  
+rgzm:RCA0185 amt:logic amt:ProductLogic .  
+rgzm:RCA0186 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0186 amt:antecedent1 rgzm:q .  
+rgzm:RCA0186 amt:antecedent2 rgzm:fi .  
+rgzm:RCA0186 amt:consequent rgzm:q .  
+rgzm:RCA0186 amt:logic amt:ProductLogic .  
+rgzm:RCA0187 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0187 amt:antecedent1 rgzm:q .  
+rgzm:RCA0187 amt:antecedent2 rgzm:di .  
+rgzm:RCA0187 amt:consequent rgzm:q .  
+rgzm:RCA0187 amt:logic amt:ProductLogic .  
+rgzm:RCA0188 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0188 amt:antecedent1 rgzm:q .  
+rgzm:RCA0188 amt:antecedent2 rgzm:si .  
+rgzm:RCA0188 amt:consequent rgzm:q .  
+rgzm:RCA0188 amt:logic amt:ProductLogic .  
+rgzm:RCA0189 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0189 amt:antecedent1 rgzm:q .  
+rgzm:RCA0189 amt:antecedent2 rgzm:e .  
+rgzm:RCA0189 amt:consequent rgzm:q .  
+rgzm:RCA0189 amt:logic amt:ProductLogic .  
+rgzm:RCA0190 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0190 amt:antecedent1 rgzm:q .  
+rgzm:RCA0190 amt:antecedent2 rgzm:s .  
+rgzm:RCA0190 amt:consequent rgzm:q .  
+rgzm:RCA0190 amt:logic amt:ProductLogic .  
+rgzm:RCA0191 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0191 amt:antecedent1 rgzm:q .  
+rgzm:RCA0191 amt:antecedent2 rgzm:d .  
+rgzm:RCA0191 amt:consequent rgzm:q .  
+rgzm:RCA0191 amt:logic amt:ProductLogic .  
+rgzm:RCA0192 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0192 amt:antecedent1 rgzm:q .  
+rgzm:RCA0192 amt:antecedent2 rgzm:f .  
+rgzm:RCA0192 amt:consequent rgzm:q .  
+rgzm:RCA0192 amt:logic amt:ProductLogic .  
+rgzm:RCA0193 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0193 amt:antecedent1 rgzm:q .  
+rgzm:RCA0193 amt:antecedent2 rgzm:oi .  
+rgzm:RCA0193 amt:consequent rgzm:q .  
+rgzm:RCA0193 amt:logic amt:ProductLogic .  
+rgzm:RCA0194 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0194 amt:antecedent1 rgzm:q .  
+rgzm:RCA0194 amt:antecedent2 rgzm:mi .  
+rgzm:RCA0194 amt:consequent rgzm:q .  
+rgzm:RCA0194 amt:logic amt:ProductLogic .  
+rgzm:RCA0195 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0195 amt:antecedent1 rgzm:q .  
+rgzm:RCA0195 amt:antecedent2 rgzm:a .  
+rgzm:RCA0195 amt:consequent rgzm:q .  
+rgzm:RCA0195 amt:logic amt:ProductLogic .  
+rgzm:RCA0196 rdf:type amt:RoleChainAxiom .  
+rgzm:RCA0196 amt:antecedent1 rgzm:q .  
+rgzm:RCA0196 amt:antecedent2 rgzm:q .  
+rgzm:RCA0196 amt:consequent rgzm:q .  
+rgzm:RCA0196 amt:logic amt:ProductLogic .  

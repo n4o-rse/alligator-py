@@ -303,3 +303,82 @@ def test_an_unknown_format_is_refused():
 
 def test_the_format_list_keeps_the_declared_order():
     assert parse_formats("cypher,timeline") == ["timeline", "cypher"]
+
+
+# --------------------------------------------------------------------------
+# the second dataset, against the grapHNR23 reference
+# --------------------------------------------------------------------------
+def test_the_potterlimes_reference_is_the_same_input(root, golden_potterlimes):
+    """Same AGT as `data/potterlimes/`, bar the header names the parser ignores."""
+    ours = (root / "data" / "potterlimes" / "potterlimes.agt").read_text(encoding="utf-8")
+    theirs = golden_potterlimes["agt"]
+    strip = lambda text: [
+        line for line in text.replace("\r\n", "\n").strip().split("\n")
+    ]
+    mine, other = strip(ours), strip(theirs)
+    assert len(mine) == len(other)
+    differing = [index for index, (a, b) in enumerate(zip(mine, other)) if a != b]
+    assert differing == [4], differing  # the header line and nothing else
+    assert mine[4].split("\t")[4:6] == ["von", "bis"]
+    assert other[4].split("\t")[4:6] == ["from", "to"]
+
+
+def test_the_potterlimes_cypher_matches_the_reference(potterlimes, golden_potterlimes):
+    """The same two exceptions, on a dataset with real CA weights."""
+    _, expected, _ = read_cypher(golden_potterlimes["cypher"])
+    _, ours, _ = read_cypher(cypher_module.cypher(potterlimes))
+
+    for (one, other), java_name in expected.items():
+        if one == other:
+            assert java_name == D_13_DIAGONAL_NAME  # D-13
+            assert (one, other) not in ours
+            continue
+        assert D_02_JAVA_NAMES.get(ours[(one, other)], ours[(one, other)]) == java_name, (
+            one,
+            other,
+        )
+    assert set(ours) == {pair for pair in expected if pair[0] != pair[1]}
+
+
+def test_the_potterlimes_dating_matches_the_reference(potterlimes, golden_potterlimes):
+    """The virtual years and the neighbour names, read out of the Turtle file.
+
+    This is an S1 check on a second provenance: `HadriansWall` floats at both
+    ends and `NoordzeeKust` only at the end, and the weighted axes decide which
+    neighbour each takes its date from.
+    """
+    values = {}
+    for subject, predicate, literal in re.findall(r"ae:(\w+) (\S+) \"([^\"]*)\"", golden_potterlimes["ttl"]):
+        values.setdefault(subject, {})[predicate.split(":")[-1]] = literal
+
+    assert len(values) == len(potterlimes)
+    for fields in values.values():
+        event = potterlimes.by_name(fields["label"])
+        assert event.a == float(fields["estimatedstart"])
+        assert event.b == float(fields["estimatedend"])
+        assert event.start_fixed is (fields["startfixed"] == "true")
+        assert event.end_fixed is (fields["endfixed"] == "true")
+        assert event.nn_start_name == fields.get("nfsn")
+        assert event.nn_end_name == fields.get("nfen")
+
+
+def test_the_potterlimes_relation_count_matches_the_reference(
+    potterlimes, golden_potterlimes
+):
+    assert sum(len(row) for row in potterlimes.relations.values()) == len(
+        re.findall(r"time:interval", golden_potterlimes["ttl"])
+    )
+
+
+def test_the_amt_reference_confirms_the_weights_of_step_s3(potterlimes, golden_potterlimes):
+    """Not an S2 check, but the numbers S3 is written against, now measured.
+
+    `0.95` where the subject has a floating end, `0.99` otherwise. Fourteen and
+    forty-two here, which is the seven relations of each of the two floating
+    events counted twice over.
+    """
+    weights = re.findall(r'amt:weight "([^"]*)"', golden_potterlimes["amt"])
+    floating = [event for event in potterlimes.events if not event.fixed]
+    expected_low = sum(len(potterlimes.relations[event.id]) for event in floating)
+    assert weights.count("0.95") == expected_low == 14
+    assert weights.count("0.99") == len(weights) - expected_low == 42

@@ -13,7 +13,7 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "py"))
 
-REFERENCE = ROOT / "tests" / "reference" / "romanempire"
+REFERENCE = ROOT / "tests" / "reference"
 
 
 @pytest.fixture(scope="session")
@@ -37,20 +37,41 @@ def potterlimes():
     return calculate_file(ROOT / "data" / "potterlimes" / "potterlimes.agt")
 
 
+def _load(dataset: str, name: str):
+    path = REFERENCE / dataset / name
+    if path.suffix == ".json":
+        return json.loads(path.read_text(encoding="utf-8"))
+    return path.read_text(encoding="utf-8")
+
+
 @pytest.fixture(scope="session")
 def golden():
-    """The Java reference outputs, by short name."""
+    """The Java reference outputs for `romanempire`, by short name.
 
-    def load(name: str):
-        path = REFERENCE / name
-        if path.suffix == ".json":
-            return json.loads(path.read_text(encoding="utf-8"))
-        return path.read_text(encoding="utf-8")
-
+    All seven formats. Six separate API calls, so the identifiers differ from
+    file to file (PRIMER A8, D-01).
+    """
     return {
-        "matrix_allen": load("matrix_allen.json"),
-        "matrix_dist": load("matrix_dist.json"),
-        "timeline": load("timeline.json"),
-        "graph": load("graph.json"),
-        "cypher": load("romanempire.cypher"),
+        "matrix_allen": _load("romanempire", "matrix_allen.json"),
+        "matrix_dist": _load("romanempire", "matrix_dist.json"),
+        "timeline": _load("romanempire", "timeline.json"),
+        "graph": _load("romanempire", "graph.json"),
+        "cypher": _load("romanempire", "romanempire.cypher"),
+        "ttl": _load("romanempire", "romanempire.ttl"),
+        "amt": _load("romanempire", "romanempire_amt.ttl"),
+    }
+
+
+@pytest.fixture(scope="session")
+def golden_potterlimes():
+    """The Java reference outputs for `potterlimes`, from grapHNR23.
+
+    Only three formats: that repository published the Cypher, the Turtle and
+    the AMT file and nothing else. See tests/reference/README.md.
+    """
+    return {
+        "cypher": _load("potterlimes", "potterlimes.cypher"),
+        "ttl": _load("potterlimes", "potterlimes.ttl"),
+        "amt": _load("potterlimes", "potterlimes_amt.ttl"),
+        "agt": _load("potterlimes", "potterlimes.agt"),
     }

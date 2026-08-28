@@ -20,6 +20,8 @@ from alligator.core import parse_formats, write
 
 pytest.importorskip("matplotlib", reason="the figures need matplotlib")
 
+import wd_repro
+from alligator import allen as allen_module
 from alligator.outputs import render
 
 #: First bytes of a JFIF file, and the end-of-image marker.
@@ -76,11 +78,26 @@ def test_the_jpegs_are_jpegs(figures):
         assert raw.endswith(JPEG_END), name
 
 
-def test_the_svgs_carry_no_creation_date(figures):
-    """`metadata={"Date": None}`; otherwise every run would differ (PRIMER A3)."""
+def test_the_svgs_carry_the_fixed_epoch_rather_than_the_clock(figures):
+    """`wd_repro` sets SOURCE_DATE_EPOCH=0, so the date is obviously synthetic.
+
+    A real timestamp here would rewrite one line of every figure on every run,
+    which is the failure mode PRIMER A3 exists to prevent.
+    """
     for name, path in figures.items():
-        if path.suffix == ".svg":
-            assert "dc:date" not in path.read_text(encoding="utf-8"), name
+        if path.suffix != ".svg":
+            continue
+        text = path.read_text(encoding="utf-8")
+        assert "<dc:date>1970-01-01" in text, name
+
+
+def test_the_hash_salt_survives_a_call_to_rcdefaults():
+    """The trap `wd_repro` exists for: rcdefaults() would reset a plain rcParam."""
+    import matplotlib
+
+    plt = render._pyplot()
+    plt.rcdefaults()
+    assert matplotlib.rcParams["svg.hashsalt"] == wd_repro.HASHSALT
 
 
 def test_two_runs_are_byte_identical(romanempire, tmp_path):
@@ -110,27 +127,63 @@ def test_the_timeline_figure_draws_one_row_per_event(romanempire):
 
 
 def test_the_matrix_figures_label_both_axes_with_the_event_names(romanempire):
+    """Both matrices, both axes. The Allen matrix draws its rows top-down, so
+    its y labels run in reverse; the heat map uses `imshow`, which already
+    does."""
     plt = render._pyplot()
-    for draw in (render.matrix_allen_figure, render.matrix_dist_figure):
+    names = list(romanempire.names)
+    for draw, y_labels in (
+        (render.matrix_allen_figure, list(reversed(names))),
+        (render.matrix_dist_figure, names),
+    ):
         figure = draw(romanempire, plt)
         try:
             axes = figure.axes[0]
-            names = list(romanempire.names)
             assert [label.get_text() for label in axes.get_xticklabels()] == names
-            assert [label.get_text() for label in axes.get_yticklabels()] == names
+            assert [label.get_text() for label in axes.get_yticklabels()] == y_labels
         finally:
             plt.close(figure)
 
 
-def test_the_allen_figure_leaves_the_diagonal_blank(romanempire):
-    """The visible half of D-13: no `=` where a row meets its own column."""
+def test_the_allen_figure_marks_the_diagonal_as_not_asked(romanempire):
+    """The visible half of D-13.
+
+    Not a blank cell: blank is what a pair with no relation gets, and the two
+    have to stay apart. The diagonal carries a dash on grey, and there is one
+    per event.
+    """
     plt = render._pyplot()
+    count = len(romanempire)
     figure = render.matrix_allen_figure(romanempire, plt)
     try:
-        axes = figure.axes[0]
-        written = {(round(text.get_position()[0]), round(text.get_position()[1])) for text in axes.texts}
-        assert all((index, index) not in written for index in range(len(romanempire)))
-        assert len(axes.texts) == sum(len(row) for row in romanempire.relations.values())
+        written = {
+            (round(text.get_position()[0] - 0.5), round(text.get_position()[1] - 0.5)):
+            text.get_text()
+            for text in figure.axes[0].texts
+        }
+        for index in range(count):
+            assert written[(index, count - index - 1)] == render.DIAGONAL_MARK
+        relations = sum(len(row) for row in romanempire.relations.values())
+        assert len(written) == relations + count
+        assert list(written.values()).count(render.DIAGONAL_MARK) == count
+    finally:
+        plt.close(figure)
+
+
+def test_the_cells_use_the_shared_family_palette(romanempire):
+    """The palette is CAA2026-alligator's, so a relation keeps its colour."""
+    assert render.RELATIONS["<"] == ("before", "#4a90d9")
+    assert render.RELATIONS["di"] == ("contains", "#d94a4a")
+    assert render.RELATIONS["="] == ("equals", "#4caf50")
+    assert set(render.RELATIONS) == set(allen_module.SIGNS)
+
+
+def test_a_half_dated_interval_is_drawn_as_a_gradient(potterlimes):
+    """`NoordzeeKust`: fixed start, estimated end. One bar fewer, one image more."""
+    plt = render._pyplot()
+    figure = render.timeline_figure(potterlimes, plt)
+    try:
+        assert len(figure.axes[0].images) == 1
     finally:
         plt.close(figure)
 

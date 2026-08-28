@@ -10,13 +10,24 @@ the SVG is the archival copy, the JPEG the one that can be pasted anywhere.
 JPEG is lossy, which is why it is written at 300 dpi with chroma subsampling
 switched off -- the alternative would be blurred edges on the matrix labels.
 
-Byte-identical on a second run, like every other output (PRIMER A3), which needs
-three settings that are not matplotlib's defaults: a fixed `svg.hashsalt` so the
-generated element identifiers do not move, `Date: None` so no creation date is
-written into the SVG metadata, and text rendered as paths so the file does not
-depend on which fonts the reader has installed. Byte equality holds for one
-installed set of versions; a different matplotlib or libjpeg may lay the same
-figure out differently, which is why requirements.txt pins them.
+The palette is not ours to choose. `leiza-scit/CAA2026-alligator` draws the same
+two views for the paper and states in `py/viz/_prelude.py` that a relation has
+to be the same colour in the browser figures and in the printed ones; the table
+below is that palette, grouped by relation family so the matrix can be read
+before the legend is. What is added here is a fill for a pair with no relation
+at all, which the published figures never contain because every one of their
+clusters relates to every other.
+
+Byte-identical on a second run, like every other output (PRIMER A3). Two of the
+three settings that need come from `wd_repro`, the family's shared module: it
+pins `svg.hashsalt` and `SOURCE_DATE_EPOCH`, and it sets the salt on
+`rcParamsDefault` rather than on `rcParams`, so a later `plt.rcdefaults()`
+cannot silently throw it away. The third is local: text is rendered as paths, so
+the file does not depend on which fonts the reader has installed.
+
+Byte equality holds for one installed set of versions; a different matplotlib or
+libjpeg may lay the same figure out differently, which is why requirements.txt
+pins them.
 
 Implemented in step S2 of the work plan.
 """
@@ -42,24 +53,66 @@ DPI = 300
 #: resolution, which is what saves small text from colour fringes.
 JPEG_OPTIONS = {"quality": 95, "subsampling": 0, "optimize": True}
 
-#: Fixed salt for the identifiers matplotlib generates inside an SVG. Without
-#: it they are drawn from the process and no two runs agree.
-HASH_SALT = "alligator-py"
+#: Allen sign -> (label written in a matrix cell, colour). Taken from
+#: `CAA2026-alligator/py/viz/_prelude.py` and the matrix in
+#: `py/alligator_to_clean_rdf.py`, abbreviations included, so that a relation
+#: keeps its colour across the family's figures.
+RELATIONS: dict[str, tuple[str, str]] = {
+    "<": ("before", "#4a90d9"),
+    ">": ("after", "#2c5f8a"),
+    "m": ("meets", "#7ab3e0"),
+    "mi": ("met-by", "#5a9fc5"),
+    "o": ("overlaps", "#f0a500"),
+    "oi": ("ovlp-by", "#c97d00"),
+    "s": ("starts", "#e07070"),
+    "si": ("started-by", "#c05050"),
+    "f": ("finishes", "#e09090"),
+    "fi": ("finished-by", "#b04060"),
+    "d": ("during", "#a03030"),
+    "di": ("contains", "#d94a4a"),
+    "=": ("equals", "#4caf50"),
+}
 
-#: The three timeline colours, as the vis.js stylesheet of alligator-app has
-#: them, darkened enough to stay legible in print.
+#: The four families, in the order the legend lists them: the colour that stands
+#: for the group, and what belongs to it. Reading the matrix by family is the
+#: point of the palette -- blue is a sequence, red a containment.
+FAMILIES: tuple[tuple[str, str], ...] = (
+    ("#4a90d9", "Sequential (before / after / meets / met-by)"),
+    ("#f0a500", "Overlapping (overlaps / overlapped-by)"),
+    ("#d94a4a", "Containing (contains / during / starts / finishes …)"),
+    ("#4caf50", "Equal"),
+)
+
+#: Fill of the main diagonal, and the character written on it. An event is not
+#: related to itself (PRIMER A8, D-13), and an empty cell there would read as
+#: "no relation found" rather than "not asked".
+DIAGONAL_FILL = "#dddddd"
+DIAGONAL_INK = "#999999"
+DIAGONAL_MARK = "—"
+
+#: Fill of a pair that genuinely has no relation -- two point events on
+#: different years, for instance. Distinct from the diagonal on purpose.
+UNRELATED_FILL = "#f9f9f9"
+
+#: The timeline colours, from `alligator_to_clean_rdf.plot_events_timeline`.
+#: Red has no counterpart there: no published dataset has an interval that came
+#: out reversed.
 COLOURS = {
-    timeline_module.BLUE: "#3d6fa5",
-    timeline_module.ORANGE: "#dd8a24",
+    timeline_module.BLUE: "#8fa8c8",
+    timeline_module.ORANGE: "#f0a500",
     timeline_module.RED: "#bd4136",
 }
 
-#: What the three colours mean, for the legend.
+#: What the colours mean, for the legend.
 MEANINGS = {
     timeline_module.BLUE: "both ends dated in the file",
-    timeline_module.ORANGE: "at least one end from a neighbour",
+    timeline_module.ORANGE: "both ends from a neighbour",
     timeline_module.RED: "end before start after dating",
 }
+
+#: Legend text for the half-dated case, which is drawn as a gradient from the
+#: fixed end to the estimated one.
+GRADIENT_MEANING = "one end dated, one from a neighbour"
 
 #: Grey of the axes, labels and graph edges.
 INK = "#333333"
@@ -84,11 +137,14 @@ def _pyplot():
         ) from error
 
     matplotlib.use("Agg")
+    # The family's shared reproducibility module. Imported for its effect: it
+    # pins `svg.hashsalt` on `rcParamsDefault` and sets `SOURCE_DATE_EPOCH`, so
+    # the element ids and the date in the SVG metadata stop moving between runs.
     import matplotlib.pyplot as plt
+    import wd_repro  # noqa: F401
 
     matplotlib.rcParams.update(
         {
-            "svg.hashsalt": HASH_SALT,
             # Text as outlines: the SVG then looks the same everywhere, at the
             # price of not being editable as text.
             "svg.fonttype": "path",
@@ -114,14 +170,15 @@ def _save(figure, out_dir: Path, stem: str, dpi: int) -> list[Path]:
     out of `savefig`, because matplotlib opens the file in text mode and would
     put CRLF into it on Windows. That contradicts `.gitattributes`, and the file
     would then show up as modified after every run on a Windows machine and
-    identical on a Linux one (PRIMER A3, A4).
+    identical on a Linux one (PRIMER A3, A4). `wd_repro` does not cover this,
+    which is the one thing this repository has to add to it.
     """
     out_dir.mkdir(parents=True, exist_ok=True)
     svg = out_dir / f"{stem}.svg"
     jpg = out_dir / f"{stem}.jpg"
 
     buffer = io.BytesIO()
-    figure.savefig(buffer, format="svg", bbox_inches="tight", metadata={"Date": None})
+    figure.savefig(buffer, format="svg", bbox_inches="tight")
     files.write_text(svg, buffer.getvalue().decode("utf-8").replace("\r\n", "\n"))
 
     figure.savefig(
@@ -149,6 +206,8 @@ def timeline_figure(result: Result, plt):
     events = result.events
     figure, axes = plt.subplots(figsize=(8.5, max(2.2, 0.32 * len(events) + 1.4)))
 
+    half = [event for event in events if event.start_fixed != event.end_fixed]
+
     for index, event in enumerate(events):
         y = len(events) - 1 - index
         colour = COLOURS[timeline_module.class_name(event)]
@@ -156,6 +215,8 @@ def timeline_figure(result: Result, plt):
             axes.plot(
                 [event.start], [y], marker="D", markersize=4.5, color=colour, zorder=3
             )
+        elif event in half and not event.reversed:
+            _gradient_bar(axes, event, y, plt)
         else:
             axes.barh(
                 y,
@@ -175,19 +236,61 @@ def timeline_figure(result: Result, plt):
     for side in ("top", "right", "left"):
         axes.spines[side].set_visible(False)
 
+    from matplotlib.legend_handler import HandlerTuple
+    from matplotlib.patches import Patch
+
     used = {timeline_module.class_name(event) for event in events}
+    entries = [
+        (COLOURS[name], MEANINGS[name])
+        for name in (timeline_module.BLUE, timeline_module.ORANGE, timeline_module.RED)
+        if name in used
+    ]
+    handles = _legend_handles(plt, entries)
+    labels = [label for _, label in entries]
+    if half:
+        # Two swatches in one slot, so the half-dated entry does not read as a
+        # second flat orange. A flat patch there would say the wrong thing.
+        handles.append(
+            (
+                Patch(facecolor=COLOURS[timeline_module.BLUE], edgecolor="none"),
+                Patch(facecolor=COLOURS[timeline_module.ORANGE], edgecolor="none"),
+            )
+        )
+        labels.append(GRADIENT_MEANING)
     axes.legend(
-        handles=_legend_handles(
-            plt,
-            [(COLOURS[name], MEANINGS[name]) for name in (timeline_module.BLUE, timeline_module.ORANGE, timeline_module.RED) if name in used],
-        ),
+        handles=handles,
+        labels=labels,
+        handler_map={tuple: HandlerTuple(ndivide=None, pad=0)},
         loc="lower center",
         bbox_to_anchor=(0.5, 1.01),
-        ncol=3,
+        ncol=min(len(handles), 3),
         frameon=False,
         fontsize=7.5,
     )
     return figure
+
+
+def _gradient_bar(axes, event, y, plt) -> None:
+    """A bar that fades from the dated end to the one taken from a neighbour.
+
+    `NoordzeeKust` in `potterlimes` is the case: the file gives the start, the
+    end comes from `Wetteraulimes`. Drawing it in plain orange would say the
+    whole interval is an estimate, and drawing it blue would say none of it is.
+    The published timeline in `CAA2026-alligator` makes the same distinction.
+    """
+    import numpy as np
+    from matplotlib.colors import LinearSegmentedColormap
+
+    fixed = COLOURS[timeline_module.BLUE]
+    estimated = COLOURS[timeline_module.ORANGE]
+    order = (fixed, estimated) if event.start_fixed else (estimated, fixed)
+    axes.imshow(
+        np.linspace(0, 1, 256).reshape(1, -1),
+        cmap=LinearSegmentedColormap.from_list("fade", order),
+        extent=(event.start, event.end, y - 0.29, y + 0.29),
+        aspect="auto",
+        zorder=3,
+    )
 
 
 def graph_figure(result: Result, plt):
@@ -215,8 +318,7 @@ def graph_figure(result: Result, plt):
         for sign in allen_module.SIGNS
         if any(sign in row.values() for row in result.relations.values())
     ]
-    palette = plt.get_cmap("tab20")
-    colour_of = {sign: palette(index % 20) for index, sign in enumerate(allen_module.SIGNS)}
+    colour_of = {sign: colour for sign, (_, colour) in RELATIONS.items()}
 
     for one in events:
         for other in events:
@@ -270,10 +372,7 @@ def graph_figure(result: Result, plt):
     axes.legend(
         handles=_legend_handles(
             plt,
-            [
-                (colour_of[sign], f"{sign}  {allen_module.DESCRIPTIONS[sign]}")
-                for sign in signs
-            ],
+            [(colour_of[sign], f"{sign}  {RELATIONS[sign][0]}") for sign in signs],
         ),
         loc="lower center",
         bbox_to_anchor=(0.5, -0.06),
@@ -284,13 +383,17 @@ def graph_figure(result: Result, plt):
     return figure
 
 
-def _ink_on(colour) -> str:
-    """Black or white, whichever stands out on that cell.
+def _ink_on(colour: str | tuple) -> str:
+    """Black or white, whichever stands out on that fill.
 
-    Rec. 709 luminance. Without this the darker half of the categorical palette
-    swallows the sign written on top of it.
+    Rec. 709 luminance. The published matrix writes white on every cell, which
+    is thin on the three palest reds; picking per cell keeps the palette and
+    fixes the contrast.
     """
-    red, green, blue = colour[:3]
+    if isinstance(colour, str):
+        red, green, blue = (int(colour[index : index + 2], 16) / 255 for index in (1, 3, 5))
+    else:
+        red, green, blue = colour[:3]
     return "#1a1a1a" if 0.2126 * red + 0.7152 * green + 0.0722 * blue > 0.55 else "white"
 
 
@@ -313,46 +416,76 @@ def _matrix_axes(result: Result, plt, size: float):
 def matrix_allen_figure(result: Result, plt):
     """The Allen matrix as a coloured table, read as row-relates-to-column.
 
-    The main diagonal is blank, which is the visible half of D-13: an interval
-    equalling itself is not a statement about chronology.
+    Three kinds of cell, and the difference between the last two is the point:
+    a relation in its family colour with the name written in; the main diagonal
+    in grey with a dash, because an event is not related to itself and the
+    question was never asked (D-13); and a pale cell where the question *was*
+    asked and there is no answer -- two point events on different years, which
+    the Java original leaves blank as well.
     """
-    import numpy as np
-    from matplotlib.colors import ListedColormap
+    from matplotlib.patches import Rectangle
 
-    figure, axes, _ = _matrix_axes(result, plt, max(5.0, 0.42 * len(result) + 2.2))
-    palette = plt.get_cmap("tab20")
-    colours = [palette(index % 20) for index in range(len(allen_module.SIGNS))]
-    colour_of_sign = dict(zip(allen_module.SIGNS, colours))
-    colourmap = ListedColormap(colours)
-    colourmap.set_bad("#f2f2f2")
+    count = len(result)
+    figure, axes = plt.subplots(figsize=(max(5.5, 0.62 * count + 2.4),) * 2)
+    axes.set_facecolor(UNRELATED_FILL)
 
-    codes = np.full((len(result), len(result)), np.nan)
     for row, one in enumerate(result.events):
         for column, other in enumerate(result.events):
-            sign = result.relation(one.id, other.id)
-            if sign is not None:
-                codes[row][column] = allen_module.SIGNS.index(sign)
-
-    axes.imshow(
-        np.ma.masked_invalid(codes),
-        cmap=colourmap,
-        vmin=-0.5,
-        vmax=len(allen_module.SIGNS) - 0.5,
-        interpolation="nearest",
-    )
-    for row, one in enumerate(result.events):
-        for column, other in enumerate(result.events):
-            sign = result.relation(one.id, other.id)
-            if sign is not None:
-                axes.text(
-                    column,
-                    row,
-                    sign,
-                    ha="center",
-                    va="center",
-                    fontsize=7.5,
-                    color=_ink_on(colour_of_sign[sign]),
+            top = count - row - 1
+            if one.id == other.id:
+                fill, mark, ink, weight = DIAGONAL_FILL, DIAGONAL_MARK, DIAGONAL_INK, "normal"
+            else:
+                sign = result.relation(one.id, other.id)
+                if sign is None:
+                    continue
+                mark, fill = RELATIONS[sign]
+                ink, weight = _ink_on(fill), "bold"
+            axes.add_patch(
+                Rectangle(
+                    (column, top), 1, 1, facecolor=fill, edgecolor="white", linewidth=1.4
                 )
+            )
+            axes.text(
+                column + 0.5,
+                top + 0.5,
+                mark,
+                ha="center",
+                va="center",
+                fontsize=7,
+                color=ink,
+                fontweight=weight,
+            )
+
+    names = list(result.names)
+    axes.set_xlim(0, count)
+    axes.set_ylim(0, count)
+    axes.set_xticks([index + 0.5 for index in range(count)])
+    axes.set_yticks([index + 0.5 for index in range(count)])
+    axes.set_xticklabels(names, rotation=45, ha="left", fontsize=7.5)
+    axes.set_yticklabels(list(reversed(names)), fontsize=7.5)
+    axes.xaxis.set_ticks_position("top")
+    axes.xaxis.set_label_position("top")
+    axes.tick_params(length=0)
+    for spine in axes.spines.values():
+        spine.set_visible(False)
+
+    axes.legend(
+        handles=_legend_handles(
+            plt,
+            [
+                *FAMILIES,
+                (DIAGONAL_FILL, "Not asked (an event against itself)"),
+                (UNRELATED_FILL, "Asked, no relation holds"),
+            ],
+        ),
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.02),
+        ncol=2,
+        fontsize=7.5,
+        framealpha=0.9,
+        facecolor="white",
+        edgecolor=FAINT,
+    )
     return figure
 
 

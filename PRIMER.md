@@ -140,6 +140,8 @@ darauf läuft.
 | Ort der Abbildungen | `output/<dataset>/img/`, Dateinamen mit demselben Stamm wie die Datendatei: `<ds>_graph.json` und `<ds>_graph.svg` sind dieselbe Sache zweimal | 2026-08-28 |
 | Erzeugt werden sie in | **S2**, nicht in S4. Sie lesen den `Result`, nicht die JSON-Dateien, und hängen damit nicht an der Pages-Phase | 2026-08-28 |
 | Rendering | matplotlib. Kein networkx: das Graph-Layout ist ein fester Kreis, weil ein kraftbasiertes Layout mit festem Seed nur so aussieht, als wäre es reproduzierbar | 2026-08-28 |
+| Farbpalette der Abbildungen | die aus `leiza-scit/CAA2026-alligator`, `py/viz/_prelude.py`: nach Relationsfamilie eingefärbt (blau sequenziell, orange überlappend, rot enthaltend, grün gleich), Abkürzungen wie dort. Eine Relation hat in der ganzen Familie dieselbe Farbe | 2026-08-28 |
+| Byte-Reproduzierbarkeit von matplotlib | `py/wd_repro.py`, wortgleiche Kopie aus `CAA2026-alligator` samt Salt `wdttest`. Setzt `svg.hashsalt` auf `rcParamsDefault`, damit ein späteres `plt.rcdefaults()` es nicht wegwirft, und `SOURCE_DATE_EPOCH=0`. Änderungen gehören zuerst nach oben | 2026-08-28 |
 | CA-Implementierung | numpy, Algorithmus im README ausgeschrieben — kein `prince` | 2026-08-28 |
 | Zeilenenden | LF beim Schreiben, CRLF und LF beim Lesen. `.gitattributes` mit `eol=lf` | 2026-08-28 |
 | Kodierung | UTF-8 ohne BOM (`RätischeLimes`, `fruehkaiserzeitlich`) | 2026-08-28 |
@@ -535,14 +537,28 @@ Das SVG ist die Archivfassung, das JPEG die, die sich überall einfügen lässt.
 | Allen-Matrix | die Tafel als Farbfeld mit dem Zeichen in der Zelle, Hauptdiagonale leer (D-13) |
 | Distanzmatrix | Heatmap mit Farbskala, Werte in den Zellen, solange die Matrix höchstens 20 Ereignisse hat |
 
-Byte-Gleichheit braucht hier drei Einstellungen, die nicht matplotlibs Vorgabe
-sind: ein festes `svg.hashsalt`, damit die erzeugten Element-IDs stehen bleiben;
-`metadata={"Date": None}`, damit kein Erzeugungsdatum ins SVG geschrieben wird;
-und Text als Pfade, damit die Datei nicht davon abhängt, welche Schriften der
-Leser installiert hat. Dazu kommt, dass das SVG **nicht** von `savefig` selbst
-geschrieben wird: matplotlib öffnet die Datei im Textmodus und würde unter
-Windows CRLF hineinschreiben, was `.gitattributes` widerspricht und die Datei
-nach jedem Lauf als geändert erscheinen liesse.
+Die Farben stammen nicht von uns. `CAA2026-alligator` zeichnet dieselben zwei
+Ansichten für das Paper und hält in `py/viz/_prelude.py` fest, dass eine
+Relation im Browser dieselbe Farbe haben muss wie im Druck. Übernommen sind
+Palette, Abkürzungen, die Familienlegende und die graue Diagonale mit
+Gedankenstrich. Zwei Dinge kommen hinzu, die dort nicht vorkommen können, weil
+in jenen Daten jedes Clusterpaar in Beziehung steht: eine eigene, blassere
+Füllung für ein Paar, das tatsächlich keine Relation hat — sonst läse sich die
+Diagonale wie eine fehlende Antwort statt wie eine nicht gestellte Frage — und
+in der Timeline ein Farbverlauf für ein Intervall mit einem datierten und einem
+geschätzten Ende, das die Timeline-JSON zu schlichtem `orange` einebnet.
+
+Byte-Gleichheit besorgt `py/wd_repro.py`, das Hausmodul der Familie, wortgleich
+kopiert: es setzt `svg.hashsalt` auf `rcParamsDefault` statt auf `rcParams` —
+sonst wirft ein späteres `plt.rcdefaults()` den Salt stillschweigend weg — und
+`SOURCE_DATE_EPOCH=0`, sodass im SVG ein erkennbar synthetisches Datum steht
+statt der Uhr. Lokal kommt dazu: Text als Pfade, damit die Datei nicht davon
+abhängt, welche Schriften der Leser installiert hat, und das SVG wird **nicht**
+von `savefig` geschrieben, sondern durch `outputs/files.py`. matplotlib öffnet
+die Datei im Textmodus und schriebe unter Windows CRLF hinein, was
+`.gitattributes` widerspricht und sie nach jedem Lauf als geändert erscheinen
+liesse. Das ist die eine Stelle, an der dieses Repositorium etwas hat, das
+`wd_repro` fehlt — gehört zurückgegeben.
 
 Die Gleichheit gilt für einen installierten Satz von Versionen. Eine andere
 matplotlib legt dieselbe Figur anders aus, ein anderes libjpeg komprimiert
@@ -555,7 +571,9 @@ darüber, die argparse auspackt. Geprüft gegen alle vier Golden Files von
 Testcode (`D_02_JAVA_NAMES` und der Diagonalfall) statt als gelockertem
 Vergleich — eine dritte Abweichung fällt damit auf, statt durchzurutschen.
 `ttl` und `amt` bleiben in `--formats` stehen und warnen, dass sie S3 sind.
-130 Tests.
+Seit dem zweiten Referenzsatz aus `grapHNR23` wird der Cypher zusätzlich gegen
+`potterlimes` geprüft, also gegen eine zweite Provenienz und die gewichteten
+Achsen. 139 Tests.
 
 ## S3 — RDF
 
@@ -876,6 +894,20 @@ Nicht einem Schritt zugeordnet, aber nicht zu vergessen:
   wird. Für einen belastbaren Abnahmetest sollten alle sechs Ausgaben in einer
   Sitzung von <https://tools.leiza.de/alligator/> gezogen und mit dem
   Eingabefile zusammen unter `tests/reference/` abgelegt werden.
+  **Teilweise entschärft am 2026-08-28:** `leiza-scit/grapHNR23` veröffentlicht
+  Cypher, Turtle und AMT für genau den `potterlimes`-Datensatz — dieselbe
+  AGT-Datei bis auf die Kopfzeilennamen. Sie liegen jetzt unter
+  `tests/reference/potterlimes/` und bestätigen S1 und den Cypher-Teil von S2
+  auf dem gewichteten Fall, unabhängig von `v1/`. Was weiterhin fehlt: eine
+  einzige Sitzung, eine protokollierte Dienstversion, und Timeline, Graph und
+  Matrizen für den zweiten Datensatz, die dort nie veröffentlicht wurden.
+- **Der `ae:`-Namensraum ist in freier Wildbahn dreifach belegt.** Java schreibt
+  `http://example.net/event#`, `grapHNR23` veröffentlicht
+  `http://data.archaeology.link/data/ae/`, `CAA2026-alligator` nutzt
+  `http://leiza-scit.github.io/CAA2026-alligator/`. Die gelebte Praxis ist also
+  ein Namensraum **pro Datensatz beziehungsweise pro Repositorium**, nicht ein
+  globaler. Das spricht dafür, ihn in S3 konfigurierbar zu machen statt ihn
+  festzuschreiben — siehe A6.
 - Der Dezimaltrenner der Distanzmatrix hängt an der Server-Locale (D-10). Falls
   jemand veröffentlichte Alligator-Matrizen weiterverarbeitet, ist das eine
   Fussangel, die nicht bei uns liegt, aber erwähnt gehört.

@@ -55,9 +55,10 @@ alligator-py/
 │   │   ├── outputs/         one module per output format
 │   │   └── vocab/           static ontology assets
 │   ├── ca/ca.py             correspondence analysis
+│   ├── wd_repro.py          byte-reproducible matplotlib (shared, verbatim)
 │   └── build_docs.py        assembles docs/ from output/
 ├── tests/
-│   └── reference/           golden files from the Java tool
+│   └── reference/           golden files from the Java tool, two datasets
 ├── reference/
 │   └── alligator-java/      the Java sources, vendored for reference only
 ├── CITATION.cff
@@ -120,7 +121,7 @@ Useful flags: `--verbose`, `--strict`, `--dataset NAME`, `--out DIR`. The
 | Graph | `<ds>_graph.json` | vis.js network of the Allen relations |
 | Matrices | `<ds>_matrix_allen.*`, `<ds>_matrix_dist.*` | JSON for the web page, CSV for everything else |
 | Cypher | `<ds>.cypher` | `CREATE` / `MERGE` / `RETURN`, for Neo4j |
-| Figures | `img/<ds>_*.svg`, `img/<ds>_*.jpg` | the same four views, drawn with matplotlib |
+| Figures | `img/<ds>_*.svg`, `img/<ds>_*.jpg` | the same four views, drawn with matplotlib in the palette shared with [`CAA2026-alligator`](https://github.com/leiza-scit/CAA2026-alligator) |
 | Turtle | `<ds>.ttl`, `<ds>_amt.ttl` | step S3, not written yet |
 
 `--formats` takes any comma-separated subset of `timeline,graph,matrix,cypher,`

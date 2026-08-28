@@ -42,7 +42,7 @@ LOG = logging.getLogger("alligator")
 
 def phase_ca(args: argparse.Namespace) -> list[Path]:
     """Correspondence analysis: counts + dates -> *.agt."""
-    from ca.ca import run  # noqa: F401  (import is the point of the phase)
+    from ca.ca import run
 
     return run(
         counts=DATA_DIR / args.dataset / "counts.csv",
