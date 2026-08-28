@@ -34,20 +34,21 @@ is one word -- `sorted(axiom_types, key=str)` -- after which this phase can
 drop the environment variable and the output can be versioned like everything
 else.
 
-Consistency violations are expected
------------------------------------
-The engine reports 14 of them on `romanempire` and 18 on `potterlimes`, all of
-them self-loops, none of them a defect of our file: they follow from the Allen
-axiom block itself, which we copy verbatim from the Java implementation. Two
-things in it make a self-loop unavoidable while forbidding it -- `e ∘ e → e`
-over a relation the data asserts in both directions, and three rows of the
-composition table that yield the inverse role where they should yield the
-identity. See PRIMER D-19 and D-20.
+Consistency violations
+----------------------
+There are none, for either dataset, and that is the result of step S6b rather
+than of this phase. Running the file through the engine is what exposed the two
+defects the Allen axiom block had inherited from the Java implementation: two
+`SelfDisjointAxiom` over reflexive roles, and three rows of the composition
+table yielding the inverse role where they should yield the identity. Both are
+corrected in `vocab/amt_allen_axioms.ttl` and registered as PRIMER D-19 and
+D-20.
 
-So every `SelfDisjointAxiom` violation is reported as a warning, and `--strict`
-turns it into a failure. A `DisjointAxiom` violation is a failure regardless:
-that one says two contradicting relations hold between two *different* events,
-which no axiom explains and which would be about our data.
+`review` stays as a guard, and it distinguishes two kinds. A self-loop is the
+axiom block arguing with itself; if one reappears, it is a warning and
+`--strict` makes it a failure. A `DisjointAxiom` violation is a failure
+regardless, because it says two contradicting relations hold between two
+*different* events, which no axiom explains and which would be about our data.
 
 Implemented in step S6 of the work plan.
 """
@@ -89,10 +90,10 @@ OUTPUT_SUFFIXES = (
 #: match the rest of the repository (PRIMER A3, `outputs/files.py`).
 CRLF_SUFFIXES = (".nodes.csv", ".edges.csv")
 
-#: A consistency violation that follows from the axiom block rather than from
-#: our data. Every self-loop does: the block derives reflexivity for `e`, for
-#: `q` and -- through the three flipped composition rows -- for `f`, `fi`, `s`,
-#: `si`, `d` and `di`, and then declares all of them self-disjoint (D-19, D-20).
+#: A violation that would follow from the axiom block rather than from our
+#: data. Every self-loop does: it means the block derives reflexivity for a
+#: role and forbids it in the same breath, which is what D-19 and D-20 were.
+#: Nothing matches this today; it is here so that a regression reads as one.
 KNOWN_VIOLATION = re.compile(r"SelfDisjointAxiom violated: \S+ has self-loop via \S+$")
 
 #: Lines of the engine's own log worth repeating at info level. Everything
@@ -201,8 +202,8 @@ def review(lines: list[str], *, strict: bool) -> None:
 
     if known:
         LOG.warning(
-            "      %d self-loop(s) inherited from the Allen axiom block, which "
-            "derives them and forbids them at once (PRIMER D-19, D-20)",
+            "      %d self-loop(s): the axiom block derives a reflexive role "
+            "and forbids it at once, as in PRIMER D-19 and D-20",
             len(known),
         )
     for violation in unknown:
@@ -214,9 +215,7 @@ def review(lines: list[str], *, strict: bool) -> None:
             f"not explain. These are about the data, not about the axioms."
         )
     if strict:
-        raise AlligatorError(
-            f"{len(known)} known self-loop(s), and --strict was given."
-        )
+        raise AlligatorError(f"{len(known)} self-loop(s), and --strict was given.")
 
 
 def normalise_newlines(paths: list[Path]) -> None:

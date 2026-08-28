@@ -120,11 +120,23 @@ def test_reasoning_adds_edges_without_losing_any(engine_run):
 
 
 @needs_engine
-def test_a_strict_run_still_leaves_normalised_files(root, tmp_path):
-    """`review` raises last, so a stopped run does not leave CRLF behind."""
+def test_the_consistency_check_passes(engine_run):
+    """Since S6b it does, for both datasets. It is the point of that step."""
+    report = engine_run[".report.md"].read_text(encoding="utf-8")
+    assert "All integrity axioms satisfied" in report
+
+
+@needs_engine
+def test_a_strict_run_succeeds_and_leaves_normalised_files(root, tmp_path):
+    """Nothing is left to warn about, so --strict is no longer a failure.
+
+    The line endings are checked here rather than in the plain run because
+    `review` raises last on purpose: if a violation ever comes back, a stopped
+    run must still not leave CRLF behind.
+    """
     ttl = root / "output" / "romanempire" / "romanempire_amt.ttl"
-    with pytest.raises(AlligatorError, match="--strict"):
-        amt_phase.run(ttl, tmp_path, options(strict=True))
+    written = amt_phase.run(ttl, tmp_path, options(strict=True))
+    assert len(written) == len(amt_phase.OUTPUT_SUFFIXES)
     assert b"\r\n" not in (tmp_path / "romanempire_amt.nodes.csv").read_bytes()
 
 

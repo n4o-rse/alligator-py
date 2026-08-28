@@ -66,11 +66,16 @@ def test_the_amt_phase_runs_when_the_engine_is_there():
     assert "Validation passed" in output
 
 
-def test_strict_fails_on_the_known_consistency_violations():
-    """They are real violations, just not ours -- PRIMER D-19."""
+def test_the_consistency_check_passes_for_both_datasets():
+    """Since S6b, once the two axiom defects of D-19 and D-20 were corrected."""
     if not ENGINE_INSTALLED:
         pytest.skip('AMT.engine is optional: pip install -e ".[amt]"')
-    assert run_main("amt", "--dataset", "romanempire", "--strict").returncode == 1
+    for dataset in ("romanempire", "potterlimes"):
+        result = run_main("amt", "--dataset", dataset, "--strict")
+        output = result.stderr + result.stdout
+        assert result.returncode == 0, output
+        assert "Consistency check passed" in output
+        assert "WARNING" not in output
 
 
 def test_a_missing_engine_names_the_install_command():

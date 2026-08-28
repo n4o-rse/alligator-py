@@ -68,6 +68,19 @@ D_16_EXTRA_PREDICATES = (rdf_module.ALLIGATOR.nfsnE, rdf_module.ALLIGATOR.nfenE)
 #: does not write, because AMT.engine loads it itself (PRIMER A4, D-11).
 D_11_AMT_NAMESPACE = str(amt_module.AMT)
 
+#: D-20: three rows of the composition table where the reference carries the
+#: inverse role and composing with `equals` must give the identity. Keyed by
+#: axiom, valued (what the reference says, what this port writes).
+D_20_FLIPPED_CONSEQUENTS = {
+    "RCA0105": ("si", "s"),
+    "RCA0119": ("di", "d"),
+    "RCA0133": ("fi", "f"),
+}
+
+#: D-19: the two SelfDisjointAxioms the reference carries over roles that are
+#: reflexive, so that the file forbids what it derives. This port omits them.
+D_19_DROPPED_SELF_DISJOINT = {"SDA001": "q", "SDA002": "e"}
+
 
 # --------------------------------------------------------------------------
 # helpers
@@ -279,23 +292,54 @@ def test_the_events_are_the_same_iris_as_in_the_alligator_file(
     assert all(str(subject).startswith(str(rdf_module.EVENT)) for subject in engine)
 
 
+def axioms_of(graph: Graph) -> set[tuple]:
+    """The vocabulary triples: in the reference the events sit here too (D-17)."""
+    instances = set(graph.subjects(amt_module.AMT.instanceOf, None))
+    return {
+        (subject, predicate, obj)
+        for subject, predicate, obj in graph
+        if str(subject).startswith(str(amt_module.RGZM)) and subject not in instances
+    }
+
+
 def test_the_axioms_are_the_ones_the_reference_carries(golden, written_amt):
-    ours = parse(written_amt)
-    theirs = parse(golden["amt"])
+    """Triple for triple, save the five in D-19 and D-20.
+
+    Those five are named here rather than tolerated: a comparison loosened
+    until it passes proves nothing, and the point of this test is that no
+    sixth difference can appear unnoticed.
+    """
+    ours = axioms_of(parse(written_amt))
+    theirs = axioms_of(parse(golden["amt"]))
+
+    for axiom, (reference, ported) in D_20_FLIPPED_CONSEQUENTS.items():
+        theirs.discard(
+            (amt_module.RGZM[axiom], amt_module.AMT.consequent, amt_module.RGZM[reference])
+        )
+        ours.discard(
+            (amt_module.RGZM[axiom], amt_module.AMT.consequent, amt_module.RGZM[ported])
+        )
+    for axiom, role in D_19_DROPPED_SELF_DISJOINT.items():
+        theirs.discard((amt_module.RGZM[axiom], RDF.type, amt_module.AMT.SelfDisjointAxiom))
+        theirs.discard((amt_module.RGZM[axiom], amt_module.AMT.role, amt_module.RGZM[role]))
+
+    assert ours == theirs
     vocabulary = Namespace(D_11_AMT_NAMESPACE)
+    parsed = parse(written_amt)
+    assert not [triple for triple in parsed if str(triple[0]).startswith(str(vocabulary))]
 
-    def axioms(graph: Graph) -> set[tuple]:
-        """Vocabulary only: in the reference the events sit here too (D-17)."""
-        instances = set(graph.subjects(amt_module.AMT.instanceOf, None))
-        return {
-            (subject, predicate, obj)
-            for subject, predicate, obj in graph
-            if str(subject).startswith(str(amt_module.RGZM))
-            and subject not in instances
-        }
 
-    assert axioms(ours) == axioms(theirs)
-    assert not [triple for triple in ours if str(triple[0]).startswith(str(vocabulary))]
+def test_every_deviation_from_the_reference_block_is_a_registered_one(golden, written_amt):
+    """The other half: the exceptions above hide seven triples and add three.
+
+    Seven because dropping a SelfDisjointAxiom removes both of its triples,
+    the `rdf:type` and the `amt:role`; three because a flipped consequent is
+    one triple replaced by another.
+    """
+    ours = axioms_of(parse(written_amt))
+    theirs = axioms_of(parse(golden["amt"]))
+    assert len(theirs - ours) == 3 + 2 * 2
+    assert len(ours - theirs) == 3
 
 
 def test_the_axiom_file_holds_what_the_engine_expects():
@@ -310,11 +354,11 @@ def test_the_axiom_file_holds_what_the_engine_expects():
         "Concept": 1,
         "Role": 31,
         "InverseAxiom": 28,
-        "SelfDisjointAxiom": 31,
+        "SelfDisjointAxiom": 29,
         "DisjointAxiom": 6,
         "RoleChainAxiom": 126,
     }
-    assert len(graph) == 921
+    assert len(graph) == 917
 
 
 # --------------------------------------------------------------------------

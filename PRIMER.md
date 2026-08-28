@@ -286,8 +286,8 @@ Jede beabsichtigte Abweichung steht hier. Alle Befunde sind an
 | D-17 | die AMT-Datei legt Ereignisknoten (`rgzm:jNEOv3`) neben Rollen und Axiome (`rgzm:di`) in einen Namensraum | Ereignisse unter `ae:`, `rgzm:` nur noch Vokabular | Siehe A6. Nebenwirkung und eigentlicher Gewinn: Alligator-TTL und AMT-TTL eines Laufs benennen dieselben Ereignisse und lassen sich zu einem Graphen vereinigen. In Java war das ausgeschlossen, weil schon die IDs je Datei andere waren (D-01) |
 | D-14 | `Cypher` verkettet den Ereignisnamen ohne Maskierung in das Statement | einfache Anführungszeichen und Backslashes werden maskiert | Ein Name mit Apostroph erzeugt in Java eine Datei, die Neo4j nicht liest. Für jeden Namen, der vorher funktioniert hat, ändert sich nichts — eine Abweichung ist es trotzdem |
 | D-18 | — (in Java gab es keine Engine-Anbindung) | die Ausgabe von AMT.engine wird **nicht** versioniert, als einzige Ausgabe dieses Repos | `amt/core.py` iteriert die Axiomklassen über ein `set` von URIRefs, also entscheidet die String-Hashung die Anwendungsreihenfolge und damit die Reihenfolge der `amt:provenance`-Listen in `reasoned.ttl`, `.cypher` und `.edges.csv`. `PYTHONHASHSEED=0` legt sie fest, aber der gesetzte String-Hash hat zwischen Python 3.10 und 3.11 den Algorithmus gewechselt. Nachgewiesen: zwei Läufe ohne Saat unterscheiden sich, mit Saat nicht; sortiert man beide Dateien, sind sie inhaltsgleich. Fällt weg, sobald die Engine sortiert lädt |
-| D-19 | der Axiomblock erklärt jede Rolle für selbstdisjunkt und leitet zugleich Selbstschleifen ab | unverändert übernommen, die Verletzungen werden als bekannt gemeldet statt behoben | Der Konsistenzcheck der Engine meldet auf `romanempire` 14 Verletzungen und auf `potterlimes` 18, alle abgeleitet, keine steht in unserer Datei. Zwei Ursachen: `RCA0091` (`e ∘ e → e`) über eine Relation, die die Datei symmetrisch trägt — wo `A e B` steht, steht auch `B e A`, und die Kette schließt sich zu `A e A`; und `RCA0117` (`d ∘ di → q`), wo `di` schon per `InverseAxiom` aus jedem `d` folgt. Beide Folgerungen sind richtig, die `amt:SelfDisjointAxiom` darüber sind es nicht: `e` ist per Definition reflexiv, `q` ist die volle Disjunktion und schließt Gleichheit ein. Der Block ist Fremdgut aus dem Java-Werkzeug; ihn zu ändern ist eine fachliche Entscheidung, keine Portierungsfrage. Bis dahin meldet `amt_phase.review` jede Selbstschleife als Warnung und jede `DisjointAxiom`-Verletzung als Fehler — letztere wäre eine Aussage über zwei **verschiedene** Ereignisse und damit über die Daten |
-| D-20 | drei Zeilen der Kompositionstafel liefern die Inverse statt der Identität: `RCA0105` (`s ∘ e → si`), `RCA0119` (`d ∘ e → di`), `RCA0133` (`f ∘ e → fi`) | unverändert übernommen und registriert | Die Verknüpfung mit `e` muss die Identität sein. In elf der vierzehn Zeilen ist sie es auch (`b ∘ e → b`, `m ∘ e → m`, `o ∘ e → o`, `fi ∘ e → fi`, `di ∘ e → di`, `si ∘ e → si`, `oi`, `mi`, `a`, `e`, `q`). Betroffen sind genau die drei Rollen, deren Inverse sich nur durch das angehängte `i` unterscheidet und die selbst ohne `i` geschrieben werden — ein systematischer Tippfehler, kein Einzelfall. Gefunden über S6: auf `potterlimes` erzeugt `RCA0133` `f`/`fi`-Selbstschleifen, die `romanempire` nicht zeigt, weil dort kein Ereignispaar ein gemeinsames Ende hat. Folge für uns: nur zusätzliche Verletzungen im Konsistenzcheck, denn wir schreiben abgeleitete Kanten nicht zurück. Meldung an Allard, zusammen mit D-19 |
+| D-19 | der Axiomblock erklärt `q` und `e` für selbstdisjunkt (`SDA001`, `SDA002`) und leitet zugleich `x q x` und `x e x` ab | beide Axiome entfernt | Gefunden über S6: der Konsistenzcheck der Engine meldete auf `romanempire` 14 Verletzungen und auf `potterlimes` 18, alle abgeleitet, keine in unserer Datei. `RCA0091` (`e ∘ e → e`) schließt sich über eine Relation, die die Datei symmetrisch trägt — wo `A e B` steht, steht auch `B e A` —, und `RCA0117` (`d ∘ di → q`) über ein `di`, das schon per `InverseAxiom` aus jedem `d` folgt. Die Folgerungen sind richtig, die Verbote nicht: `e` ist per Definition reflexiv, `q` ist die volle Disjunktion und schließt Gleichheit ein. Drei weitere Rollen sind nach ihren Labels ebenfalls reflexiv — `hh` *head to head with*, `tt` *tail to tail with*, `ct` *contemporary of* — und behalten ihre Axiome: keine Kette und keine Inverse dieses Blocks erzeugt eine Freksa-Rolle, sie sind also wirkungslos, und ob sie strikt gemeint sind, ist nicht aus der Datei zu lesen |
+| D-20 | drei Zeilen der Kompositionstafel liefern die Inverse statt der Identität: `RCA0105` (`s ∘ e → si`), `RCA0119` (`d ∘ e → di`), `RCA0133` (`f ∘ e → fi`) | auf `s`, `d` und `f` korrigiert | Die Verknüpfung mit `e` muss die Identität sein, und in elf der vierzehn Zeilen ist sie es auch. Betroffen sind genau die drei Rollen, die ohne `i` geschrieben werden und deren Inverse sich nur durch das angehängte `i` unterscheidet — ein systematischer Tippfehler. Nachgewiesen gegen eine ausgerechnete Allen-Kompositionstafel: von den 169 Einträgen sind 97 eindeutig, davon stehen 96 richtig im Block und drei falsch; die beiden Einträge mit voller Disjunktion stehen als `q`, die übrigen 70 mehrdeutigen fehlen, was in einem Formalismus ohne Disjunktion die einzige ehrliche Möglichkeit ist. Wirkung: auf `potterlimes` fallen 22 falsch abgeleitete Kanten weg (144 → 122), auf `romanempire` keine, weil dort kein Ereignispaar ein Ende teilt |
 
 **Folgen von D-13, gemessen an `romanempire`:** die Allen-Matrix behält ihre
 12×12-Form, aber die Hauptdiagonale wird leer statt `=`. Der Graph verliert 12
@@ -309,6 +309,7 @@ also ausdrücklich ausnehmen.
 | S4 | GitHub Pages | S2 | offen |
 | S5 | CA-Phase: Zähltabelle → AGT | S1 | offen |
 | S6 | AMT-Anbindung: `amt-engine` als optionale Phase | S3 | **erledigt** 2026-08-28 |
+| S6b | Korrektur des Allen-Axiomblocks | S6 | **erledigt** 2026-08-28 |
 | S7 | Politur: README, CITATION.cff, Pins, Zenodo | alle | offen |
 
 S4 hängt nur an S2, nicht an S3 — die Seite liest JSON, kein RDF. S5 hängt an
@@ -932,17 +933,16 @@ FAIL 14 consistency violation(s)
 ```
 
 Die SHACL-Prüfung ist der eigentliche Abnahmetest für S3, und sie besteht. Der
-Konsistenzcheck fällt durch, aber an keiner Stelle wegen unserer Daten: alle 14
-Verletzungen sind Selbstschleifen, alle abgeleitet, keine davon steht in
-unserer Datei. Sie folgen aus dem Axiomblock selbst (D-19).
+Konsistenzcheck fiel zunächst durch, an keiner Stelle wegen unserer Daten: alle
+14 Verletzungen waren Selbstschleifen, alle abgeleitet, keine davon stand in
+unserer Datei. Sie folgten aus dem Axiomblock (D-19).
 
-`potterlimes` hat dann noch etwas gezeigt, das `romanempire` nicht zeigen kann.
-Dort stehen 18 Verletzungen, darunter Selbstschleifen über `f` und `fi`, und
-die führen auf drei vertauschte Zeilen der Kompositionstafel — `s ∘ e → si`,
-`d ∘ e → di`, `f ∘ e → fi`, wo jeweils die Identität stehen müsste. In
-`romanempire` teilt sich kein Ereignispaar ein Ende, deshalb greift die Zeile
-dort nie. Das ist D-20 und der Grund, warum ein zweiter Datensatz mehr wert ist
-als ein zweiter Testlauf auf demselben.
+`potterlimes` hat dann etwas gezeigt, das `romanempire` nicht zeigen kann: 18
+Verletzungen, darunter Selbstschleifen über `f` und `fi`, die auf drei
+vertauschte Zeilen der Kompositionstafel führen (D-20). In `romanempire` teilt
+sich kein Ereignispaar ein Ende, deshalb greift die Zeile dort nie. Das ist der
+Grund, warum ein zweiter Datensatz mehr wert ist als ein zweiter Testlauf auf
+demselben — und der Anlass für S6b, das beides behoben hat.
 
 **Zu beachten:**
 
@@ -958,11 +958,91 @@ als ein zweiter Testlauf auf demselben.
 - Die Phase läuft in `all` nur mit `--with-amt`. Der ursprüngliche Grund — sie
   klont ein fremdes Repository — ist mit dem Extra entfallen; es bleibt, dass
   ein `pip install -r requirements.txt` die Engine nicht mitbringt.
-- **[OFFEN] Zwei Meldungen an `amt-engine`,** beide klein, beide in eurem
-  eigenen Repo: `sorted(axiom_types, key=str)` in `core.py` macht die Ausgabe
-  ohne Umweg reproduzierbar und lässt D-18 wegfallen; und
+- **[OFFEN] Zwei Punkte für `amt-engine`,** beide klein:
+  `sorted(axiom_types, key=str)` in `core.py` macht die Ausgabe ohne Umweg
+  reproduzierbar und lässt D-18 wegfallen; und
   `package-data = ["../ontology/*.ttl"]` legt bei der Installation ein
   Top-Level-`ontology/` in die `site-packages` statt es ins Paket zu nehmen.
+
+## S6b — Korrektur des Allen-Axiomblocks
+
+**Ziel:** die beiden Defekte beheben, die S6 im übernommenen Axiomblock
+sichtbar gemacht hat, statt sie weiter zu erben.
+
+**Uploads:** keine.
+
+**Ergebnis:** `vocab/amt_allen_axioms.ttl` in fünf Tripeln geändert, beide
+`output/*/[ds]_amt.ttl` neu erzeugt, die Ausnahmetabellen in `tests/test_rdf.py`.
+
+**Fertig, wenn:** `python py/main.py amt --dataset <ds> --strict` für beide
+Datensätze mit `Consistency check passed` und Rückgabewert 0 endet. — Erfüllt.
+
+### Was geändert wurde
+
+Fünf Tripel, in zwei Gruppen:
+
+| | vorher | nachher |
+|---|---|---|
+| `RCA0105 amt:consequent` | `rgzm:si` | `rgzm:s` |
+| `RCA0119 amt:consequent` | `rgzm:di` | `rgzm:d` |
+| `RCA0133 amt:consequent` | `rgzm:fi` | `rgzm:f` |
+| `SDA001` (`amt:role rgzm:q`) | vorhanden | entfernt |
+| `SDA002` (`amt:role rgzm:e`) | vorhanden | entfernt |
+
+Die Zahlen der Axiomdatei gehen damit von 921 auf 917 Tripel und von 31 auf 29
+`SelfDisjointAxiom`; alles andere bleibt.
+
+### Warum das keine Geschmacksfrage ist
+
+Vor der Änderung ist die ganze Tafel gegen eine ausgerechnete
+Allen-Kompositionstafel geprüft worden — 169 Einträge, per Brute Force über
+alle Intervallpaare eines kleinen Zahlenbereichs bestimmt, nicht abgeschrieben.
+Befund: 97 Einträge sind eindeutig, 96 davon stehen richtig im Block und drei
+falsch. Die beiden Einträge, deren Ergebnis die volle Disjunktion ist (`b ∘ a`
+und `d ∘ di`), stehen als `q`. Die übrigen 70 mehrdeutigen fehlen ganz, was in
+einem Formalismus ohne Disjunktion die einzige ehrliche Möglichkeit ist. Die 28
+`InverseAxiom` sind vollständig korrekt.
+
+Es sind also genau drei Fehler, kein Muster, das man weiterdenken müsste — und
+sie treffen genau die drei Rollen, die ohne `i` geschrieben werden und deren
+Inverse sich nur durch das angehängte `i` unterscheidet.
+
+### Wirkung
+
+| | Verletzungen | Kanten nach Reasoning |
+|---|---|---|
+| `romanempire` vorher | 14 | 138 |
+| `romanempire` nachher | 0 | 138 |
+| `potterlimes` vorher | 18 | 144 |
+| `potterlimes` nachher | 0 | **122** |
+
+Die 22 Kanten, die auf `potterlimes` wegfallen, sind der eigentliche Gewinn:
+`RCA0133` hat aus jedem `f` ein `fi` gemacht, also jede „endet mit"-Relation
+über ein gleiches Intervall hinweg in die Gegenrichtung gedreht. Auf
+`romanempire` greift die Zeile nie, weil dort kein Ereignispaar ein Ende teilt.
+
+### Folgen für die Tests
+
+`test_the_axioms_are_the_ones_the_reference_carries` vergleicht weiter Tripel
+für Tripel mit der Java-Referenz, jetzt mit zwei benannten Ausnahmetabellen
+(`D_20_FLIPPED_CONSEQUENTS`, `D_19_DROPPED_SELF_DISJOINT`) statt eines
+gelockerten Vergleichs. Dazu kommt
+`test_every_deviation_from_the_reference_block_is_a_registered_one`: die
+Ausnahmen verbergen genau sieben Tripel der Referenz und fügen drei hinzu —
+sieben, weil ein gestrichenes `SelfDisjointAxiom` zwei Tripel kostet. Damit
+kann keine sechste Abweichung unbemerkt entstehen.
+
+`amt_phase.review` bleibt, obwohl es nichts mehr zu melden hat. Es ist der
+Wächter, der eine Rückkehr dieses Fehlerbilds als solche lesbar macht.
+
+**Zu beachten:**
+
+- Die Referenzdateien in `tests/reference/` tragen die Fehler weiter. Das ist
+  richtig so — sie sind die Aufzeichnung dessen, was das Java-Werkzeug
+  ausgibt, kein Sollwert.
+- **[OFFEN]** Ob der Java-Alligator nachgezogen wird und was mit den bereits
+  veröffentlichten AMT-Dateien in grapHNR23 geschieht. Das ist keine Frage
+  dieses Repos, aber sie steht.
 
 ## S7 — Politur
 
@@ -1053,10 +1133,14 @@ Nicht einem Schritt zugeordnet, aber nicht zu vergessen:
   Ergebnis die volle Menge aller 13 Relationen ist. AMT kann keine Disjunktion
   ausdrücken, also steht `q` für eine. Daraus folgt auch D-19: „irgendeine
   Relation" schließt Gleichheit ein, `q` kann nicht selbstdisjunkt sein.
-- **Die Kompositionstafel ist an drei Stellen falsch** (S6, D-20). Zu melden
-  ist beides zusammen: die drei vertauschten Zeilen und die
-  `SelfDisjointAxiom` über `e` und `q`. Wer den Block anfasst, sollte beides in
-  einem Zug tun, weil ein Teilfix die Verletzungen nur verschiebt.
+- **Der Java-Axiomblock war an fünf Stellen falsch** (S6, S6b): drei Zeilen der
+  Kompositionstafel (D-20) und zwei `SelfDisjointAxiom` (D-19). Beides ist in
+  `vocab/amt_allen_axioms.ttl` korrigiert, in einem Zug, weil ein Teilfix die
+  Verletzungen nur verschoben hätte. Die veröffentlichten Java-Ausgaben in
+  `tests/reference/` tragen die Fehler weiter; wer sie mit unseren vergleicht,
+  findet genau diese fünf Stellen und keine sechste — `test_rdf.py` prüft das.
+  Offen bleibt, ob der Java-Alligator und die Dateien in grapHNR23 nachgezogen
+  werden.
 - `Timeline.writeTimeline` und `Graph.writeGraph` schreiben nach `../timeline/`
   und `../graph/`, `AlligatorAPI.loadCAgetRDF` nach
   `/opt/tomcat/webapps/alligator-files/`. Alle drei sind tote Pfade aus der

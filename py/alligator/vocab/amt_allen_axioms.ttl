@@ -1,17 +1,21 @@
 # The Allen algebra as Academic Meta Tool roles and axioms.
 #
-# Extracted verbatim in step S3 from the Turtle block hard-coded twice in
+# Extracted in step S3 from the Turtle block hard-coded twice in
 # de.rgzm.alligator.functions.AMTEvents (PRIMER A8, D-11). Both copies in that
 # file are identical and both agree, triple for triple, with the block in the
-# published reference outputs, so this file changes nothing about what the tool
-# emits -- it only stops 950 lines of vocabulary from being rebuilt as a Java
-# string on every call.
+# published reference outputs -- except for two corrections made in step S6b,
+# once running the file through AMT.engine had shown what they do:
+#
+# 1. RCA0105, RCA0119 and RCA0133 carried the inverse role where composing
+#    with `equals` must yield the identity, so `s o e` now gives `s`, `d o e`
+#    gives `d` and `f o e` gives `f` (PRIMER D-20);
+# 2. SDA001 and SDA002 declared `q` and `e` self-disjoint, forbidding what the
+#    same file derives, and are gone (PRIMER D-19).
 #
 # The general AMT vocabulary that precedes this block in the Java source is
 # deliberately not carried over: `amt:Concept rdfs:subClassOf rdfs:Class` and
 # the twelve triples with it belong to AMT.engine, which loads its own
-# ontology/amt.ttl (PRIMER A4). Those thirteen triples are the whole difference
-# between this file and the Java block.
+# ontology/amt.ttl (PRIMER A4).
 #
 # The layout below -- section comments, one triple per line, single-quoted
 # labels -- is the published one and is kept as it stands, so that a diff
@@ -243,10 +247,6 @@ rgzm:IA028 amt:antecedent rgzm:yc .
 rgzm:IA028 amt:inverse rgzm:oc .
 
 # SelfDisjointAxioms
-rgzm:SDA001 rdf:type amt:SelfDisjointAxiom .
-rgzm:SDA001 amt:role rgzm:q .
-rgzm:SDA002 rdf:type amt:SelfDisjointAxiom .
-rgzm:SDA002 amt:role rgzm:e .
 rgzm:SDA003 rdf:type amt:SelfDisjointAxiom .
 rgzm:SDA003 amt:role rgzm:b .
 rgzm:SDA004 rdf:type amt:SelfDisjointAxiom .
@@ -641,7 +641,7 @@ rgzm:RCA0100 amt:logic amt:ProductLogic .
 rgzm:RCA0105 rdf:type amt:RoleChainAxiom .
 rgzm:RCA0105 amt:antecedent1 rgzm:s .
 rgzm:RCA0105 amt:antecedent2 rgzm:e .
-rgzm:RCA0105 amt:consequent rgzm:si .
+rgzm:RCA0105 amt:consequent rgzm:s .
 rgzm:RCA0105 amt:logic amt:ProductLogic .
 rgzm:RCA0106 rdf:type amt:RoleChainAxiom .
 rgzm:RCA0106 amt:antecedent1 rgzm:s .
@@ -691,7 +691,7 @@ rgzm:RCA0117 amt:logic amt:ProductLogic .
 rgzm:RCA0119 rdf:type amt:RoleChainAxiom .
 rgzm:RCA0119 amt:antecedent1 rgzm:d .
 rgzm:RCA0119 amt:antecedent2 rgzm:e .
-rgzm:RCA0119 amt:consequent rgzm:di .
+rgzm:RCA0119 amt:consequent rgzm:d .
 rgzm:RCA0119 amt:logic amt:ProductLogic .
 rgzm:RCA0120 rdf:type amt:RoleChainAxiom .
 rgzm:RCA0120 amt:antecedent1 rgzm:d .
@@ -736,7 +736,7 @@ rgzm:RCA0128 amt:logic amt:ProductLogic .
 rgzm:RCA0133 rdf:type amt:RoleChainAxiom .
 rgzm:RCA0133 amt:antecedent1 rgzm:f .
 rgzm:RCA0133 amt:antecedent2 rgzm:e .
-rgzm:RCA0133 amt:consequent rgzm:fi .
+rgzm:RCA0133 amt:consequent rgzm:f .
 rgzm:RCA0133 amt:logic amt:ProductLogic .
 rgzm:RCA0134 rdf:type amt:RoleChainAxiom .
 rgzm:RCA0134 amt:antecedent1 rgzm:f .

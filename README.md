@@ -155,16 +155,17 @@ Markdown run report. On `romanempire` the 68 asserted relations become 138.
 
 Two things are worth knowing before reading the output.
 
-**The consistency check fails, and that is not about this file.** The engine
-reports 14 self-loops on `romanempire` and 18 on `potterlimes`. Every one of
-them is derived, none is asserted, and the Allen axiom block we copy from the
-Java implementation both derives them and forbids them: `e ∘ e → e` closes into
-a loop because the file carries equality in both directions, and three rows of
-the composition table (`s ∘ e → si`, `d ∘ e → di`, `f ∘ e → fi`) yield the
-inverse role where composing with equals must yield the identity. The phase
-reports self-loops as a warning and fails on a `DisjointAxiom` violation, which
-would be a claim about two different events and so about the data. See
-`PRIMER.md`, D-19 and D-20.
+**Validation and the consistency check both pass** — but only since the Allen
+axiom block was corrected. Running it through the engine is what exposed two
+defects it had carried over from the Java implementation: two
+`amt:SelfDisjointAxiom` over roles that are reflexive by definition, and three
+rows of the composition table yielding the inverse role where composing with
+`equals` must yield the identity. The second of those had turned every
+"finishes" relation between events with a shared end into its opposite, which
+cost `potterlimes` 22 wrongly inferred edges. Five triples in
+`py/alligator/vocab/amt_allen_axioms.ttl`; both are registered as deviations
+from the reference and checked against it triple for triple. See `PRIMER.md`,
+D-19 and D-20.
 
 **The engine's output is not version-controlled.** It is reproduced by the
 command above, not archived, because the engine loads its axioms out of a set
