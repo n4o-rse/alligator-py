@@ -19,7 +19,7 @@ authors:
 license: MIT
 version: "0.1.0"
 date-released: "2026-08-28"  # TODO: confirm on release
-repository-code: "https://github.com/leiza-rse/alligator-py"
+repository-code: "https://github.com/n4o-rse/alligator-py"
 # doi: "10.5281/zenodo.XXXXXXX"  # TODO: add Zenodo DOI once minted
 keywords:
   - Linked Open Data

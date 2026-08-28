@@ -17,7 +17,7 @@ amt = ["pyshacl>=0.29"]
 dev = ["pytest>=8.0", "ruff>=0.6"]
 
 [project.urls]
-Repository = "https://github.com/leiza-rse/alligator-py"
+Repository = "https://github.com/n4o-rse/alligator-py"
 
 [tool.ruff]
 line-length = 88

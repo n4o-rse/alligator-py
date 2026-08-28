@@ -63,7 +63,7 @@ alligator-py/
 Tested with **Python 3.10+**.
 
 ```bash
-git clone https://github.com/leiza-rse/alligator-py.git
+git clone https://github.com/n4o-rse/alligator-py.git
 cd alligator-py
 
 python -m venv .venv
