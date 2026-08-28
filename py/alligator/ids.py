@@ -6,11 +6,12 @@ derived from the event's own AGT row (PRIMER A8, D-01).
 
     id = "e" + base32(blake2s(name|x|y|z|von|bis, digest_size=8))[:8]
 
-Hashed is the text as it stands in the file, not the parsed float, so that the
-identifier documents the input literally and `0.0810` and `0.081` stay
-distinguishable. Leading and trailing whitespace is removed first, because the
-CA export pads its columns to a fixed width and an identifier has no business
-depending on that.
+Hashed are the *parsed numbers*, each written back as Python's shortest string
+that reads back as the same float, not the text as it stands in the file. An
+identifier is a name for a point in CA space with a date range, and `0.0810`,
+`0.081` and ` 0.081 ` are the same point: they have to get the same name, or
+else re-exporting the correspondence analysis with a different column width
+renames every event in the repository.
 
 The leading letter is not decoration: Cypher variable names may not start with a
 digit, which is also why the Java code draws Hashids until it gets one.
@@ -36,6 +37,16 @@ SEPARATOR = "|"
 _ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 
 
+def normalise(text: str) -> str:
+    """One numeric field in its canonical form.
+
+    `repr` of a float is the shortest string that reads back as that same float
+    and has been stable since Python 3.1, so this is a property of the number
+    and not of the interpreter that happens to run.
+    """
+    return repr(float(text))
+
+
 def fingerprint(name: str, x: str, y: str, z: str, start: str, end: str) -> str:
     """The string that is hashed. Column 7 is deliberately not part of it.
 
@@ -43,7 +54,8 @@ def fingerprint(name: str, x: str, y: str, z: str, start: str, end: str) -> str:
     (PRIMER A7), so a file that disagrees with itself in that column must not
     produce different identifiers than one that does not.
     """
-    return SEPARATOR.join((name, x, y, z, start, end))
+    numbers = (normalise(value) for value in (x, y, z, start, end))
+    return SEPARATOR.join((name, *numbers))
 
 
 def event_id(row: AgtRow) -> str:

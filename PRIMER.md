@@ -144,7 +144,7 @@ darauf läuft.
 | Ziel der CA-Phase | dem ADP-Ergebnis nahekommen, nicht es byte-genau nachbilden. Ein eigenständiges Skript mit Parametern auf der Kommandozeile | 2026-08-28 |
 | Golden Files | `tests/reference/`, aus <https://tools.leiza.de/alligator/> gezogen. Vergleich **namensbasiert**, nicht ID-basiert | 2026-08-28 |
 | Lizenz | MIT, Fortschreibung von Florian Thiery / LEIZA | 2026-08-28 |
-| Grundlage der IDs | die **Rohzeichenkette** der AGT-Zeile, nach Abschneiden der Randleerzeichen. `0.0810` und `0.081` bleiben unterscheidbar; die Spaltenausrichtung der CA-Ausgabe wirkt nicht auf die ID. Spalte 7 und die Zeilennummer gehen nicht ein | 2026-08-28 |
+| Grundlage der IDs | die **geparsten Zahlen** der AGT-Zeile, je in kanonischer Schreibweise (`repr(float(...))`), plus der Name. `0.0810`, `0.081` und ` 0.081 ` ergeben dieselbe ID, `0.0811` nicht. Damit überlebt eine ID das Neuschreiben der Datei mit anderer Nachkommastellenzahl. Spalte 7 und die Zeilennummer gehen nicht ein | 2026-08-28 |
 | Datumsvergleich | **exakt**, wie Java. Ein nicht ganzzahliges Datum ist eine Warnung, kein Fehler | 2026-08-28 |
 | Spalte 7 gegen den Floating-Wert | Widerspruch ist eine Warnung; unter `--strict` bricht der Lauf ab. Entschieden wird in jedem Fall nach dem Floating-Wert (A7) | 2026-08-28 |
 | Umgedrehte Intervalle | `b < a` nach der Datierung wird **nicht** in den Zustand geschrieben. `a` und `b` bleiben stehen, `start`, `end` und `reversed` sind abgeleitete Eigenschaften — siehe A8/D-05 | 2026-08-28 |
@@ -394,7 +394,7 @@ liefert ein `Result`; Dateien sieht der Kern nicht (A3). Geprüft wird gegen all
 drei Golden Files von `romanempire`: Allen-Matrix ohne Hauptdiagonale (D-13),
 Distanzmatrix auf vier Nachkommastellen nach Komma-zu-Punkt (D-10), virtuelle
 Jahre samt Nachbarnamen und Punktereignissen aus der Timeline. `potterlimes`
-deckt die gewichteten Achsen und den gemischten Fall `120 … 9999` ab. 91 Tests.
+deckt die gewichteten Achsen und den gemischten Fall `120 … 9999` ab. 94 Tests.
 
 ### Das Distanzmodell
 
@@ -467,14 +467,18 @@ Umsortierungen. Der führende Buchstabe ist nötig, weil Cypher-Variablennamen
 nicht mit einer Ziffer beginnen dürfen — Java erzeugt den Hashid so lange neu,
 bis das erfüllt ist.
 
-Gehasht wird die **Rohzeichenkette wie in der Datei**, nicht der geparste Float:
-so dokumentiert die ID die Eingabe wörtlich, und `0.0810` und `0.081` sind
-unterscheidbar. Randleerzeichen fallen vorher weg, sonst entschiede die
-Spaltenausrichtung der CA-Ausgabe über die ID. Spalte 7 geht nicht ein, weil
-über das Floaten der Metadatenblock entscheidet und nicht diese Spalte; die
-Zeilennummer auch nicht, damit Umsortieren die IDs nicht neu vergibt.
-Beschlossen in S1, siehe A4. Der Preis: schreibt die CA-Phase dieselben
-Koordinaten später mit anderer Nachkommastellenzahl, wechseln alle IDs.
+Gehasht werden die **geparsten Zahlen**, jede in kanonischer Schreibweise —
+`repr(float(...))`, also die kürzeste Zeichenkette, die wieder denselben Float
+ergibt, seit Python 3.1 stabil. Eine ID benennt damit einen Punkt im CA-Raum mit
+einem Datumsbereich, und `0.0810`, `0.081` und ` 0.081 ` sind derselbe Punkt.
+Der Grund ist die CA-Phase: schriebe sie dieselben Koordinaten später mit vier
+statt drei Nachkommastellen, würden bei einem Vergleich auf Zeichenebene
+sämtliche Ereignisse im Repository umbenannt. Kanonisch heisst nicht unscharf —
+`0.0811` bekommt eine andere ID.
+
+Spalte 7 geht nicht ein, weil über das Floaten der Metadatenblock entscheidet
+und nicht diese Spalte; die Zeilennummer auch nicht, damit Umsortieren die IDs
+nicht neu vergibt. Beschlossen in S1, siehe A4.
 
 **Achtung beim Vergleich mit `v1/`:** dort hat jede der sechs Dateien eigene
 IDs. Golden-File-Tests müssen über `rdfs:label` beziehungsweise `content`

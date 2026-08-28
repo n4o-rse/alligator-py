@@ -88,9 +88,9 @@ def _build_event(row: AgtRow, floating_value: float, random_ids: bool) -> Event:
     matter -- independently, which is what makes `120 ... 9999` a valid line
     (PRIMER A7).
     """
-    identifier = ids.random_id() if random_ids else ids.event_id(row)
     a = float(row.start)
     b = float(row.end)
+    identifier = ids.random_id() if random_ids else ids.event_id(row)
     return Event(
         id=identifier,
         name=row.name,
