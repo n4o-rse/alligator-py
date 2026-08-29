@@ -240,3 +240,10 @@ under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 If you use this software, please cite it using the metadata in
 [`CITATION.cff`](CITATION.cff).
+
+## Acknowledgements
+
+This work is part of the DFG-funded NFDI initiative, specifically the
+[Research Data Infrastructure for the Material Remains of Human History
+(NFDI4Objects)](https://www.nfdi4objects.net/) — DFG project number
+**501836407**.
