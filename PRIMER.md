@@ -43,9 +43,21 @@ Ausgangslage gegenüber der Zeit, in der der Java-Alligator entstand:
 
 | Repo | Rolle |
 |---|---|
-| `n4o-rse/amt-engine` | reiner Python-Reasoner für die AMT-Ontologie: SHACL-Vorvalidierung, n-äre RoleChain-Inferenz, sechs Fuzzy-Operatoren, Export nach TTL/Cypher/CSV/HTML, Markdown-Report |
-| `n4o-rse/amt-runner` | schmales Wrapper-Skript `run_amt.py`, das die Engine holt und die Pipeline auf einer TTL-Datei laufen lässt |
-| `leiza-scit/CAA2026-amt` | die JS-Visualisierung, die dasselbe TTL-Format liest |
+| [`n4o-rse/amt-engine`](https://github.com/n4o-rse/amt-engine) | reiner Python-Reasoner für die AMT-Ontologie: SHACL-Vorvalidierung, n-äre RoleChain-Inferenz, sechs Fuzzy-Operatoren, Rollensubsumption, Export nach TTL/Cypher/CSV/HTML, Markdown-Report |
+| [`n4o-rse/amt-runner`](https://github.com/n4o-rse/amt-runner) | schmales Wrapper-Skript `run_amt.py`, das die Engine holt und die Pipeline auf einer TTL-Datei laufen lässt |
+| [`leiza-scit/CAA2026-amt`](https://github.com/leiza-scit/CAA2026-amt) | die JS-Visualisierung, die dasselbe TTL-Format liest |
+
+**Pins.** `amt-engine` hat keine Tags, gepinnt wird auf Commits. Der Pin steht
+in `pyproject.toml` unter `[project.optional-dependencies] amt`.
+
+| Stand | Commit | Version | eingeführt in |
+|---|---|---|---|
+| erster Pin | `968e80e` | 0.2.0 | S6 |
+| aktuell | `a50822c` | 0.3.0 | S6c |
+
+`amt-runner` steht bei `bab9ea8`. Wir benutzen es nicht — `alligator-py` ruft
+`python -m amt.runner` aus der Engine auf, nicht das gleichnamige Standalone-Skript
+(die Begründung steht in S6).
 
 Damit ist Alpaka zum ersten Mal durchgängig in einer Sprache erreichbar:
 `Zähltabelle → CA → AGT → alligator-py → AMT-TTL → amt-engine → Viewer`.
@@ -285,7 +297,7 @@ Jede beabsichtigte Abweichung steht hier. Alle Befunde sind an
 | D-16 | `writeRDFasText` schreibt `nfsn`/`nfen`, aber nicht `nfsnE`/`nfenE` | beide Nachbar-IRIs werden geschrieben | Das Vokabular deklariert `nfsnE` und `nfenE` als Object Properties, und `RDFEvents.writeRDF` — die Dateivariante derselben Klasse — schreibt sie. Nur der Pfad, den das Webtool aufruft, lässt sie weg, weshalb sie in den Golden Files fehlen. Ein Name ist keine Referenz: zwei Ereignisse dürfen denselben tragen |
 | D-17 | die AMT-Datei legt Ereignisknoten (`rgzm:jNEOv3`) neben Rollen und Axiome (`rgzm:di`) in einen Namensraum | Ereignisse unter `ae:`, `rgzm:` nur noch Vokabular | Siehe A6. Nebenwirkung und eigentlicher Gewinn: Alligator-TTL und AMT-TTL eines Laufs benennen dieselben Ereignisse und lassen sich zu einem Graphen vereinigen. In Java war das ausgeschlossen, weil schon die IDs je Datei andere waren (D-01) |
 | D-14 | `Cypher` verkettet den Ereignisnamen ohne Maskierung in das Statement | einfache Anführungszeichen und Backslashes werden maskiert | Ein Name mit Apostroph erzeugt in Java eine Datei, die Neo4j nicht liest. Für jeden Namen, der vorher funktioniert hat, ändert sich nichts — eine Abweichung ist es trotzdem |
-| D-18 | — (in Java gab es keine Engine-Anbindung) | die Ausgabe von AMT.engine wird **nicht** versioniert, als einzige Ausgabe dieses Repos | `amt/core.py` iteriert die Axiomklassen über ein `set` von URIRefs, also entscheidet die String-Hashung die Anwendungsreihenfolge und damit die Reihenfolge der `amt:provenance`-Listen in `reasoned.ttl`, `.cypher` und `.edges.csv`. `PYTHONHASHSEED=0` legt sie fest, aber der gesetzte String-Hash hat zwischen Python 3.10 und 3.11 den Algorithmus gewechselt. Nachgewiesen: zwei Läufe ohne Saat unterscheiden sich, mit Saat nicht; sortiert man beide Dateien, sind sie inhaltsgleich. Fällt weg, sobald die Engine sortiert lädt |
+| D-18 | — (in Java gab es keine Engine-Anbindung) | die Ausgabe von AMT.engine wurde bis S6c **nicht** versioniert, als einzige Ausgabe dieses Repos | `amt/core.py` iterierte die Axiomklassen über ein `set`, also entschied die String-Hashung die Anwendungsreihenfolge und damit die Reihenfolge der `amt:provenance`-Listen in `reasoned.ttl`, `.cypher` und `.edges.csv`. `PYTHONHASHSEED=0` legte sie fest, aber der gesetzte String-Hash hat zwischen Python 3.10 und 3.11 den Algorithmus gewechselt. **Aufgehoben mit AMT.engine 0.3.0**, die Axiomtypen und -subjekte sortiert ausliefert: zwei Läufe mit `PYTHONHASHSEED=1` und `=2` liefern fünf byte-gleiche Dateien. Die Abweichung endet mit S6c |
 | D-19 | der Axiomblock erklärt `q` und `e` für selbstdisjunkt (`SDA001`, `SDA002`) und leitet zugleich `x q x` und `x e x` ab | beide Axiome entfernt | Gefunden über S6: der Konsistenzcheck der Engine meldete auf `romanempire` 14 Verletzungen und auf `potterlimes` 18, alle abgeleitet, keine in unserer Datei. `RCA0091` (`e ∘ e → e`) schließt sich über eine Relation, die die Datei symmetrisch trägt — wo `A e B` steht, steht auch `B e A` —, und `RCA0117` (`d ∘ di → q`) über ein `di`, das schon per `InverseAxiom` aus jedem `d` folgt. Die Folgerungen sind richtig, die Verbote nicht: `e` ist per Definition reflexiv, `q` ist die volle Disjunktion und schließt Gleichheit ein. Drei weitere Rollen sind nach ihren Labels ebenfalls reflexiv — `hh` *head to head with*, `tt` *tail to tail with*, `ct` *contemporary of* — und behalten ihre Axiome: keine Kette und keine Inverse dieses Blocks erzeugt eine Freksa-Rolle, sie sind also wirkungslos, und ob sie strikt gemeint sind, ist nicht aus der Datei zu lesen |
 | D-20 | drei Zeilen der Kompositionstafel liefern die Inverse statt der Identität: `RCA0105` (`s ∘ e → si`), `RCA0119` (`d ∘ e → di`), `RCA0133` (`f ∘ e → fi`) | auf `s`, `d` und `f` korrigiert | Die Verknüpfung mit `e` muss die Identität sein, und in elf der vierzehn Zeilen ist sie es auch. Betroffen sind genau die drei Rollen, die ohne `i` geschrieben werden und deren Inverse sich nur durch das angehängte `i` unterscheidet — ein systematischer Tippfehler. Nachgewiesen gegen eine ausgerechnete Allen-Kompositionstafel: von den 169 Einträgen sind 97 eindeutig, davon stehen 96 richtig im Block und drei falsch; die beiden Einträge mit voller Disjunktion stehen als `q`, die übrigen 70 mehrdeutigen fehlen, was in einem Formalismus ohne Disjunktion die einzige ehrliche Möglichkeit ist. Wirkung: auf `potterlimes` fallen 22 falsch abgeleitete Kanten weg (144 → 122), auf `romanempire` keine, weil dort kein Ereignispaar ein Ende teilt |
 
@@ -310,6 +322,7 @@ also ausdrücklich ausnehmen.
 | S5 | CA-Phase: Zähltabelle → AGT | S1 | offen |
 | S6 | AMT-Anbindung: `amt-engine` als optionale Phase | S3 | **erledigt** 2026-08-28 |
 | S6b | Korrektur des Allen-Axiomblocks | S6 | **erledigt** 2026-08-28 |
+| S6c | Nachziehen auf AMT.engine 0.3 | S6b | offen |
 | S7 | Politur: README, CITATION.cff, Pins, Zenodo | alle | offen |
 | S8a | Freksas Semi-Intervalle als AMT-Vokabular | — | offen |
 | S8b | Halbintervall-Relationen im Alligator | S8a, S1 | offen |
@@ -907,7 +920,8 @@ Beschafft wird die Engine also dort, wo Abhängigkeiten hingehören: als Extra
 `[amt]` in der `pyproject.toml`, per `pip install git+…@<SHA>`. Getestet: die
 `ontology/`-Dateien kommen bei der Installation mit, die Engine findet ihre
 Shapes. Auf einen Tag kann nicht gepinnt werden, weil `amt-engine` keine hat;
-der Pin steht auf `968e80e`.
+der Pin stand hier auf `968e80e` und zieht in S6c auf `a50822c` weiter — die
+Tabelle in Teil A führt ihn.
 
 ### Aufruf als Subprozess
 
@@ -961,11 +975,11 @@ demselben — und der Anlass für S6b, das beides behoben hat.
 - Die Phase läuft in `all` nur mit `--with-amt`. Der ursprüngliche Grund — sie
   klont ein fremdes Repository — ist mit dem Extra entfallen; es bleibt, dass
   ein `pip install -r requirements.txt` die Engine nicht mitbringt.
-- **[OFFEN] Zwei Punkte für `amt-engine`,** beide klein:
-  `sorted(axiom_types, key=str)` in `core.py` macht die Ausgabe ohne Umweg
-  reproduzierbar und lässt D-18 wegfallen; und
-  `package-data = ["../ontology/*.ttl"]` legt bei der Installation ein
-  Top-Level-`ontology/` in die `site-packages` statt es ins Paket zu nehmen.
+- ~~**Zwei Punkte für `amt-engine`.**~~ Beide sind in 0.3.0 behoben, siehe S6c:
+  `core.py` sortiert jetzt Axiomtypen *und* Axiomsubjekte, womit die Ausgabe
+  ohne `PYTHONHASHSEED` reproduzierbar ist und D-18 wegfällt; und die Ontologie
+  wird beim Bauen in den Paketnamensraum gelegt statt als Top-Level-`ontology/`
+  in die `site-packages`.
 
 ## S6b — Korrektur des Allen-Axiomblocks
 
@@ -1046,6 +1060,79 @@ Wächter, der eine Rückkehr dieses Fehlerbilds als solche lesbar macht.
 - **[OFFEN]** Ob der Java-Alligator nachgezogen wird und was mit den bereits
   veröffentlichten AMT-Dateien in grapHNR23 geschieht. Das ist keine Frage
   dieses Repos, aber sie steht.
+
+## S6c — Nachziehen auf AMT.engine 0.3
+
+**Ziel:** den Pin auf die Fassung heben, die das Memo aus S8a umgesetzt hat, und
+die drei Stellen zurückbauen, die es nur wegen der behobenen Mängel gab.
+
+**Uploads:** keine.
+
+**Ergebnis:** neuer Pin, `output/*/amt/` wird versioniert, `amt_phase.py`
+aufgeräumt, D-18 geschlossen.
+
+**Fertig, wenn:** beide Datensätze durchlaufen, die Engine-Ausgabe im Repo
+liegt und ein Rebuild sie nicht anfasst.
+
+### Was 0.3.0 gebracht hat
+
+`memo-amt-subsumption.md` ist in
+[`a50822c`](https://github.com/n4o-rse/amt-engine/commit/a50822cd758ca8b23dfdb373bcc987ba92e0e51d)
+umgesetzt, und an zwei Stellen weiter, als das Memo gefragt hatte:
+
+- **`amt:SubsumptionAxiom`** mit `amt:subRole`/`amt:superRole`, in zwei
+  Semantiken — Entailment als Vorgabe, Unterdrückung über `--minimal`, mit der
+  Gewichtsbedingung `w₁ ≥ w₂`.
+- **Die Engine bildet die transitive Hülle selbst.** Deklariert werden muss nur
+  die Überdeckungsrelation. Für die 29 Freksa-Rollen sind das 46 statt 137
+  Axiome; das Memo hatte alle 137 vorgeschlagen.
+- **Gesetzte Kanten werden nie unterdrückt.** Der Reasoner darf seine eigenen
+  Schlüsse zurücknehmen, nicht aber löschen, was in der Eingabe stand. Stand
+  nicht im Memo und ist richtig.
+- **Sortierte Iteration** über Axiomtypen *und* -subjekte. Damit ist der
+  Determinismus behoben, der D-18 begründet hat.
+- **Ein Index über `(role, from, to)`** statt Neuaufbau je Axiomanwendung, und
+  ein Reasoning-Lauf statt sechs. `romanempire` fällt von 2,5 s auf 1,6 s — bei
+  zwölf Ereignissen belanglos, aber die Richtung stimmt für S8a mit 841 Ketten.
+- **Die Ontologie liegt im Paketnamensraum**, nicht mehr als Top-Level-`ontology/`
+  in den `site-packages`.
+
+Nachgemessen, nicht angenommen:
+
+| Prüfung | Ergebnis |
+|---|---|
+| zwei Läufe ohne `PYTHONHASHSEED` | fünf Dateien byte-gleich |
+| `PYTHONHASHSEED=1` gegen `=2` | fünf Dateien byte-gleich |
+| unveränderte `amt`-Phase gegen 0.3.0 | läuft durch, 189 Axiome, Konsistenz grün |
+
+Der zweite Test ist der entscheidende: unterschiedliche Saaten sind der Ersatz
+für den Wechsel zwischen Python 3.10 und 3.11, an dem D-18 hing.
+
+### Was hier zu ändern ist
+
+1. **Pin** in `pyproject.toml`: `968e80e` → `a50822c`.
+2. **`.gitignore`:** `output/*/amt/` fällt weg, `*.report.md` bleibt ausgenommen
+   — der Zeitstempel und der absolute Eingabepfad darin sind maschinenabhängig.
+   Damit ist die Alpaka-Kette zum ersten Mal vollständig im Repo sichtbar.
+3. **`py/amt_phase.py`:** `PYTHONHASHSEED=0` entfällt. Der Docstring-Abschnitt,
+   der den Subprozess damit begründet, wird falsch und muss neu.
+4. **`--minimal`** als durchgereichte Option der Phase. Ohne
+   `SubsumptionAxiom` in der Eingabe ändert sie nichts, also ist sie hier
+   folgenlos; sie steht bereit für S8a.
+5. **Was bleibt:** die beiden CSV-Ausgaben kommen weiterhin mit CRLF,
+   `normalise_newlines` wird also gebraucht. Und der Subprozess bleibt: seine
+   Begründung ist nicht mehr der Hash-Seed, sondern dass der Runner die sechs
+   Exporte in einem Lauf erledigt und wir sie sonst selbst verdrahten müssten.
+
+### Zu beachten
+
+- Punkt 2 macht aus einem Dokumentationsschritt einen mit Diff: zwölf Dateien
+  kommen neu ins Repo, davon zwei HTML mit einigen hundert Kilobyte. Vor dem
+  Commit prüfen, ob die `.html` der Engine wirklich mit soll oder ob sie besser
+  in `.gitignore` bleibt und die Pages-Seite aus S4 sie selbst erzeugt.
+- Der Zeitpunkt ist frei. S6c blockiert nichts, aber S8a wird dadurch kleiner:
+  ohne S6c müsste der Generator die 137 Paare schreiben und die Phase weiter
+  mit dem Hash-Seed arbeiten.
 
 ## S7 — Politur
 
@@ -1142,12 +1229,20 @@ Punkt, sondern kein Informationsverlust mehr.
 - **`pr` und `sd`.** Als Rollen behalten, ohne Kettenaxiome. Als *Eingabe* sind
   sie sinnvoll — „endet nicht nach dem Beginn von" ist eine
   Halbintervall-Aussage —, als *Ergebnis* treten sie nie auf.
-- **Redundanz.** Die 29 überlappen: 137 echte Teilmengenbeziehungen,
-  `ob ⊂ ol ⊂ ?`. Das Reasoning leitet zwischen einem Paar `ob`, `ol`, `bd` und
-  `?` gleichzeitig ab. Alle vier sind wahr, aber drei davon sind nutzlos, und
-  der Graph wird dicht. AMT kennt keinen Subsumptionsaxiomtyp. Das ist die
-  Erweiterung, die AMT.engine dafür braucht; sie steht in
-  `memo-amt-subsumption.md`.
+- ~~**Redundanz.**~~ **Erledigt, bevor S8a beginnt.** Die 29 überlappen: 137
+  echte Teilmengenbeziehungen, `< ⊂ ob ⊂ ol ⊂ bd ⊂ ?`. Ohne Subsumption leitet
+  das Reasoning zwischen einem Paar alle fünf gleichzeitig ab; alle sind wahr,
+  vier sind nutzlos, und `?` — „über dieses Paar ist nichts bekannt" — ist bei
+  einem Paar, über das etwas bekannt ist, schlicht falsch. `memo-amt-subsumption.md`
+  hat das an die AMT-Seite gemeldet; AMT.engine 0.3.0 hat es umgesetzt (S6c).
+  Für uns folgt daraus zweierlei: Der Generator schreibt nur die
+  **Überdeckungsrelation, 46 Axiome statt 137**, weil die Engine die transitive
+  Hülle selbst bildet. Und `--minimal` wird als Option der `amt`-Phase
+  durchgereicht, damit sich beide Semantiken auf denselben Daten vergleichen
+  lassen; Vorgabe bleibt Entailment.
+- **Kreuztest.** Dass die Engine aus unseren 46 Überdeckungspaaren wieder genau
+  die 137 Teilmengenbeziehungen herstellt, ist ein Test, den es umsonst dazu
+  gibt: er prüft unsere Rechnung gegen ihre.
 - **Laufzeit.** 841 Kettenaxiome statt 126, im Fixpunkt. Auf zwölf Ereignissen
   ist das gleichgültig, auf einer CA über fünfhundert Töpfer nicht. Messen,
   nicht schätzen — und zwar in S8a, bevor S8b darauf aufbaut.
