@@ -311,6 +311,9 @@ also ausdrücklich ausnehmen.
 | S6 | AMT-Anbindung: `amt-engine` als optionale Phase | S3 | **erledigt** 2026-08-28 |
 | S6b | Korrektur des Allen-Axiomblocks | S6 | **erledigt** 2026-08-28 |
 | S7 | Politur: README, CITATION.cff, Pins, Zenodo | alle | offen |
+| S8a | Freksas Semi-Intervalle als AMT-Vokabular | — | offen |
+| S8b | Halbintervall-Relationen im Alligator | S8a, S1 | offen |
+| S8c | Ausgaben und Vokabular für die Semi-Intervalle | S8b | offen |
 
 S4 hängt nur an S2, nicht an S3 — die Seite liest JSON, kein RDF. S5 hängt an
 S1, weil die CA-Phase gegen den AGT-Schreiber prüft, nicht gegen den
@@ -1068,6 +1071,193 @@ Release.
 
 ---
 
+## S8a — Das Freksa-Modell als AMT-Vokabular
+
+**Ziel:** Freksas Semi-Intervall-Relationen als zweites AMT-Vokabular, aus dem
+Aufsatz abgeleitet und nicht abgeschrieben, unabhängig von jeder
+Alligator-Änderung benutzbar.
+
+**Uploads:** Freksa, C. (1992): *Temporal reasoning based on semi-intervals*.
+Artificial Intelligence 54, 199–227. Liegt vor.
+
+**Ergebnis:** `py/alligator/vocab/build_freksa.py`,
+`py/alligator/vocab/freksa_axioms.ttl`, Tests, ein Memo an AMT.engine.
+
+**Fertig, wenn:** die erzeugte Datei durch die SHACL-Shapes und den
+Konsistenzcheck der Engine läuft und der Generator sie byte-gleich reproduziert.
+
+### Warum das keine Bildauswertung braucht
+
+Der Aufsatz enthält drei Tafeln als Symbolgrafik — Figure 9, 12 und 13 —, die
+sich mit vertretbarem Aufwand nicht lesen lassen. Man muss sie auch nicht lesen.
+**Figure 7** (S. 21) trägt für jede der 18 Relationen zwei Spalten: die
+Disjunktion der Allen-Relationen und die Bedingungen über den Endpunkten
+α, ω, Α, Ω. Beides ist Text, beides ist abgetippt, und beides beschreibt
+dieselbe Menge — die eine Spalte prüft also die andere. Das ist geprüft: für
+alle 18 Relationen stimmen die aus den Bedingungen errechneten Allen-Mengen mit
+der ALLEN-Spalte überein. Ein Tippfehler der Sorte D-20 kann hier nicht
+unbemerkt bleiben.
+
+Alles Weitere folgt daraus durch Rechnung, nicht durch Abschreiben:
+
+- **Figure 12, die 29×29-Tafel.** Jede Relation ist eine Menge von
+  Allen-Relationen, die Komposition zweier Mengen ist die Vereinigung der
+  paarweisen Allen-Kompositionen. Nachgerechnet: 841 Einträge, alle landen
+  wieder in den 29 — der Satz ist unter Komposition abgeschlossen, genau wie
+  Freksa auf S. 28 behauptet. `pr` und `sd` treten als Ergebnis nie auf, was
+  ihre Auslassung aus der Tafel erklärt.
+- **Die Inversen.** Mengenweise Inversion. Vier Relationen sind selbstinvers:
+  `hh`, `tt`, `ct` und `?`.
+- **Welche Rollen selbstdisjunkt sein dürfen.** Genau die, deren Menge `=`
+  nicht enthält: 22 der 29. Damit ist entschieden, was in S6b offen blieb —
+  `hh`, `tt` und `ct` enthalten `=`, ihre `SelfDisjointAxiom` sind falsch, und
+  zwar nachweisbar statt nach Labellage vermutet (D-19).
+
+### Der eigentliche Gewinn
+
+In Allens 13×13-Tafel sind nur **97 von 169** Einträgen eindeutig; die übrigen
+72 sind Disjunktionen. Der Java-Block bildet die 97 ab, schreibt zwei als `q`
+und lässt 70 weg — jede dieser 70 Kompositionen verliert im Reasoning die
+gesamte Information. Mit den 29 Freksa-Rollen sind **alle 169 benennbar**, weil
+jede Disjunktion in Allens Tafel eine konzeptionelle Nachbarschaft ist und
+jede dieser Nachbarschaften einen Namen hat. Nicht mehr Relationen sind der
+Punkt, sondern kein Informationsverlust mehr.
+
+### Umfang
+
+| | heute (Allen-Block) | S8a (Freksa) |
+|---|---|---|
+| `amt:Role` | 31 | 29 (+ `pr`, `sd` ohne Ketten = 31) |
+| `amt:RoleChainAxiom` | 126 | 841 |
+| `amt:InverseAxiom` | 28 | 29 |
+| `amt:SelfDisjointAxiom` | 29 | 22 |
+
+### Zu entscheiden
+
+- **Eigene Datei oder Erweiterung von `amt_allen_axioms.ttl`?** Vorschlag:
+  eigene. Die Allen-Datei ist die dokumentierte Portierung eines
+  veröffentlichten Blocks und soll gegen bestehende AMT-Dateien diffbar
+  bleiben; die Freksa-Datei ist neu und unsere. Beide teilen `rgzm:` und die
+  Rollennamen, die dort schon stehen.
+- **`pr` und `sd`.** Als Rollen behalten, ohne Kettenaxiome. Als *Eingabe* sind
+  sie sinnvoll — „endet nicht nach dem Beginn von" ist eine
+  Halbintervall-Aussage —, als *Ergebnis* treten sie nie auf.
+- **Redundanz.** Die 29 überlappen: 137 echte Teilmengenbeziehungen,
+  `ob ⊂ ol ⊂ ?`. Das Reasoning leitet zwischen einem Paar `ob`, `ol`, `bd` und
+  `?` gleichzeitig ab. Alle vier sind wahr, aber drei davon sind nutzlos, und
+  der Graph wird dicht. AMT kennt keinen Subsumptionsaxiomtyp. Das ist die
+  Erweiterung, die AMT.engine dafür braucht; sie steht in
+  `memo-amt-subsumption.md`.
+- **Laufzeit.** 841 Kettenaxiome statt 126, im Fixpunkt. Auf zwölf Ereignissen
+  ist das gleichgültig, auf einer CA über fünfhundert Töpfer nicht. Messen,
+  nicht schätzen — und zwar in S8a, bevor S8b darauf aufbaut.
+
+## S8b — Halbintervalle im Alligator
+
+**Ziel:** aus den *tatsächlich bekannten* Endpunkten die gröbste sichere
+Relation bestimmen, statt ein unbekanntes Datum zu raten und mit ihm zu rechnen.
+
+**Ergebnis:** `py/alligator/freksa.py`, eine Erweiterung von `core.calculate`,
+und ein Abschnitt zum Algorithmus in der README.
+
+### Der Algorithmus, wie er heute läuft
+
+Das steht bisher nirgends zusammenhängend und gehört in die README, bevor ein
+fünfter Schritt dazukommt:
+
+1. **Korrespondenzanalyse** (S5, extern): aus der Zähltabelle werden drei
+   Koordinaten je Ereignis.
+2. **Distanz im CA-Raum**: gewichteter euklidischer Abstand zwischen allen
+   Ereignispaaren, Gewichte aus der AGT-Kopfzeile.
+3. **Nächster fixierter Nachbar**: für jeden unbekannten Anfang oder jedes
+   unbekannte Ende (`#9999`) wird das Datum des nächstgelegenen *datierten*
+   Nachbarn übernommen, begrenzt durch `--max-neighbour-distance`.
+4. **Allen-Relationen**: über den nun vollständigen Intervallen.
+
+Schritt 3 ist eine Schätzung, Schritt 4 behandelt sie wie eine Messung. Genau
+hier setzt Freksa an.
+
+### Wohin die Halbintervall-Relationen gehören
+
+**Zwischen Schritt 2 und 3, als zweiter Zweig, nicht als fünfter Schritt.**
+
+Die Semi-Intervall-Relation wird aus den rohen AGT-Endpunkten bestimmt: aus den
+vier Vergleichen α:Α, α:Ω, ω:Α, ω:Ω werden diejenigen ausgewertet, deren beide
+Seiten bekannt sind; übrig bleibt die Menge der noch möglichen
+Allen-Relationen, und die ist nach Freksa eine der 29. Das ist Figure 7,
+rückwärts gelesen: die CONSTRAINTS-Spalte als Berechnungsvorschrift statt als
+Definition.
+
+Der Grund für diese Stelle ist der Kern der Sache. Rechnet man die
+Freksa-Relation *nach* Schritt 3, erbt sie die Schätzung und sagt nichts, was
+die Allen-Relation nicht schon sagt — sie wäre nur deren gröbere Lesart. Vor
+Schritt 3 gerechnet, ist sie eine **unabhängige zweite Ableitung aus derselben
+Eingabe**: eine sichere und grobe neben einer vollständigen und geschätzten.
+
+Daraus folgt ein Prüfschritt, den es umsonst dazu gibt: **die geschätzte
+Allen-Relation muss in der sicheren Freksa-Nachbarschaft liegen.** Tut sie es
+nicht, widerspricht der nächste Nachbar dem, was tatsächlich bekannt ist. Das
+ist der erste Test, den die Nachbarschaftsheuristik je hatte.
+
+Gemessen auf den beiden Datensätzen:
+
+| | |
+|---|---|
+| `romanempire`, `DomitianConsulate2` beidseitig floating | alle 14 Paare `?` — sicher ist nichts |
+| `potterlimes`, `HadriansWall` beidseitig floating | 14 Paare `?` |
+| `potterlimes`, `NoordzeeKust` (120–unbekannt) | 8 von 14 Paaren `oc` bzw. `yc`, ohne jede Schätzung |
+| beide Datensätze | 0 Widersprüche zwischen Schätzung und Sicherem |
+
+Ein beidseitig floating Ereignis liefert erwartungsgemäß nichts; der Gewinn
+liegt bei den halb datierten, und `NoordzeeKust` zeigt ihn.
+
+### Zu entscheiden
+
+- **Neben oder statt?** Vorschlag: neben. Die Allen-Relation bleibt, wie sie
+  ist — sie ist das Ergebnis des portierten Java-Algorithmus und darf sich
+  nicht ändern —, und die Freksa-Relation tritt als eigene Kante daneben. Wer
+  nur Sicheres will, filtert; wer die Schätzung will, hat sie.
+- **Gewichte.** Eine Freksa-Relation aus zwei bekannten Endpunkten steht auf
+  festem Grund; heute bekommt eine Relation `0.95`, sobald *ein* Ende geschätzt
+  wurde. Vorschlag: sichere Freksa-Kanten tragen `0.99`, unabhängig davon, ob
+  das Ereignis floating ist — denn der geschätzte Endpunkt geht in sie gar
+  nicht ein.
+- **Punktereignisse.** `Usurpator` und `Galba` in `romanempire` sind
+  69–69. Allens Algebra verlangt α < ω, für ein Punktintervall gibt es also
+  *keine* Allen-Relation; der Java-Alligator liefert trotzdem `=`. Freksas
+  Bedingungen greifen dagegen auch hier. Vor S8b klären, ob wir das nachbilden,
+  reparieren oder registrieren.
+- **`?` schreiben oder weglassen?** Ein Paar, über das nichts bekannt ist,
+  liefert `?`. Als Kante ist das Rauschen; als Aussage ist es genau die, die
+  D-13 für Selbstrelationen trifft. Vorschlag: nicht schreiben.
+
+## S8c — Ausgaben und Vokabular
+
+**Ziel:** die Semi-Intervall-Relationen in die bestehenden Ausgaben bringen und
+die Properties dafür deklarieren.
+
+**Ergebnis:** neue Properties im Alligator-Vokabular, erweiterte Turtle-,
+Matrix-, Graph- und Cypher-Ausgabe, README, Registereinträge.
+
+Für die 13 Allen-Relationen gibt es `time:`-Entsprechungen; für die 16
+Nachbarschaften gibt es keine, und es wird auch keine geben, weil OWL-Time
+Intervalle und keine Halbintervalle kennt. Sie werden also im
+Alligator-Vokabular unter `http://archaeology.link/ontology#` geprägt —
+`:olderThan`, `:headToHeadWith`, `:survivedBy` und so fort —, jeweils mit
+`rdfs:comment` auf Freksa und mit der Angabe, welche Allen-Relationen sie
+umfasst. Für `rgzm:` bleibt es bei den Rollen, die dort schon stehen; das ist
+die AMT-Seite.
+
+**Zu beachten:**
+
+- Die Matrix wird von einem Zeichen je Zelle auf zwei Werte je Zelle wachsen,
+  sobald beide Relationstypen darin stehen. Ob das eine zweite Matrix wird oder
+  eine zweispaltige, ist eine Frage an die Pages-Seite aus S4.
+- Cypher bekommt einen zweiten Kantentyp, kein Problem.
+- **[OFFEN]** Ob die neuen Properties in dieselbe Ontologiedatei gehören wie
+  die Allen-Properties oder in ein eigenes Modul. Für ein eigenes spricht, dass
+  die Allen-Datei die veröffentlichte Triceratops Edition ist.
+
 # Teil D — Offene Punkte
 
 Nicht einem Schritt zugeordnet, aber nicht zu vergessen:
@@ -1133,6 +1323,10 @@ Nicht einem Schritt zugeordnet, aber nicht zu vergessen:
   Ergebnis die volle Menge aller 13 Relationen ist. AMT kann keine Disjunktion
   ausdrücken, also steht `q` für eine. Daraus folgt auch D-19: „irgendeine
   Relation" schließt Gleichheit ein, `q` kann nicht selbstdisjunkt sein.
+  **Belegt** ist es seit S8a: Freksa führt die Relation in Figure 7 als `?`,
+  *no information*, mit der Disjunktion aller dreizehn Allen-Relationen und der
+  Bedingung *none*. Die Herleitung aus der Kompositionstafel und der Aufsatz
+  sagen dasselbe.
 - **Der Java-Axiomblock war an fünf Stellen falsch** (S6, S6b): drei Zeilen der
   Kompositionstafel (D-20) und zwei `SelfDisjointAxiom` (D-19). Beides ist in
   `vocab/amt_allen_axioms.ttl` korrigiert, in einem Zug, weil ein Teilfix die
@@ -1141,6 +1335,13 @@ Nicht einem Schritt zugeordnet, aber nicht zu vergessen:
   findet genau diese fünf Stellen und keine sechste — `test_rdf.py` prüft das.
   Offen bleibt, ob der Java-Alligator und die Dateien in grapHNR23 nachgezogen
   werden.
+- **Die drei stehengelassenen `SelfDisjointAxiom` sind entschieden** (S6b, S8a).
+  `hh`, `tt` und `ct` behielten ihre Axiome, weil ihre Labels dagegen sprachen,
+  ihre gemeinte Lesart aber nicht aus der Datei zu lesen war. Freksas Figure 7
+  liest sie: `hh` = `si = s`, `tt` = `fi = f`, `ct` = `o fi di si = s d f oi` —
+  alle drei enthalten `=`, alle drei sind reflexiv, alle drei dürfen nicht
+  selbstdisjunkt sein. Die Streichung gehört zu S8a, weil sie dort ohnehin
+  gerechnet wird.
 - `Timeline.writeTimeline` und `Graph.writeGraph` schreiben nach `../timeline/`
   und `../graph/`, `AlligatorAPI.loadCAgetRDF` nach
   `/opt/tomcat/webapps/alligator-files/`. Alle drei sind tote Pfade aus der
