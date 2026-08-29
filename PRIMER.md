@@ -328,6 +328,14 @@ also ausdrücklich ausnehmen.
 | S8b | Halbintervall-Relationen im Alligator | S8a, S1 | offen |
 | S8c | Ausgaben und Vokabular für die Semi-Intervalle | S8b | offen |
 
+Die Spalte *Abhängigkeit* nennt, was zwingend vorher fertig sein muss, nicht
+was zuerst drankommen sollte. Vorgeschlagene Reihenfolge des Restes:
+**S6c, S4, S8a** — S6c ist klein und macht S8a kleiner; S4 hat keine
+Fremdabhängigkeit und liefert das erste Vorzeigbare; S8a ist danach so genau
+beschrieben, wie ein Schritt sein kann. S5 ist der größte Brocken, hat mit
+dem fehlenden Abnahmefall ein echtes Hindernis, und nichts wartet darauf —
+einzusammeln ist davon aber der ADP-Lauf, sobald sich Gelegenheit bietet.
+
 S4 hängt nur an S2, nicht an S3 — die Seite liest JSON, kein RDF. S5 hängt an
 S1, weil die CA-Phase gegen den AGT-Schreiber prüft, nicht gegen den
 Algorithmus. S6 setzt S3 voraus, weil die Engine unsere AMT-Datei liest.
@@ -723,6 +731,13 @@ Turtle- und Cypher-Dateien in `output/`.
 Browser rechnet, hiesse den Algorithmus ein zweites Mal in JS zu halten.
 Vorschlag: nein — die Seite ist ein Betrachter für abgelegte Ergebnisse.
 
+**Zu entscheiden, aus S6c geerbt.** Ob die Seite den reasonierten AMT-Graphen
+mit anzeigt. Tut sie es, brauchen wir die fertige `*.html` der Engine nicht und
+sie bleibt ignoriert; tut sie es nicht, ist sie die einzige Ansicht des
+Reasoning-Ergebnisses und gehört ins Repo. Die vier Datendateien der Engine
+liegen ab S6c ohnehin unter `output/<ds>/amt/` bereit, `reasoned.ttl` und
+`.edges.csv` sind beide lesbar genug für eine vis.js-Ansicht.
+
 ## S5 — Korrespondenzanalyse
 
 **Ziel:** ein eigenständiges Python-Skript, das aus einer Zähltabelle und einer
@@ -880,8 +895,11 @@ benennt es: *„für sowas braucht man python."*
 
 ### Offen
 
-- **Gegen welchen ADP-Lauf wird abgenommen?** Gebraucht wird ein Paar aus
-  Eingabetabelle und ADP-Ergebnis, das nachweislich zusammengehört —
+- **Gegen welchen ADP-Lauf wird abgenommen?** Das ist die einzige Abhängigkeit
+  dieses Plans, die verfallen kann, und sie sollte eingesammelt werden, bevor
+  S5 an der Reihe ist — dieselbe Sorte wie die Golden Files vom Java-Dienst:
+  solange die Seite steht, ist es eine Viertelstunde. Gebraucht wird ein Paar
+  aus Eingabetabelle und ADP-Ergebnis, das nachweislich zusammengehört —
   `romanempire.csv` und `romanempire.agt` tun das nicht. Am einfachsten ein
   frischer Lauf auf der ADP-Seite mit einer Datei, die wir behalten.
 - **Wie nahe ist nahe genug?** Vorschlag: gleiche Vorzeichen nach Konvention,
@@ -1126,10 +1144,14 @@ für den Wechsel zwischen Python 3.10 und 3.11, an dem D-18 hing.
 
 ### Zu beachten
 
-- Punkt 2 macht aus einem Dokumentationsschritt einen mit Diff: zwölf Dateien
-  kommen neu ins Repo, davon zwei HTML mit einigen hundert Kilobyte. Vor dem
-  Commit prüfen, ob die `.html` der Engine wirklich mit soll oder ob sie besser
-  in `.gitignore` bleibt und die Pages-Seite aus S4 sie selbst erzeugt.
+- Punkt 2 macht aus einem Dokumentationsschritt einen mit Diff. **Versioniert
+  werden die vier Datendateien** je Datensatz — `reasoned.ttl`, `.cypher`,
+  `.nodes.csv`, `.edges.csv`. Ausgenommen bleiben `*.report.md`, dessen
+  Zeitstempel und absoluter Eingabepfad maschinenabhängig sind, und `*.html`:
+  das ist eine fertige pyvis-Seite von einigen hundert Kilobyte, und ob wir sie
+  überhaupt wollen, entscheidet S4 — wenn die Pages-Seite den reasonierten
+  Graphen selbst rendert, wäre sie doppelt. Bis dahin bleibt sie ignoriert. Die
+  `.gitignore` bekommt also drei Zeilen statt einer gestrichenen.
 - Der Zeitpunkt ist frei. S6c blockiert nichts, aber S8a wird dadurch kleiner:
   ohne S6c müsste der Generator die 137 Paare schreiben und die Phase weiter
   mit dem Hash-Seed arbeiten.
@@ -1153,6 +1175,16 @@ Release.
   AGT-Format · Ausgaben · Link auf die Pages-Seite · Verweis auf den PRIMER für
   die Begründungen · Zitation.
 - Versionen erst pinnen, wenn sie installiert und gelaufen sind.
+- **`ruff` meldet 25 Befunde**, alle älter als S6 und seither unverändert. Die
+  Aufschlüsselung ist wichtiger als die Zahl: **16 × `PLR1716`
+  boolean-chained-comparison**, also genau die verketteten Vergleiche, die die
+  PRIMER-Tabellen zeilenweise spiegeln und die A6 ausdrücklich schützt. Ein
+  `ruff --fix` würde sie umschreiben und damit bewusste Arbeit rückgängig
+  machen — das ist kein Aufräumen, sondern ein Rückschritt. Richtig ist eine
+  Regelausnahme in der `pyproject.toml` mit Kommentar auf A6. Übrig bleiben
+  neun echte: 5 × `I001` unsortierte Importe, 2 × `UP031` `%`-Formatierung,
+  1 × `FURB188`, 1 × `PLW1510` `subprocess.run` ohne `check`. Die neun sind ein
+  Zehnminuten-Commit.
 - **[OFFEN]** eigene Zenodo-DOI für alligator-py, oder Teil einer
   Alpaka-Sammlung?
 
