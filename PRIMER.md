@@ -46,6 +46,7 @@ Ausgangslage gegenüber der Zeit, in der der Java-Alligator entstand:
 | [`n4o-rse/amt-engine`](https://github.com/n4o-rse/amt-engine) | reiner Python-Reasoner für die AMT-Ontologie: SHACL-Vorvalidierung, n-äre RoleChain-Inferenz, sechs Fuzzy-Operatoren, Rollensubsumption, Export nach TTL/Cypher/CSV/HTML, Markdown-Report |
 | [`n4o-rse/amt-runner`](https://github.com/n4o-rse/amt-runner) | schmales Wrapper-Skript `run_amt.py`, das die Engine holt und die Pipeline auf einer TTL-Datei laufen lässt |
 | [`leiza-scit/CAA2026-amt`](https://github.com/leiza-scit/CAA2026-amt) | die JS-Visualisierung, die dasselbe TTL-Format liest |
+| [`leiza-rse/tiger`](https://github.com/leiza-rse/tiger) | TiGeR, *Time Geospatial RDF*: der **räumliche** Zweig derselben CA. Nimmt CA-Koordinaten, normiert den x-Wert zu einem Farbwert und schreibt Fundorte als GeoSPARQL-Punkte — plus `time:intervalBefore` zwischen ihnen. Teilt sich mit uns den LADO-Namensraum, siehe A9 |
 
 **Pins.** `amt-engine` hat keine Tags, gepinnt wird auf Commits. Der Pin steht
 in `pyproject.toml` unter `[project.optional-dependencies] amt`.
@@ -206,7 +207,8 @@ nicht mit — sie werden vor Ort neu gebaut.
 
 | Präfix | Namensraum | Rolle | Status |
 |---|---|---|---|
-| `alligator` | `http://archaeology.link/ontology#` | Klassen und Properties des Alligator-Vokabulars | beschlossen |
+| `lado` | `http://archaeology.link/ontology#` | **der geteilte Namensraum**, siehe A9. Alligator und TiGeR sind zwei Editionen darin; TiGeRs Beispieldaten binden ihn als `lado:` | beschlossen |
+| `alligator` | dasselbe wie `lado` | unser Präfix auf denselben Namensraum, Triceratops Edition | beschlossen |
 | `ae` | `http://data.archaeology.link/data/ae/` | Instanzdaten: die Ereignisse, in beiden Turtle-Dateien | beschlossen in S3 |
 | `time` | `http://www.w3.org/2006/time#` | die 13 Allen-Relationen | aktiv |
 | `amt` | `http://academic-meta-tool.xyz/vocab#` | AMT-Vokabular | aktiv, extern |
@@ -309,6 +311,81 @@ bleiben. Die Golden-File-Tests für Matrix, Graph und Cypher müssen die Diagona
 also ausdrücklich ausnehmen.
 
 ---
+
+## A9. LADO — der geteilte Namensraum
+
+`http://archaeology.link/ontology#` gehört nicht uns allein. TiGeRs
+Beispieldaten binden ihn als `lado:`, und damit hat der Namensraum einen Namen:
+**LADO**. Das beantwortet nebenbei, wo neue Terme hingehören — dorthin, nicht
+in einen eigenen.
+
+**Zwei Editionen, ein `owl:Ontology`.** Beide Dateien deklarieren
+`<http://archaeology.link/ontology#> rdf:type owl:Ontology` mit eigenem
+`dc:title` und eigenem `owl:versionInfo`:
+
+| | Datei | Edition | `rdfs:isDefinedBy` |
+|---|---|---|---|
+| Alligator | `py/alligator/vocab/alligator.ttl` | Triceratops | `leiza-rse.github.io/alligator/vocab/` |
+| TiGeR | `tiger/ontology/TiGeR.ttl` | Stegosaurus | `leiza-rse.github.io/tiger/vocab/` |
+
+Wer beide lädt, bekommt **eine** Ontologie mit zwei Titeln und zwei
+Versionsangaben. Für sich genommen unschön, aber harmlos.
+
+**Nicht harmlos: `:cax` und `:cay`.** Beide Dateien deklarieren sie, mit
+verschiedener `rdfs:domain` — `Alligator_Event` bei uns, `TiGeR_Event` dort —
+und verschiedenem `rdfs:isDefinedBy`. In OWL bedeutet mehrfache `rdfs:domain`
+den *Durchschnitt*: alles, was ein `:cax` trägt, ist dann beides zugleich. Das
+ist kein Stilproblem, das ist eine falsche Folgerung, und sie entsteht
+automatisch, sobald jemand die zwei Vokabulare in einen Graphen lädt.
+
+**TiGeRs Daten benutzen die kollidierenden Terme allerdings gar nicht.** In
+`examples/london_small.ttl` und `rdf/CA2MapBritannia.ttl` steht `lado:tiger_cax`,
+`lado:tiger_cay`, `lado:tiger_cax_norm`, `lado:tiger_eventname`, `lado:tiger_id`
+— alle mit `tiger_` vorangestellt, keiner davon in `TiGeR.ttl` deklariert.
+Deklariert sind dort umgekehrt `cax`, `cay`, `cax_norm`, `teventname`, die in
+den Daten nicht vorkommen. Die auflösende Konvention existiert also in der
+Praxis, ist aber nie ins Vokabular gewandert.
+
+### Wie damit umgehen
+
+Drei Wege, und die Entscheidung liegt nicht bei diesem Repo allein:
+
+1. **Alles je Edition präfixen** (`alligator_cax`, `tiger_cax`). Löst die
+   Kollision vollständig, bricht aber die veröffentlichte Triceratops Edition
+   und jede AMT- und Alligator-Datei, die es schon gibt.
+2. **Einen gemeinsamen Kern.** `cax`, `cay` und was sonst wirklich beiden
+   gehört, einmal deklarieren — ohne `rdfs:domain` oder mit einer gemeinsamen
+   Oberklasse `lado:Event` —, und die editionsspezifischen Terme darum herum.
+   Das ist die saubere LOD-Antwort und die einzige, die den Namensraum als
+   *einen* Namensraum behandelt.
+3. **Nichts tun, dokumentieren.** Die Kollision besteht nur, wenn jemand beide
+   Vokabulare zusammenlädt.
+
+Vorschlag: (2) als Ziel, (3) als Zustand bis dahin. **[OFFEN]**
+
+### Regel für neue Terme
+
+Bis das entschieden ist, gilt für alles, was dieses Repo neu prägt: **erst
+prüfen, ob TiGeR den Kurznamen schon führt** — `ontology/TiGeR.ttl` und die
+Beispieldaten, weil die beiden nicht übereinstimmen. Und die Frage stellen, ob
+der Term wirklich alligator-spezifisch ist. Freksas Halbintervall-Relationen
+aus S8c sind es zum Beispiel *nicht*: sie sind so allgemein wie Allens
+Relationen, und TiGeR schreibt bereits `time:intervalBefore`. Sie gehören in
+den LADO-Kern, nicht in eine Edition.
+
+### An die TiGeR-Seite
+
+Vier Kleinigkeiten, dort gefunden, hier nur notiert:
+
+- `ontology/TiGeR.ttl` und die Daten benutzen verschiedene Namen (siehe oben).
+  Die Ontologie sollte den `tiger_`-Formen folgen, dann fällt die Kollision mit
+  `:cax`/`:cay` weg.
+- Die Daten typisieren als `lado:ToGeR_Event`; die Ontologie kennt
+  `TiGeR_Event`. Tippfehler.
+- `lado:hasType` und `lado:Location` werden benutzt, sind aber nirgends
+  deklariert.
+- `examples/london_small_formated.ttl` lässt sich nicht parsen: die
+  Präfixdeklarationen fehlen. `london_small.ttl` daneben ist in Ordnung.
 
 # Teil B — Schrittübersicht
 
@@ -1368,12 +1445,18 @@ Matrix-, Graph- und Cypher-Ausgabe, README, Registereinträge.
 
 Für die 13 Allen-Relationen gibt es `time:`-Entsprechungen; für die 16
 Nachbarschaften gibt es keine, und es wird auch keine geben, weil OWL-Time
-Intervalle und keine Halbintervalle kennt. Sie werden also im
-Alligator-Vokabular unter `http://archaeology.link/ontology#` geprägt —
-`:olderThan`, `:headToHeadWith`, `:survivedBy` und so fort —, jeweils mit
-`rdfs:comment` auf Freksa und mit der Angabe, welche Allen-Relationen sie
-umfasst. Für `rgzm:` bleibt es bei den Rollen, die dort schon stehen; das ist
-die AMT-Seite.
+Intervalle und keine Halbintervalle kennt. Sie werden also in LADO geprägt,
+`http://archaeology.link/ontology#` — `:olderThan`, `:headToHeadWith`,
+`:survivedBy` und so fort —, jeweils mit `rdfs:comment` auf Freksa und mit der
+Angabe, welche Allen-Relationen sie umfasst. Für `rgzm:` bleibt es bei den
+Rollen, die dort schon stehen; das ist die AMT-Seite.
+
+**In den LADO-Kern, nicht in die Triceratops Edition.** Halbintervall-Relationen
+sind so allgemein wie Allens; TiGeR schreibt bereits `time:intervalBefore` und
+könnte sie ebenso gebrauchen. Sie alligator-spezifisch zu prägen wäre eine
+Aussage über unser Werkzeug statt über die Zeit. Vor dem Prägen die Kurznamen
+gegen `TiGeR.ttl` **und** gegen TiGeRs Beispieldaten prüfen — die beiden
+stimmen nicht überein, siehe A9.
 
 **Zu beachten:**
 
@@ -1383,7 +1466,9 @@ die AMT-Seite.
 - Cypher bekommt einen zweiten Kantentyp, kein Problem.
 - **[OFFEN]** Ob die neuen Properties in dieselbe Ontologiedatei gehören wie
   die Allen-Properties oder in ein eigenes Modul. Für ein eigenes spricht, dass
-  die Allen-Datei die veröffentlichte Triceratops Edition ist.
+  die Allen-Datei die veröffentlichte Triceratops Edition ist — und dass ein
+  gemeinsamer LADO-Kern ohnehin ansteht, sobald A9 entschieden ist. Die beiden
+  Fragen sollten zusammen beantwortet werden.
 
 # Teil D — Offene Punkte
 
